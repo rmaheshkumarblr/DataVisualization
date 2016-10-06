@@ -13,11 +13,27 @@ mkdir website
 cd website
 # Creating a project for data visualization
 django-admin startproject dataVisualization
+# Creating an app for the project
+python manage.py startapp basicTemplate
+
 
 ```
 
 ##### Check Django version
 ```
 python -m django --version
+```
+
+##### Deleting from Database
+```
+python manage.py shell
+from django.db import models
+from homePage.models import Document
+Document.objects.filter().delete()
+```
+
+##### Get the server up and running 
+```
+python manage.py runserver
 ```
 
