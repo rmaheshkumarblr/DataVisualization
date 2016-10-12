@@ -1,125 +1,13 @@
-<!DOCTYPE html>
-<html>
-	<script type="text/javascript">
-		var displayContent = {{ displayContent | safe }};
-		// console.log(displayContent)
-	</script>
+{% extends 'overAllTemplate.html' %} 
+{% load staticfiles %}
 
-	<style>
-	
-	.axis {
-	  font: 10px sans-serif;
-	}
-	
-	.axis path,
-	.axis line {
-	  fill: none;
-	  stroke: #000;
-	  shape-rendering: crispEdges;
-	}
-	
-	.axis--x path {
-	  display: none;
-	}
-	
-	.line {
-	  fill: none;
-	  stroke: steelblue;
-	  stroke-width: 1.5px;
-	}
-	
-	</style>
-	<body>
+{% block 'includeOtherJSFiles' %}
 	<script src="https://d3js.org/d3.v4.js"></script>
-	<script>
-	
-	var margin = {top: 20, right: 20, bottom: 30, left: 50},
-	    width = 960 - margin.left - margin.right,
-	    height = 500 - margin.top - margin.bottom;
-	
-	// 2016-8-5 20:27:46
-	var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+    <script src="{%static 'js/lineGraphs.js'%}"> </script>
+{% endblock %}
 
-	var data = {{ displayContent | safe }}
-
-	data.forEach(function (d) {
-        d.date = parseTime(d.date);
-        // console.log(d.date)
-        d.temperature = d.temperature;
-        return d;
-    });
-	
-	var x = d3.scaleTime()
-	    .range([0, width]);
-	
-	var y = d3.scaleLinear()
-	    .range([height, 0]);
-	
-	var line = d3.line()
-	    .x(function(d) { return x(d.date); })
-	    .y(function(d) { return y(d.temperature); });
-
-
-	var svg = d3.select("body").append("svg")
-	    .attr("width", width + margin.left + margin.right)
-	    .attr("height", height + margin.top + margin.bottom)
-	  .append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	
-	// console.log("Inside d3");
-
-	// var data = {{ displayContent | safe }}
-	
-	// var data = []
-	//   for (variable in data1) {
-	//   	data.push(data1[variable])
-	//   	// plotObject.append(data1[variable])
- //  		// console.log(data[variable])
-
-	//   }
-
-	(function() {
-	  // if (error) throw error;
-	  // console.log(JSON.stringify(data))
-	
-	  x.domain(d3.extent(data, function(d) { return d.date; }));
-	  y.domain(d3.extent(data, function(d) { return d.temperature; }));
-	
-	  svg.append("g")
-	      .attr("class", "axis axis--x")
-	      .attr("transform", "translate(0," + height + ")")
-	      .call(d3.axisBottom(x));
-	
-	  svg.append("g")
-	      .attr("class", "axis axis--y")
-	      .call(d3.axisLeft(y))
-	    .append("text")
-	      .attr("class", "axis-title")
-	      .attr("transform", "rotate(-90)")
-	      .attr("y", 6)
-	      .attr("dy", ".71em")
-	      .style("text-anchor", "end")
-	      .text("Price ($)");
-	
-	  svg.append("path")
-	      .datum(data)
-	      .attr("class", "line")
-	      .attr("d", line);
-	// })
-	})();
-	
-
+{% block 'justbeforebodyends' %}
+<script type="text/javascript">
+    (lineGraph({{ displayContent | safe }}));
 </script>
-    <head>
-        <meta charset="utf-8">
-        <title>Minimal Django File Upload Example</title>
-    </head>
-    <body>
-    	<!-- "Hello, Mahesh. Welcome to Data Visualization." -->
-    	<!-- {{ displayContent }} -->
-    	<!-- {{ displayContent }} -->
-     </body>
-
-
-
-</html>
+{% endblock %}
