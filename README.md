@@ -37,3 +37,24 @@ Document.objects.filter().delete()
 python manage.py runserver
 ```
 
+
+As per the recent discussions, objectives as follows:
+
+Login Mechanism required
+	My files option for that particular user information
+
+Header Information 
+
+ypodID, date, time, bme_temp, bme_P ,temperature_SHT,humidity_SHT,co2,wind_speed,wind_dir,quad_aux_one,quad_main_one,quad_aux_two, quad_main_two,quad_aux_three, quad_main_three,quad_aux_four,quad_main_four,fig_210_heat, fig210_sens,fig_280_heat, fig280_sens,bl_moccon,adc2_channel2,e2vo3_heat, e2vo3_sens,GPS
+
+Information that is required while uploading highlighted in bold
+
+Pod ID:
+Location:
+Start Date and Time:
+End Date and Time:
+Pod Use Type (e.g., ambient monitoring, indoor, mobile, or experiment) - make these click button options
+Pollutants of Interest: VOCs (this should give them both sensors), O3, CO2 - make these click button options
+Short description of pod use (1-3 sentences) (textbox for them to type this in) 
+
+Better to use HighCharts than to use D3
