@@ -1,4 +1,6 @@
 {% extends 'overAllTemplate.html' %} 
+{% load crispy_forms_tags %}
+{% load bootstrap %}
 
 {% block 'container' %}
 
@@ -15,22 +17,67 @@
 {% endif %}
 
 <div class="row">
-    <form action="{% url "index" %}" method="post" enctype="multipart/form-data" class="form">
+    <form action="{% url "index" %}" method="post" enctype="multipart/form-data" class="form-vertical">
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div class="col-md-12">
-        <!-- <span class="btn btn-info btn-block"> -->
-        {{ form.docfile.label_tag }}
-        <!-- </span> -->
-        <p></p>
-        </div>
-            {{ form.docfile.errors }}
-            {{ form.docfile }}
-        
-        <div class="col-md-12">
-        <input type="submit" value="Upload" class="btn btn-info btn-block"/>
+        {{ form|bootstrap }}
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Submit</button>
         </div>
     </form>
 </div>
-
 {% endblock %}
+        <!-- {{ form.non_field_errors }} -->
+        <!-- {{ form|crispy }} -->
+
+        <!-- <div class="form-group">
+            <label for="id_podId"> {{ form.podId.label_tag }} </label>
+            {{ form.podId }}
+        </div>
+        <div class="form-group">
+            <label for="id_location"> {{ form.location.label_tag }} </label>
+            {{ form.location }}
+        </div>
+        <div class="form-group">
+            <label for="id_startDate"> {{ form.startDate.label_tag }} </label>
+            {{ form.startDate }}
+        </div>
+        <div class="form-group">
+            <label for="id_endDate"> {{ form.endDate.label_tag }} </label>
+            {{ form.endDate }}
+        </div>
+ -->
+        <!-- <div class="form-group"> -->
+        
+        <!-- </div> -->
+
+     <!--    <div class="form-group">
+            <label for="id_pollutantOfInterest"> {{ form.pollutantOfInterest.label_tag }} </label>
+            {{ form.pollutantOfInterest }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_podUseReason"> {{ form.podUseReason.label_tag }} </label>
+            {{ form.podUseReason }}
+        </div> -->
+        
+
+
+<!-- 
+        <div class="clearfix" style="padding-bottom: 1em"></div>
+
+        <div class="col-md-12"> -->
+        <!-- <span class="btn btn-info btn-block"> -->
+        <!-- {{ form.docfile.label_tag }} -->
+        <!-- </span> -->
+<!--         <p></p>
+        </div>
+            {{ form.docfile.errors }}
+            {{ form.docfile }}
+         -->
+        <!-- <div class="col-md-12">
+        <input type="submit" value="Upload" class="btn btn-info btn-block"/>
+        </div> -->
+
+
+
+

@@ -37,6 +37,20 @@ Document.objects.filter().delete()
 python manage.py runserver
 ```
 
+##### Deleting the old content from the database - Note everything on the database will be deleted.
+
+If you are in early development cycle and don't care about your current database data you can just remove it and than migrate. But first you need to clean migrations dir
+
+rm  your_app/migrations/*
+
+rm db.sqlite3
+python manage.py makemigrations
+python manage.py migrate
+
+
+##### Creating the Schema on the database
+python manage.py migrate --run-syncdb
+
 
 As per the recent discussions, objectives as follows:
 

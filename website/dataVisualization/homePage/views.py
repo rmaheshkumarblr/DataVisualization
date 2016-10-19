@@ -14,13 +14,33 @@ import json
 import datetime as datetime
 # Based on https://github.com/axelpale/minimal-django-file-upload-example
 
+
+    # podId = models.CharField(max_length=30)
+    # location = models.CharField(max_length=30)
+    # startDate = models.DateField()
+    # endDate = models.DateField()
+    # podUseType = MultiSelectField(choices=USETYPE,max_choices=4,max_length=4)
+    # pollutantOfInterest = MultiSelectField(choices=POLLUTANTOFINTEREST,max_choices=4,max_length=4)
+    # podUseReason = models.TextField()
+    # docfile = models.FileField(upload_to='documents/')
+
+
 def index(request):
     # return HttpResponse("Hello, world. You're at the polls index.")
     # Handle file upload
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            newdoc = Document(docfile=request.FILES['docfile'])
+            print request.POST
+            newdoc = Document(podId=request.POST['podId'],
+                              location=request.POST['location'],
+                              startDate=request.POST['startDate'],
+                              endDate=request.POST['endDate'],
+                              podUseType=request.POST['podUseType'],
+                              pollutantOfInterest=request.POST['pollutantOfInterest'],
+                              podUseReason=request.POST['podUseReason'],
+                              docfile=request.FILES['docfile']
+                             )
             newdoc.save()
 
             # Redirect to the document list after POST
