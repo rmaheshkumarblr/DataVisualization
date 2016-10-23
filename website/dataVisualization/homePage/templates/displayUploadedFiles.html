@@ -7,7 +7,7 @@
 <!-- List of uploaded documents -->
 
 {% if documents %}
-    <table class="table table-striped"> 
+    <table class="table table-striped" id="table"> 
         <thead> 
             <tr> 
                 <th>Pod ID</th> 
@@ -15,6 +15,7 @@
                 <th>Start Date</th> 
                 <th>End Date</th> 
                 <th>Uploaded File</th> 
+                <th>Compare</th>
             </tr> 
         </thead> 
         <tbody>
@@ -26,12 +27,40 @@
                 <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.startDate }}</a> </td> 
                 <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.endDate }}</a> </td>
                 <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.docfile }}</a> </td>
-
+                <td> <input type="checkbox" name='Option' value="{{ document.docfile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
             </tr>
             {% endfor %}
         </tbody> 
     </table>
-   
+
+<button class="btn btn-primary btn-block" id="compare" onclick="checkBoxChecked()" disabled> Compare </button>
+<script type="text/javascript">
+function checkHowManyCheckBoxesClicked()
+{
+    if ($('#table').children('tbody').children('tr').children('td').find('input:checked').length == 2) 
+    {
+        $('#table').children('tbody').children('tr').children('td').find('input:checkbox:not(:checked)').prop('disabled', true);
+        $('#compare').prop('disabled', false);
+    }
+    else
+    {
+        $('#table').children('tbody').children('tr').children('td').find('input:checkbox:not(:checked)').prop('disabled', false);
+        $('#compare').prop('disabled', true);
+    }
+}
+
+function checkBoxChecked()
+{
+    //Get names of both the files that must be compared
+    var selectedFiles = [];
+    $.each( $('#table').children('tbody').children('tr').children('td').find('input:checked'),function()
+    {
+        selectedFiles.push($(this).val());
+    });
+    console.log(selectedFiles);
+    
+}
+</script>   
 {% else %}
     <p>No documents.</p>
 {% endif %}
