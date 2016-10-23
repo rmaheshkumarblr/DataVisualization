@@ -1,0 +1,38 @@
+{% extends 'overAllTemplate.html' %} 
+{% load bootstrap %}
+
+{% block 'container' %}
+
+<h4 class="well"> List of uploaded documents </h4>
+<!-- List of uploaded documents -->
+
+{% if documents %}
+    <table class="table table-striped"> 
+        <thead> 
+            <tr> 
+                <th>Pod ID</th> 
+                <th>Location</th> 
+                <th>Start Date</th> 
+                <th>End Date</th> 
+                <th>Uploaded File</th> 
+            </tr> 
+        </thead> 
+        <tbody>
+            {% for document in documents %} 
+            <tr> 
+                
+                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.podId }}</a>  </th> 
+                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.location }}</a> </td> 
+                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.startDate }}</a> </td> 
+                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.endDate }}</a> </td>
+                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.docfile }}</a> </td>
+
+            </tr>
+            {% endfor %}
+        </tbody> 
+    </table>
+   
+{% else %}
+    <p>No documents.</p>
+{% endif %}
+{% endblock %}

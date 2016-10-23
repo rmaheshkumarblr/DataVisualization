@@ -36,18 +36,7 @@
               <ul class="nav navbar-nav">
                 <li class="active"><a href="/">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria  -expanded="false">Data Analysis <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                    <li><a href="/dataAnalysis">Time Series Chart</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li class="dropdown-header">Nav header</li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
-                  </ul>
-                </li>
+                <li><a href="/dataAnalysis">Data Analysis</a></li>
                 <li><a href="/uploadedFiles">Uploaded Files</a></li>
                 <li><a href="/uploadAFile">Upload a File</a></li>
               </ul>
@@ -55,10 +44,24 @@
           </div>
       </nav>
       <div class="container graph">
-        {% block 'container' %}
-        {% endblock %}
-      </div>
-        {% block 'justbeforebodyends' %}
-        {% endblock %}
+        <div class="row">
+        <div class="col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Temperature <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">Humidity</a></li>
+            <li><a href="#">CO2</a></li>
+            <li><a href="#">fig210_sens</a></li>
+            <li><a href="#">fig280_sens</a></li>
+            <li><a href="#">e2vo3_sens</a></li>
+          </ul>
+        </div>
+        <div class="col-md-10 main">
+            {% block 'container' %}
+            {% endblock %}
+        </div>
+      </div>  
+    </div>
+    {% block 'justbeforebodyends' %}
+    {% endblock %}
   </body>
 </html>

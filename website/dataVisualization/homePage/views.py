@@ -26,36 +26,33 @@ import datetime as datetime
 
 
 def index(request):
-    # return HttpResponse("Hello, world. You're at the polls index.")
-    # Handle file upload
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            print request.POST
-            newdoc = Document(podId=request.POST['podId'],
-                              location=request.POST['location'],
-                              startDate=request.POST['startDate'],
-                              endDate=request.POST['endDate'],
-                              podUseType=request.POST['podUseType'],
-                              pollutantOfInterest=request.POST['pollutantOfInterest'],
-                              podUseReason=request.POST['podUseReason'],
-                              docfile=request.FILES['docfile']
-                             )
-            newdoc.save()
+    # # Handle file upload
+    # if request.method == 'POST':
+    #     form = DocumentForm(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         newdoc = Document(podId=request.POST['podId'],
+    #                           location=request.POST['location'],
+    #                           startDate=request.POST['startDate'],
+    #                           endDate=request.POST['endDate'],
+    #                           podUseType=request.POST['podUseType'],
+    #                           pollutantOfInterest=request.POST['pollutantOfInterest'],
+    #                           podUseReason=request.POST['podUseReason'],
+    #                           docfile=request.FILES['docfile']
+    #                          )
+    #         newdoc.save()
 
-            # Redirect to the document list after POST
-            return HttpResponseRedirect(reverse('index'))
-    else:
-        form = DocumentForm()  # A empty, unbound form
+    #         # Redirect to the document list after POST
+    #         return HttpResponseRedirect(reverse('index'))
+    # else:
+    #     form = DocumentForm()  # A empty, unbound form
 
-    # Load documents for the list page
-    documents = Document.objects.all()
+    # # Load documents for the list page
+    # documents = Document.objects.all()
 
-    # Render list page with the documents and the form
+    # # Render list page with the documents and the form
     return render(
         request,
-        'upload.html',
-        {'documents': documents, 'form': form}
+        'index.html'
         )
 
 
@@ -103,6 +100,74 @@ def display(request, locationOfDocument):
     return render(
         request,
         'display.html',
+        {'displayContent': json.dumps(outputContent)}
+        )
+
+
+def uploadedFiles(request):
+    # Load documents for the list page
+    documents = Document.objects.all()
+
+    return render(
+        request,
+        'displayUploadedFiles.html',
+        {'documents': documents}
+        )
+
+def uploadAFile(request):
+    # Handle file upload
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            newdoc = Document(podId=request.POST['podId'],
+                              location=request.POST['location'],
+                              startDate=request.POST['startDate'],
+                              endDate=request.POST['endDate'],
+                              podUseType=request.POST['podUseType'],
+                              pollutantOfInterest=request.POST['pollutantOfInterest'],
+                              podUseReason=request.POST['podUseReason'],
+                              docfile=request.FILES['docfile']
+                             )
+            newdoc.save()
+
+            # Redirect to the document list after POST
+            return HttpResponseRedirect(reverse('uploadedFiles'))
+    else:
+        form = DocumentForm()  # A empty, unbound form
+    # Render list page with the documents and the form
+    return render(
+        request,
+        'upload.html',
+        {'form': form}
+        )
+
+
+def dataAnalysis(request, locationOfDocument):
+    if locationOfDocument == "":
+        return render(
+        request,
+        'displayDataAnalysis.html',
+        )
+    outputContent = []
+    with open("media/"+locationOfDocument) as fileHandler:
+        for line in fileHandler:
+            dictContent = {}
+            line = line.strip()
+            if(len(line) > 0):
+                splitLine = line.split(',')
+                dictContent['Date'] = splitLine[1] + " " + splitLine[2]
+                dictContent['Temperature'] = splitLine[5]
+                dictContent['Humidity'] = splitLine[6]
+                dictContent['CO2'] = splitLine[7]
+                dictContent['fig210_sens'] = splitLine[19]
+                dictContent['fig280_sens'] = splitLine[21]
+                dictContent['e2vo3_sens'] = splitLine[25]
+                outputContent.append(dictContent)
+    # print json.dumps(outputContent)
+
+    return render(
+        request,
+        'displayDataAnalysis.html',
         {'displayContent': json.dumps(outputContent)}
         )
 
