@@ -22,10 +22,10 @@
             {% for document in documents %} 
             <tr> 
                 
-                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.podId }}</a>  </th> 
-                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.location }}</a> </td> 
-                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.startDate }}</a> </td> 
-                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.endDate }}</a> </td>
+                <td>{{ document.podId }}</th> 
+                <td>{{ document.location }}</td> 
+                <td>{{ document.startDate }}</td> 
+                <td>{{ document.endDate }}</td>
                 <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.docfile }}</a> </td>
                 <td> <input type="checkbox" name='Option' value="{{ document.docfile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
             </tr>

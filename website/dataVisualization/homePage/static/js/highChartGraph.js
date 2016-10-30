@@ -277,26 +277,94 @@ function getBoxPlotGraph(content) {
             tooltip: {
                 headerFormat: '<em>Experiment No {point.key}</em><br/>'
             }
-        // }, {
-        //     name: 'Outlier',
-        //     color: Highcharts.getOptions().colors[0],
-        //     type: 'scatter',
-        //     data: [ // x, y positions where 0 is the first category
-        //         [0, 644],
-        //         [4, 718],
-        //         [4, 951],
-        //         [4, 969]
-        //     ],
-        //     marker: {
-        //         fillColor: 'white',
-        //         lineWidth: 1,
-        //         lineColor: Highcharts.getOptions().colors[0]
-        //     },
-        //     tooltip: {
-        //         pointFormat: 'Observation: {point.y}'
-        //     }
         }]
     
+    });
+};
+
+
+function getCompareTimeSeriesGraph(content1,content2, field) {
+    console.log('clicked' + ' ' + field)
+    "use strict",
+    data1 = []
+    data2 = []
+    
+    // console.log(data)
+    function logArrayElements1(element, index, array) {
+        // console.log(element['Date'],element['Temperature'])
+        dateFromPython = new Date(element['Date'])
+        data1.push([ Date.UTC(dateFromPython.getUTCFullYear(), dateFromPython.getUTCMonth(), dateFromPython.getUTCDate(),  dateFromPython.getUTCHours(), dateFromPython.getUTCMinutes(), dateFromPython.getUTCSeconds() ), parseInt(element[field])])
+    } 
+    function logArrayElements2(element, index, array) {
+        // console.log(element['Date'],element['Temperature'])
+        dateFromPython = new Date(element['Date'])
+        data2.push([ Date.UTC(dateFromPython.getUTCFullYear(), dateFromPython.getUTCMonth(), dateFromPython.getUTCDate(),  dateFromPython.getUTCHours(), dateFromPython.getUTCMinutes(), dateFromPython.getUTCSeconds() ), parseInt(element[field])])
+    }   
+    content1.forEach(logArrayElements1)
+    content2.forEach(logArrayElements2)
+    // console.log(data)
+        $('#container').highcharts({
+            chart: {
+                zoomType: 'x',
+        width: 1032,
+        height: 400
+            },
+            title: {
+                text: field + ' against Time'
+            },
+            subtitle: {
+                text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: field
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+
+            series: [{
+                type: 'area',
+                name: field + ' against Time',
+                data: data1
+            },{
+                type: 'area',
+                name: field + ' against Time',
+                data: data2
+            }]
+
+        
     });
 };
 

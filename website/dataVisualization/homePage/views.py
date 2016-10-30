@@ -142,34 +142,74 @@ def uploadAFile(request):
         )
 
 
-def dataAnalysis(request, locationOfDocument):
-    if locationOfDocument == "":
+def dataAnalysis(request, locationOfDocument1, locationOfDocument2):
+    
+    if locationOfDocument2 == "":
+        if locationOfDocument1 == "":
+            return render(
+            request,
+            'displayDataAnalysis.html',
+            )
+        outputContent1 = []
+        with open("media/"+locationOfDocument1) as fileHandler:
+            for line in fileHandler:
+                dictContent1 = {}
+                line = line.strip()
+                if(len(line) > 0):
+                    splitLine = line.split(',')
+                    dictContent1['Date'] = splitLine[1] + " " + splitLine[2]
+                    dictContent1['Temperature'] = splitLine[5]
+                    dictContent1['Humidity'] = splitLine[6]
+                    dictContent1['CO2'] = splitLine[7]
+                    dictContent1['fig210_sens'] = splitLine[19]
+                    dictContent1['fig280_sens'] = splitLine[21]
+                    dictContent1['e2vo3_sens'] = splitLine[25]
+                    outputContent1.append(dictContent1)
+        print "One"
         return render(
-        request,
-        'displayDataAnalysis.html',
-        )
-    outputContent = []
-    with open("media/"+locationOfDocument) as fileHandler:
-        for line in fileHandler:
-            dictContent = {}
-            line = line.strip()
-            if(len(line) > 0):
-                splitLine = line.split(',')
-                dictContent['Date'] = splitLine[1] + " " + splitLine[2]
-                dictContent['Temperature'] = splitLine[5]
-                dictContent['Humidity'] = splitLine[6]
-                dictContent['CO2'] = splitLine[7]
-                dictContent['fig210_sens'] = splitLine[19]
-                dictContent['fig280_sens'] = splitLine[21]
-                dictContent['e2vo3_sens'] = splitLine[25]
-                outputContent.append(dictContent)
-    # print json.dumps(outputContent)
+            request,
+            'displayDataAnalysis.html',
+            {'displayContent1': json.dumps(outputContent1)}
+            )
+    else:
+        outputContent1 = []
+        with open("media/"+locationOfDocument1) as fileHandler:
+            for line in fileHandler:
+                dictContent1 = {}
+                line = line.strip()
+                if(len(line) > 0):
+                    splitLine = line.split(',')
+                    dictContent1['Date'] = splitLine[1] + " " + splitLine[2]
+                    dictContent1['Temperature'] = splitLine[5]
+                    dictContent1['Humidity'] = splitLine[6]
+                    dictContent1['CO2'] = splitLine[7]
+                    dictContent1['fig210_sens'] = splitLine[19]
+                    dictContent1['fig280_sens'] = splitLine[21]
+                    dictContent1['e2vo3_sens'] = splitLine[25]
+                    outputContent1.append(dictContent1)
+        outputContent2 = []
+        with open("media/"+locationOfDocument2) as fileHandler:
+            for line in fileHandler:
+                dictContent2 = {}
+                line = line.strip()
+                if(len(line) > 0):
+                    splitLine = line.split(',')
+                    dictContent2['Date'] = splitLine[1] + " " + splitLine[2]
+                    dictContent2['Temperature'] = splitLine[5]
+                    dictContent2['Humidity'] = splitLine[6]
+                    dictContent2['CO2'] = splitLine[7]
+                    dictContent2['fig210_sens'] = splitLine[19]
+                    dictContent2['fig280_sens'] = splitLine[21]
+                    dictContent2['e2vo3_sens'] = splitLine[25]
+                    outputContent2.append(dictContent2)
+        print "Two"
+        return render(
+            request,
+            'displayDataAnalysis.html',
+            {'displayContent1': json.dumps(outputContent1),'displayContent2': json.dumps(outputContent2)}
+            )
 
-    return render(
-        request,
-        'displayDataAnalysis.html',
-        {'displayContent': json.dumps(outputContent)}
-        )
+
 
     # return render(
     #     request,
@@ -195,3 +235,5 @@ def dataAnalysis(request, locationOfDocument):
 #         form = UploadFileForm()
 #     return render(request, 'upload.html', {'form': form})
 
+def multipleDataAnalysis(request, locationOfDocument1, locationOfDocument2):
+    print locationOfDocument1 + " " + locationOfDocument2

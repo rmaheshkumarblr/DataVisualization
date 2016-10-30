@@ -2,3 +2,4 @@ data/*
 venv/*
 website/dataVisualization/media/*
 website/dataVisualization/db.sqlite3
+*.pyc

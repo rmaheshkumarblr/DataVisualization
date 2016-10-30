@@ -8,42 +8,73 @@
     <script src="{%static 'js/highChartGraph.js'%}"> </script>
 {% endblock %}
 
-ictContent['Humidity'] = splitLine[6]
-                dictContent['CO2'] = splitLine[7]
-                dictContent['fig210_sens'] = splitLine[19]
-                dictContent['fig280_sens'] = splitLine[21]
-                dictContent['e2vo3_sens'] = splitLine[25]
 
-{% block 'container' %}
-    <div class="row">
+  {% block 'container' %}
+      {% if displayContent2 %}
+      <div class="row">
         <div class="col-md-3 sidebar">
           <h4>Timeseries plots</h4>
           <ul class="nav nav-sidebar">
-            <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent }},'Temperature');return false;">Temperature </a></li>
-            <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent }},'Humidity');return false;" >Humidity</a></li>
-            <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent }},'CO2');return false;">CO2</a></li>
-            <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent }},'fig210_sens');return false;">fig210_sens</a></li>
-            <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent }},'fig280_sens');return false;">fig280_sens</a></li>
-            <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent }},'e2vo3_sens');return false;">e2vo3_sens</a></li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'Temperature');return false;">  Temperature   </a></li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }},  'Humidity');return false;" >Humidity  </a></li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'CO2');return false;">CO2</a></li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'fig210_sens');return false;">  fig210_sens</a></li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'fig280_sens');return false;">  fig280_sens</a></li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }},{{ displayContent2 }},  'e2vo3_sens');return false;"> e2vo3_sens</a>  </li>
           </ul>
           <h4>Scatter Plot</h4>
           <ul class="nav nav-sidebar">
-            <li><a href="#" onclick="getScatterPlotGraph({{ displayContent }},'Temperature' , 'Humidity');return false;">Temperature Vs Humidity </a></li>
+            <li><a href="#" onclick="getCompareScatterPlotGraph({{ displayContent1 }},{{ displayContent2 }}, 'Temperature' , 'Humidity');return   false;  ">Temperature Vs Humidity </a></li>
           </ul>
           <h4>Box Plot</h4>
           <ul class="nav nav-sidebar">
-            <li><a href="#" onclick="getBoxPlotGraph({{ displayContent }});return false;">Box Plot</a></li>
+            <li><a href="#" onclick="getCompareBoxPlotGraph({{ displayContent1 }},{{ displayContent2 }});return false;">Box Plot</a></li>
           </ul>
         </div>
         <div class="col-md-9 main">
-            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div> 
+          <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div> 
         </div>
-    
-{% endblock %}
+      </div>
+      {% else %}
+      <div class="row">
+         <div class="col-md-3 sidebar">
+           <h4>Timeseries plots</h4>
+           <ul class="nav nav-sidebar">
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Temperature');return false;">   Temperature   </a></li>
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Humidity');return false;" > Humidity  </a></li>
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'CO2');return false;">CO2</a></li>
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'fig210_sens');return false;">   fig210_sens</a></li>
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'fig280_sens');return false;">   fig280_sens</a></li>
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'e2vo3_sens');return false;">  e2vo3_sens</a>  </li>
+           </ul>
+           <h4>Scatter Plot</h4>
+           <ul class="nav nav-sidebar">
+             <li><a href="#" onclick="getScatterPlotGraph({{ displayContent1 }},'Temperature' , 'Humidity') ;return   false;  ">Temperature Vs Humidity </a></li>
+           </ul>
+           <h4>Box Plot</h4>
+           <ul class="nav nav-sidebar">
+             <li><a href="#" onclick="getBoxPlotGraph({{ displayContent1 }});return false;">Box Plot</a></li>
+           </ul>
+         </div>
+         <div class="col-md-9 main">
+           <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div> 
+         </div>
+      </div>
+      {% endif %}
 
+      
+  {% endblock %}
+  
+  
+  {% block 'justbeforebodyends' %}
+  <script type="text/javascript">
+      {% if displayContent2 %}
+        getCompareTimeSeriesGraph({{ displayContent1 | safe }},{{ displayContent2 | safe }}, 'Temperature');
+        // console.log("Compare Function")
+      {% else %}
+        getTimeSeriesGraph({{ displayContent1 | safe }}, 'Temperature');
+      {% endif %}
+      
+  </script>
+  {% endblock %}
 
-{% block 'justbeforebodyends' %}
-<script type="text/javascript">
-    getTimeSeriesGraph({{ displayContent | safe }}, 'Temperature');
-</script>
-{% endblock %}
