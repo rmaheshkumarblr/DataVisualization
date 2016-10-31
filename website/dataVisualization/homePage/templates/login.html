@@ -1,0 +1,14 @@
+{% extends 'overAllTemplate.html' %}
+{% block 'container' %}
+<h4>Login</h4>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ error.msg }} <br />
+    <input type="submit" class="btn btn-primary btn-block" value="Login" />
+    <input type="reset" class="btn btn-primary btn-block" value="Clear" />
+</form>
+    <br>
+    <a class="btn btn-primary btn-block" href="/createuser" > Create an Account </a>
+        <!-- <a href="/createuser">Create an Account</a> -->
+{% endblock %}

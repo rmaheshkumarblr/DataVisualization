@@ -1,67 +1,140 @@
-from django.shortcuts import render,redirect
-from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
-
-# from .forms import UploadFileForm
-from django.http import HttpResponse,JsonResponse
-from models import Document
-from forms import DocumentForm
-
 import os
 import pandas as pd
 import json
 import datetime as datetime
-# Based on https://github.com/axelpale/minimal-django-file-upload-example
+from django.shortcuts import render,redirect
+from django.template import RequestContext
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse,JsonResponse
+from models import Document
+from forms import DocumentForm, LoginForm, CreateUserForm
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
-    # podId = models.CharField(max_length=30)
-    # location = models.CharField(max_length=30)
-    # startDate = models.DateField()
-    # endDate = models.DateField()
-    # podUseType = MultiSelectField(choices=USETYPE,max_choices=4,max_length=4)
-    # pollutantOfInterest = MultiSelectField(choices=POLLUTANTOFINTEREST,max_choices=4,max_length=4)
-    # podUseReason = models.TextField()
-    # docfile = models.FileField(upload_to='documents/')
+def create_user_view(request):
+    if request.method == 'GET':
+        form = CreateUserForm()
+        return render(request, 'create_user.html', {'form': form})
+    elif request.method == 'POST':
+        form = CreateUserForm(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data['email_address']
+            password = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['password_repeat']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+
+            if password == confirm_password:
+                # check if user exists
+                user = User.objects.filter(username=email).first()
+                if not user:
+                    new_user = User.objects.create_user(
+                        username=email,
+                        email=email,
+                        password=password,
+                        first_name=first_name,
+                        last_name=last_name
+                    )
+                    new_user.save()
+                    return HttpResponseRedirect('/')
+                else:
+                    error = {
+                        'msg': 'Account already exists'
+                    }
+                    return render(request, 'create_user.html', {
+                        'form': form,
+                        'error': error
+                    })
+            else:
+                error = {
+                    'msg': 'Passwords are not the same'
+                }
+                return render(request, 'create_user.html', {
+                    'form': form,
+                    'error': error
+                })
+
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            # authenticate
+            email = form.cleaned_data['email_address']
+            password = form.cleaned_data['password']
+
+            user = authenticate(
+                username=email,
+                password=password
+            )
+
+            if user is not None:
+                # authenticated
+                # log in the user
+                login(request, user)
+
+                next_url = request.POST.get('next', None)
+
+                if next_url:
+                    print 'Got Next parameter'
+                    return HttpResponseRedirect(next_url)
+
+                return render(request, 'index.html', {
+                    'user': user
+                })
+            else:
+                # not authenticated
+                error = {
+                    'msg': 'Could not validate credentials'
+                }
+                return render(request, 'login.html', {
+                    'form': form,
+                    'error': error
+                })
+
+    else:
+        user = request.user
+        if user and user.is_authenticated():
+            return HttpResponseRedirect('/')
+        form = LoginForm()
+        return render(request, 'login.html', {
+            'form': form
+        })
+
+
+@login_required
+def home_view(request):
+    return render(request, 'index.html', {
+        'user': request.user
+    })
+
+
+@login_required
+def logout_view(request):
+    user = request.user
+    if user and user.is_authenticated():
+        # log the user out
+        logout(request)
+    # redirect to login
+    return HttpResponseRedirect('/')
 
 
 def index(request):
-    # # Handle file upload
-    # if request.method == 'POST':
-    #     form = DocumentForm(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         newdoc = Document(podId=request.POST['podId'],
-    #                           location=request.POST['location'],
-    #                           startDate=request.POST['startDate'],
-    #                           endDate=request.POST['endDate'],
-    #                           podUseType=request.POST['podUseType'],
-    #                           pollutantOfInterest=request.POST['pollutantOfInterest'],
-    #                           podUseReason=request.POST['podUseReason'],
-    #                           docfile=request.FILES['docfile']
-    #                          )
-    #         newdoc.save()
-
-    #         # Redirect to the document list after POST
-    #         return HttpResponseRedirect(reverse('index'))
-    # else:
-    #     form = DocumentForm()  # A empty, unbound form
-
-    # # Load documents for the list page
-    # documents = Document.objects.all()
-
-    # # Render list page with the documents and the form
     return render(
         request,
         'index.html'
         )
 
 
+@login_required
 def documents(request):
-    # readCSV = pd.read_csv(locationOfDocument)
     locationOfDocument=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/media' + request.path
-    # return redirect('/display/'+locationOfDocument)
-    # url = reverse('display', kwargs={'locationOfDocument': locationOfDocument})
-    # return HttpResponseRedirect(url)
     print locationOfDocument
     outputContent = []
     with open(locationOfDocument) as fileHandler:
@@ -83,6 +156,7 @@ def documents(request):
         )
 
 
+@login_required
 def display(request, locationOfDocument):
     print locationOfDocument
     outputContent = []
@@ -104,6 +178,7 @@ def display(request, locationOfDocument):
         )
 
 
+@login_required
 def uploadedFiles(request):
     # Load documents for the list page
     documents = Document.objects.all()
@@ -114,6 +189,21 @@ def uploadedFiles(request):
         {'documents': documents}
         )
 
+
+
+@login_required
+def personalUploadedFiles(request):
+    # Load documents for the list page
+    documents = Document.objects.filter(userName=request.user.first_name)
+
+    return render(
+        request,
+        'personalDisplayUploadedFiles.html',
+        {'documents': documents}
+        )
+
+
+@login_required
 def uploadAFile(request):
     # Handle file upload
     if request.method == 'POST':
@@ -126,8 +216,10 @@ def uploadAFile(request):
                               podUseType=request.POST['podUseType'],
                               pollutantOfInterest=request.POST['pollutantOfInterest'],
                               podUseReason=request.POST['podUseReason'],
+                              userName = request.user.first_name,
                               docfile=request.FILES['docfile']
                              )
+            # print request.FILES['docfile']
             newdoc.save()
 
             # Redirect to the document list after POST
@@ -142,6 +234,7 @@ def uploadAFile(request):
         )
 
 
+@login_required
 def dataAnalysis(request, locationOfDocument1, locationOfDocument2):
     
     if locationOfDocument2 == "":
@@ -165,7 +258,6 @@ def dataAnalysis(request, locationOfDocument1, locationOfDocument2):
                     dictContent1['fig280_sens'] = splitLine[21]
                     dictContent1['e2vo3_sens'] = splitLine[25]
                     outputContent1.append(dictContent1)
-        print "One"
         return render(
             request,
             'displayDataAnalysis.html',
@@ -209,31 +301,6 @@ def dataAnalysis(request, locationOfDocument1, locationOfDocument2):
             {'displayContent1': json.dumps(outputContent1),'displayContent2': json.dumps(outputContent2)}
             )
 
-
-
-    # return render(
-    #     request,
-    #     'display.html',
-    #     {'displayContent': json.dumps(outputContent)}
-    #     )
-
-    # return JsonResponse(json.dumps(outputContent),safe=False)
-
-    # response = HttpResponse()
-    # response.write("Hello, Mahesh. Welcome to Data Visualization.")
-    # response.write(json.dumps(outputContent))#, content_type="text/json")
-    # return HttpResponse(response)
-    # return HttpResponse("Hello, Mahesh. Welcome to Data Visualization.")
-
-# def upload_file(request):
-#     if request.method == 'POST':
-#         form = UploadFileForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             handle_uploaded_file(request.FILES['file'])
-#             return HttpResponseRedirect('/success/url/')
-#     else:
-#         form = UploadFileForm()
-#     return render(request, 'upload.html', {'form': form})
-
+@login_required
 def multipleDataAnalysis(request, locationOfDocument1, locationOfDocument2):
     print locationOfDocument1 + " " + locationOfDocument2

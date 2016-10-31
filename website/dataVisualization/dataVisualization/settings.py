@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'bootstrap3_datetime',
     'crispy_forms',
     'bootstrapform',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -78,13 +79,29 @@ WSGI_APPLICATION = 'dataVisualization.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+POSTGRES_DB_NAME = os.environ.get('POSTGRES_DB_NAME', None)
+POSTGRES_USERNAME = os.environ.get('POSTGRES_USERNAME', None)
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', None)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': POSTGRES_DB_NAME,
+        'USER': POSTGRES_USERNAME,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
+LOGIN_URL = '/login'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

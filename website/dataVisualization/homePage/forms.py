@@ -4,6 +4,30 @@ from bootstrap3_datetime.widgets import DateTimePicker
 #     title = forms.CharField(max_length=50)
 #     file = forms.FileField()
 
+class CreateUserForm(forms.Form):
+    email_address = forms.EmailField(label='Email Address', max_length=50,widget=forms.TextInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(label='First Name', max_length=30,widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(label='Last Name', max_length=30,widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(
+        label='Password',
+        max_length=100,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+    password_repeat = forms.CharField(
+        label='Confirm Password',
+        max_length=100,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+
+class LoginForm(forms.Form):
+    email_address = forms.EmailField(label='Email Address', max_length=50,widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(
+        label='Password',
+        max_length=100,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+
+
 USETYPE = ((1, 'Ambient Monitoring'),
            (2, 'Indoor'),
            (3, 'Mobile'),

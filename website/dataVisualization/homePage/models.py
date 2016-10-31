@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from multiselectfield import MultiSelectField
-
+from homePage.storage import OverwriteStorage
 
 USETYPE = ((1, 'Ambient Monitoring'),
            (2, 'Indoor'),
@@ -22,4 +22,5 @@ class Document(models.Model):
     podUseType = MultiSelectField(choices=USETYPE,max_choices=4,max_length=4)
     pollutantOfInterest = MultiSelectField(choices=POLLUTANTOFINTEREST,max_choices=4,max_length=4)
     podUseReason = models.TextField()
+    userName = models.CharField(max_length=30)
     docfile = models.FileField(upload_to='')
