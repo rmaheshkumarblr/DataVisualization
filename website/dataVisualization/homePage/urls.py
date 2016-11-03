@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^personalUploadedFiles/', views.personalUploadedFiles, name='personalUploadedFiles'),
     url(r'^uploadAFile/', views.uploadAFile, name='uploadAFile'),
     url(r'^dataAnalysis/(?P<locationOfDocument1>.*)/(?P<locationOfDocument2>.*)$', views.dataAnalysis, name='dataAnalysis'),
+    url(r'^getRawCSV/(?P<locationOfDocument1>.*)/', views.getRawCSV, name='getRawCSV'),
+    url(r'^getSelectedCSV/(?P<locationOfDocument1>.*)/', views.getSelectedCSV, name='getSelectedCSV'),
     # url(r'^dataAnalysis/(?P<locationOfDocument>.*)$', views.dataAnalysis, name='dataAnalysis'),
     # (?P<path>.*)$
 ]

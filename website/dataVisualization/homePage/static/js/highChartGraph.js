@@ -1,6 +1,6 @@
 // var getGraph = (function (content) {
 function getTimeSeriesGraph(content, field) {
-    console.log('clicked' + ' ' + field)
+    // console.log('clicked' + ' ' + field)
 	"use strict",
 	data = []
 	
@@ -75,7 +75,7 @@ function getTimeSeriesGraph(content, field) {
 
 
 function getScatterPlotGraph(content, field1, field2) {
-    console.log('clicked' + ' ' + field1 + ' ' + field2)
+    // console.log('clicked' + ' ' + field1 + ' ' + field2)
     "use strict",
     data = []
     
@@ -153,8 +153,112 @@ function getScatterPlotGraph(content, field1, field2) {
 };
 
 
+function getDoubleYAxisPlotGraph(content)
+{
+    "use strict",
+    data1 = []
+    data2 = []
+    function logArrayElements(element, index, array) {
+        dateFromPython = new Date(element['Date']).valueOf()
+        data1.push( [dateFromPython,parseFloat(element['Temperature'])])
+        data2.push( [dateFromPython,parseFloat(element['Humidity'])])
+    }   
+    content.forEach(logArrayElements)
+    // console.log(data1)
+    // console.log(data2)
+
+    $('#container').highcharts({
+        chart: {
+            zoomType: 'xy'
+        },
+        title: {
+            text: 'Weather Information from the Pod'
+        },
+        subtitle: {
+            text: 'UPOD Data'
+        },
+        // xAxis: [{
+        //     categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        //         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        //     crosshair: true
+        // }],
+        xAxis: {
+                type: 'datetime'
+            },
+        yAxis: [{ // Primary yAxis
+            labels: {
+                format: '{value}°C',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            title: {
+                text: 'Temperature',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            opposite: true
+
+        }, 
+        { // Tertiary yAxis
+            gridLineWidth: 0,
+            title: {
+                text: 'Humidity',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+            labels: {
+                format: '{value} grams per cubic meter',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+            opposite: true
+        }
+         ],
+        tooltip: {
+            shared: true
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            x: 80,
+            verticalAlign: 'top',
+            y: 55,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        series: [
+         {
+            name: 'Temperature',
+            type: 'spline',
+            yAxis: 1,
+            data: data1,
+            marker: {
+                enabled: false
+            },
+            dashStyle: 'shortdot',
+            tooltip: {
+                valueSuffix: ' °C'
+            }
+
+        }, {
+            name: 'Humidity',
+            type: 'spline',
+            yAxis: 0,
+            data: data2,
+            tooltip: {
+                valueSuffix: ' grams per cubic meter'
+            }
+        }]
+    });
+}
+
+
 function getBoxPlotGraph(content) {
-    console.log('clicked')
+    // console.log('clicked')
     "use strict",
     data = []
 
@@ -284,7 +388,7 @@ function getBoxPlotGraph(content) {
 
 
 function getCompareTimeSeriesGraph(content1,content2, field) {
-    console.log('clicked' + ' ' + field)
+    // console.log('clicked' + ' ' + field)
     "use strict",
     data1 = []
     data2 = []
@@ -302,8 +406,61 @@ function getCompareTimeSeriesGraph(content1,content2, field) {
     }   
     content1.forEach(logArrayElements1)
     content2.forEach(logArrayElements2)
+    // console.log(data1)
     // console.log(data)
-        $('#container').highcharts({
+    //     $('#container').highcharts({
+    //     chart: {
+    //         type: 'spline'
+    //     },
+    //     title: {
+    //         text: field + ' against Time'
+    //     },
+    //     subtitle: {
+    //         text: 'Comparing the pollutant ' + field + ' between two PODS'
+    //     },
+    //     xAxis: {
+    //         type: 'datetime',
+    //         // dateTimeLabelFormats: { // don't display the dummy year
+    //         //     month: '%e. %b',
+    //         //     year: '%b'
+    //         // },
+    //         title: {
+    //             text: 'Date'
+    //         }
+    //     },
+    //     yAxis: {
+    //         title: {
+    //             text: 'Temperature (C)'
+    //         },
+    //         min: 0
+    //     },
+    //     tooltip: {
+    //         headerFormat: '<b>{series.name}</b><br>',
+    //         pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+    //     },
+
+    //     plotOptions: {
+    //         spline: {
+    //             marker: {
+    //                 enabled: true
+    //             }
+    //         }
+    //     },
+
+    //     series: [{
+    //         name: 'First Pod',
+    //         // Define the data points. All series have a dummy year
+    //         // of 1970/71 in order to be compared on the same x axis. Note
+    //         // that in JavaScript, months start at 0 for January, 1 for February etc.
+    //         data: data1
+    //     }
+    //     , {
+    //         name: 'Second Pod',
+    //         data: data2
+    //     } 
+    //     ]
+    // });
+$('#container').highcharts({
             chart: {
                 zoomType: 'x',
         width: 1032,
@@ -325,22 +482,14 @@ function getCompareTimeSeriesGraph(content1,content2, field) {
                 }
             },
             legend: {
-                enabled: false
+                enabled: true
+            },
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br>',
+                pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
             },
             plotOptions: {
                 area: {
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
-                    },
                     marker: {
                         radius: 2
                     },
@@ -352,19 +501,312 @@ function getCompareTimeSeriesGraph(content1,content2, field) {
                     },
                     threshold: null
                 }
+                // area1: {
+                //     fillColor: {
+                //         linearGradient: {
+                //             x1: 0,
+                //             y1: 0,
+                //             x2: 0,
+                //             y2: 1
+                //         },
+                //         stops: [
+                //             [0, Highcharts.getOptions().colors[1]],
+                //             [1, Highcharts.Color(Highcharts.getOptions().colors[1]).setOpacity(0).get('rgba')]
+                //         ]
+                //     },
+                //     marker: {
+                //         radius: 2
+                //     },
+                //     lineWidth: 1,
+                //     states: {
+                //         hover: {
+                //             lineWidth: 1
+                //         }
+                //     },
+                //     threshold: null
+                // }
             },
 
             series: [{
                 type: 'area',
-                name: field + ' against Time',
-                data: data1
-            },{
+                name: field + ' against Time' + " for POD1",
+                data: data1,
+                color: Highcharts.getOptions().colors[8],
+                fillColor : {
+                                linearGradient : [0, 0, 0, 100],
+                                stops : [
+                                            [0, Highcharts.getOptions().colors[8]],
+                                            [1, Highcharts.Color(Highcharts.getOptions().colors[8]).setOpacity(0.3).get('rgba')]
+                                        ]
+                            }
+                    },
+            {
                 type: 'area',
-                name: field + ' against Time',
-                data: data2
-            }]
+                name: field + ' against Time' + " for POD2",
+                data: data2,
+                color: Highcharts.getOptions().colors[2],
+                fillColor : {
+                                linearGradient : [0, 0, 0, 100],
+                                stops : [
+                                            [0, Highcharts.getOptions().colors[2]],
+                                            [1, Highcharts.Color(Highcharts.getOptions().colors[2]).setOpacity(0.3).get('rgba')]
+                                        ]
+                            }
+            }
+            ]
+        
+    });
+};
+
+function getCompareScatterPlotGraph(content1, content2, field1, field2) {
+    // console.log('clicked' + ' ' + field1 + ' ' + field2)
+    "use strict",
+    data1 = []
+    data2 = []
+
+    function logArrayElements1(element, index, array) {
+        data1.push([ parseFloat(element[field1]), parseInt(element[field2])])
+    }   
+    content1.forEach(logArrayElements1)
+    function logArrayElements2(element, index, array) {
+        data2.push([ parseFloat(element[field1]), parseInt(element[field2])])
+    }   
+    content2.forEach(logArrayElements2)
+
+    $('#container').highcharts({
+    chart: {
+        type: 'scatter',
+        zoomType: 'xy'
+    },
+    title: {
+        text: field1 + ' Versus ' + field2
+    },
+    // subtitle: {
+    //     text: 'Source: Heinz  2003'
+    // },
+    xAxis: {
+        title: {
+            enabled: true,
+            text: field1
+        },
+        startOnTick: true,
+        endOnTick: true,
+        showLastLabel: true
+    },
+    yAxis: {
+        title: {
+            text: field2
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'left',
+        verticalAlign: 'top',
+        x: 100,
+        y: 70,
+        floating: true,
+        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+        borderWidth: 1
+    },
+    plotOptions: {
+        scatter: {
+            marker: {
+                radius: 5,
+                states: {
+                    hover: {
+                        enabled: true,
+                        lineColor: 'rgb(100,100,100)'
+                    }
+                }
+            },
+            states: {
+                hover: {
+                    marker: {
+                        enabled: false
+                    }
+                }
+            },
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br>',
+                pointFormat: '{point.x} cm, {point.y} kg'
+            }
+        }
+    },
+    series: [{
+        name: field1 + ' Versus ' + field2 + ' for POD1',
+        color: Highcharts.getOptions().colors[8],
+        data: data1
+        },
+        {
+        name: field1 + ' Versus ' + field2 + ' for POD2',
+        color: Highcharts.getOptions().colors[2],
+        data: data2
+        }
+
+        ]
+        
+    });
+};
+
+
+
+function getCompareBoxPlotGraph(content1,content2) {
+    // console.log('clicked')
+    "use strict",
+    data1 = []
+    data2 = []
+
+    // dictContent['Temperature'] = splitLine[5]
+    //             dictContent['Humidity'] = splitLine[6]
+    //             dictContent['CO2'] = splitLine[7]
+    //             dictContent['fig210_sens'] = splitLine[19]
+    //             dictContent['fig280_sens'] = splitLine[21]
+    //             dictContent['e2vo3_sens'] = splitLine[25]
+
+    Temperature1 = [];
+    Humidity1 = [];
+    CO21 = [];
+    fig210_sens1 = [];
+    fig280_sens1 = [];
+    e2vo3_sens1 = [];
+
+    Temperature2 = [];
+    Humidity2 = [];
+    CO22 = [];
+    fig210_sens2 = [];
+    fig280_sens2 = [];
+    e2vo3_sens2 = [];
+
+    function logArrayElements1(element, index, array) {
+        Temperature1.push([parseFloat(element['Temperature'])])
+        Humidity1.push([parseFloat(element['Humidity'])])
+        CO21.push([parseFloat(element['CO2'])])
+        fig210_sens1.push([parseFloat(element['fig210_sens'])])
+        fig280_sens1.push([parseFloat(element['fig280_sens'])])
+        e2vo3_sens1.push([parseFloat(element['e2vo3_sens'])])
+    }   
+    content1.forEach(logArrayElements1)  
+
+    function logArrayElements2(element, index, array) {
+        Temperature2.push([parseFloat(element['Temperature'])])
+        Humidity2.push([parseFloat(element['Humidity'])])
+        CO22.push([parseFloat(element['CO2'])])
+        fig210_sens2.push([parseFloat(element['fig210_sens'])])
+        fig280_sens2.push([parseFloat(element['fig280_sens'])])
+        e2vo3_sens2.push([parseFloat(element['e2vo3_sens'])])
+    }   
+    content2.forEach(logArrayElements2)  
+
+    //get any percentile from an array
+    function getPercentile(data, percentile) {
+        data.sort(numSort);
+        var index = (percentile/100) * data.length; 
+        var result;
+        if (Math.floor(index) == index) {
+            // console.log("Inside If: " + index ) 
+             // console.log((data[(index-1)][0] + data[index][0]))
+             result = [(data[(index-1)][0] + data[index][0])/2];
+        }
+        else {
+            result = data[Math.floor(index)];
+        }
+        // console.log(result)
+        return result;
+    }
+    //because .sort() doesn't sort numbers correctly
+    function numSort(a,b) { 
+        return a - b; 
+    } 
+
+
+    //wrap the percentile calls in one method
+    function getBoxValues(data) {
+        var boxValues = [];
+        boxValues.push(Math.min.apply(Math,data));
+        boxValues.push(getPercentile(data, 25)[0]);
+        // console.log("Median",getPercentile(data, 50)[0] ) 
+        boxValues.push(getPercentile(data, 50)[0]);
+        boxValues.push(getPercentile(data, 75)[0]);
+        boxValues.push(Math.max.apply(Math,data));
+        return boxValues;
+    }
+
+    data1.push(getBoxValues(Temperature1));
+    // console.log(data1)
+    data2.push(getBoxValues(Temperature2));
+    // console.log(data2)
+    // data.push(getBoxValues(Humidity));
+    // data.push(getBoxValues(CO2));
+    // data.push(getBoxValues(fig210_sens));
+    // data.push(getBoxValues(fig280_sens));
+    // data.push(getBoxValues(e2vo3_sens));
+
+    // data.push(temperatureBoxPlot)
+    // console.log(temperatureBoxPlot, humidityBoxPlot, co2BoxPlot, fig210_sensBoxPlot, fig280_sensBoxPlot, e2vo3_sensBoxPlot)
+    
 
         
+    // console.log(data)
+    
+
+
+    // console.log(data)
+    $('#container').highcharts(
+    {
+        chart: {
+            type: 'boxplot'
+        },
+    
+        title: {
+            text: 'Box Plot for different pollutants'
+        },
+    
+        legend: {
+            enabled: false
+        },
+    
+        xAxis: {
+            categories: ['Temperature'],//, 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens'],
+            title: {
+                text: 'Pollutant'
+            }
+        },
+    
+        yAxis: {
+            title: {
+                text: 'Observations'
+            },
+            plotLines: [{
+                value: 932,
+                color: 'red',
+                width: 1,
+                label: {
+                    text: 'Theoretical mean: 932',
+                    align: 'center',
+                    style: {
+                        color: 'gray'
+                    }
+                }
+            }]
+        },
+    
+        series: [{
+            name: 'Observations',
+            data: data1,
+            tooltip: {
+                headerFormat: '<em>Experiment No {point.key}</em><br/>'
+            }
+        },
+        {
+            name: 'Observations',
+            data: data2,
+            tooltip: {
+                headerFormat: '<em>Experiment No {point.key}</em><br/>'
+            }
+        }
+
+        ]
+    
     });
 };
 

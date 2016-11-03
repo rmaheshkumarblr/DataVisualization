@@ -12,7 +12,9 @@ from forms import DocumentForm, LoginForm, CreateUserForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
+from django.core.files import File
+from wsgiref.util import FileWrapper
+import csv
 
 def create_user_view(request):
     if request.method == 'GET':
@@ -208,6 +210,10 @@ def uploadAFile(request):
     # Handle file upload
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
+        some_file = File(request.FILES['docfile'])
+
+        # import pdb
+        # pdb.set_trace()
         if form.is_valid():
             newdoc = Document(podId=request.POST['podId'],
                               location=request.POST['location'],
@@ -217,7 +223,7 @@ def uploadAFile(request):
                               pollutantOfInterest=request.POST['pollutantOfInterest'],
                               podUseReason=request.POST['podUseReason'],
                               userName = request.user.first_name,
-                              docfile=request.FILES['docfile']
+                              docfile=some_file
                              )
             # print request.FILES['docfile']
             newdoc.save()
@@ -232,6 +238,37 @@ def uploadAFile(request):
         'upload.html',
         {'form': form}
         )
+
+
+@login_required
+def getRawCSV(request,locationOfDocument1):
+    filename = "media/" + locationOfDocument1
+    if filename:
+        output_file = FileWrapper(open(filename, 'rb'))
+        response = HttpResponse(output_file,content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=%s' % (locationOfDocument1.split(".")[0] + ".csv")
+        return response
+    return  HttpResponseNotFound('<h1>File not found</h1>')
+
+
+
+@login_required
+def getSelectedCSV(request,locationOfDocument1):
+    filename = "media/" + locationOfDocument1
+    if filename:
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=%s' % (locationOfDocument1.split(".")[0] + ".csv")
+        writer = csv.writer(response)
+        writer.writerow(['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens'])
+        with open(filename) as fileHandler:
+            for line in fileHandler:
+                line = line.strip()
+                if(len(line) > 0):
+                    splitLine = line.split(',')
+                    writer.writerow([splitLine[1] + " " + splitLine[2],splitLine[5],splitLine[6],splitLine[7],splitLine[19],splitLine[21],splitLine[25]])
+        return response
+    return  HttpResponseNotFound('<h1>File not found</h1>')
+
 
 
 @login_required

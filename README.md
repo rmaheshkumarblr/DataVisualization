@@ -72,3 +72,12 @@ Pollutants of Interest: VOCs (this should give them both sensors), O3, CO2 - mak
 Short description of pod use (1-3 sentences) (textbox for them to type this in) 
 
 Better to use HighCharts than to use D3
+
+
+##### Connecting to the PostGresSQL
+psql -U postgres
+create database datavisdb;
+CREATE ROLE datavis WITH LOGIN PASSWORD 'data';
+GRANT ALL PRIVILEGES ON DATABASE dataVisualizationdb TO dataVis;
+ALTER USER dataVis CREATEDB; 
+

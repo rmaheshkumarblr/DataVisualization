@@ -16,6 +16,7 @@
                 <th>End Date</th> 
                 <th>Uploaded File</th> 
                 <th>Uploaded By</th> 
+                <th>Download</th>
                 <th>Compare</th>
             </tr> 
         </thead> 
@@ -29,6 +30,7 @@
                 <td>{{ document.endDate }}</td>
                 <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.docfile }}</a> </td>
                 <td>{{ document.userName }}</td>
+                <td><a href="/getRawCSV/{{ document.docfile.name }}"> raw </a> , <a href="/getSelectedCSV/{{ document.docfile.name }}"> selected </a>  </td>
                 <td> <input type="checkbox" name='Option' value="{{ document.docfile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
             </tr>
             {% endfor %}
@@ -59,7 +61,9 @@ function checkBoxChecked()
     {
         selectedFiles.push($(this).val());
     });
-    console.log(selectedFiles);
+
+    // console.log(selectedFiles);
+    window.location.replace("/dataAnalysis/" + selectedFiles[0] + "/" + selectedFiles[1]);
     
 }
 </script>   
