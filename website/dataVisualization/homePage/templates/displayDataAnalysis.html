@@ -6,7 +6,9 @@
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="{%static 'js/highChartGraph.js'%}"> </script>
+    <script src="{%static 'js/jquery-ui.js'%}" charset="utf-8"></script>
 {% endblock %}
+
 
 
   {% block 'container' %}
@@ -15,20 +17,62 @@
         <div class="col-md-3 sidebar">
           <h4>Timeseries plots</h4>
           <ul class="nav nav-sidebar">
-            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'Temperature');return false;">  Temperature   </a></li>
+            <!-- <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'Temperature');return false;">  Temperature   </a></li>
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }},  'Humidity');return false;" >Humidity  </a></li>
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'CO2');return false;">CO2</a></li>
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'fig210_sens');return false;">  fig210_sens</a></li>
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'fig280_sens');return false;">  fig280_sens</a></li>
-            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }},{{ displayContent2 }},  'e2vo3_sens');return false;"> e2vo3_sens</a>  </li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }},{{ displayContent2 }},  'e2vo3_sens');return false;"> e2vo3_sens</a>  </li> -->
+            <label for="pollutant">Pollutant : </label>
+             <select name="pollutant" id="pollutant">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>fig210_sens</option>
+                <option>fig280_sens</option>
+                <option>e2vo3_sens</option>
+              </select>
+              <button onclick="getCompareSelectedPollutantAndPlot()" class="btn btn-primary btn-block">Plot</button>
           </ul>
           <h4>Scatter Plot</h4>
           <ul class="nav nav-sidebar">
-            <li><a href="#" onclick="getCompareScatterPlotGraph({{ displayContent1 }},{{ displayContent2 }}, 'Temperature' , 'Humidity');return   false;  ">Temperature Vs Humidity </a></li>
+            <!-- <li><a href="#" onclick="getCompareScatterPlotGraph({{ displayContent1 }},{{ displayContent2 }}, 'Temperature' , 'Humidity');return   false;  ">Temperature Vs Humidity </a></li> -->
+            <label for="pollutant1">Pollutant 1: </label>
+              <select name="pollutant1" id="pollutant1">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>fig210_sens</option>
+                <option>fig280_sens</option>
+                <option>e2vo3_sens</option>
+              </select>
+              <br>
+              <label for="pollutant2">Pollutant 2: </label>
+              <select name="pollutant2" id="pollutant2">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>fig210_sens</option>
+                <option>fig280_sens</option>
+                <option>e2vo3_sens</option>
+              </select>
+              <br>
+              <button onclick="getCompareSelectedPollutantsAndPlot()" class="btn btn-primary btn-block">Plot</button>
           </ul>
           <h4>Box Plot</h4>
           <ul class="nav nav-sidebar">
-            <li><a href="#" onclick="getCompareBoxPlotGraph({{ displayContent1 }},{{ displayContent2 }});return false;">Box Plot</a></li>
+            <!-- <li><a href="#" onclick="getCompareBoxPlotGraph({{ displayContent1 }},{{ displayContent2 }});return false;">Box Plot</a></li> -->
+            <label for="pollutant3">Pollutant: </label>
+            <select name="pollutant3" id="pollutant3">
+              <option selected="selected">Temperature</option>
+              <option>Humidity</option>
+              <option>CO2</option>
+              <option>fig210_sens</option>
+              <option>fig280_sens</option>
+              <option>e2vo3_sens</option>
+            </select>
+            <br>
+            <button onclick="getCompareSelectedPollutantAndBoxPlot()" class="btn btn-primary btn-block">Plot</button>
           </ul>
         </div>
         <div class="col-md-9 main">
@@ -40,24 +84,91 @@
          <div class="col-md-3 sidebar">
            <h4>Timeseries plots</h4>
            <ul class="nav nav-sidebar">
-             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Temperature');return false;">   Temperature   </a></li>
+             <!-- <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Temperature');return false;">   Temperature   </a></li>
              <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Humidity');return false;" > Humidity  </a></li>
              <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'CO2');return false;">CO2</a></li>
              <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'fig210_sens');return false;">   fig210_sens</a></li>
              <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'fig280_sens');return false;">   fig280_sens</a></li>
-             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'e2vo3_sens');return false;">  e2vo3_sens</a>  </li>
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'e2vo3_sens');return false;">  e2vo3_sens</a>  </li> -->
+             <label for="pollutant">Pollutant : </label>
+             <select name="pollutant" id="pollutant">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>fig210_sens</option>
+                <option>fig280_sens</option>
+                <option>e2vo3_sens</option>
+              </select>
+              <button onclick="getSelectedPollutantAndPlot()" class="btn btn-primary btn-block">Plot</button>
            </ul>
            <h4>Scatter Plot</h4>
            <ul class="nav nav-sidebar">
-             <li><a href="#" onclick="getScatterPlotGraph({{ displayContent1 }},'Temperature' , 'Humidity') ;return   false;  ">Temperature Vs Humidity </a></li>
+             <!-- <li><a href="#" onclick="getScatterPlotGraph({{ displayContent1 }},'Temperature' , 'Humidity') ;return   false;  ">Temperature Vs Humidity </a></li>
+             <li> -->
+              <label for="pollutant1">Pollutant 1: </label>
+              <select name="pollutant1" id="pollutant1">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>fig210_sens</option>
+                <option>fig280_sens</option>
+                <option>e2vo3_sens</option>
+              </select>
+              <br>
+              <label for="pollutant2">Pollutant 2: </label>
+              <select name="pollutant2" id="pollutant2">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>fig210_sens</option>
+                <option>fig280_sens</option>
+                <option>e2vo3_sens</option>
+              </select>
+              <br>
+              <button onclick="getSelectedPollutantsAndPlot()" class="btn btn-primary btn-block">Plot</button>
+            </li>
            </ul>
            <h4>Box Plot</h4>
            <ul class="nav nav-sidebar">
-             <li><a href="#" onclick="getBoxPlotGraph({{ displayContent1 }});return false;">Box Plot</a></li>
+             <!-- <li><a href="#" onclick="getBoxPlotGraph({{ displayContent1 }});return false;">Box Plot</a></li> -->
+             <!-- <br> -->
+             <label for="pollutant3">Pollutant: </label>
+              <select name="pollutant3" id="pollutant3">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>fig210_sens</option>
+                <option>fig280_sens</option>
+                <option>e2vo3_sens</option>
+              </select>
+              <br>
+              <button onclick="getSelectedPollutantAndBoxPlot()" class="btn btn-primary btn-block">Plot</button>
+
            </ul>
            <h4>Double Y-axis Plot</h4>
            <ul class="nav nav-sidebar">
-             <li><a href="#" onclick="getDoubleYAxisPlotGraph({{ displayContent1 }});return false;">Temperature Vs Humidity</a></li>
+             <!-- <li><a href="#" onclick="getDoubleYAxisPlotGraph({{ displayContent1 }});return false;">Temperature Vs Humidity</a></li> -->
+             <label for="pollutant4">Pollutant 1: </label>
+              <select name="pollutant4" id="pollutant4">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>fig210_sens</option>
+                <option>fig280_sens</option>
+                <option>e2vo3_sens</option>
+              </select>
+              <br>
+              <label for="pollutant5">Pollutant 2: </label>
+                <select name="pollutant5" id="pollutant5">
+                  <option selected="selected">Temperature</option>
+                  <option>Humidity</option>
+                  <option>CO2</option>
+                  <option>fig210_sens</option>
+                  <option>fig280_sens</option>
+                  <option>e2vo3_sens</option>
+                </select>
+              <br>
+              <button onclick="getSelectedPollutantAndDoubleYAxisPlot()" class="btn btn-primary btn-block">Plot</button>
            </ul>
          </div>
          <div class="col-md-9 main">
@@ -72,8 +183,56 @@
   
   {% block 'justbeforebodyends' %}
   <script type="text/javascript">
+
+      function getSelectedPollutantAndPlot()
+      {
+        var pollutant = $('#pollutant').find(":selected").text();
+        getTimeSeriesGraph({{ displayContent1 | safe }}, pollutant ) ;
+      }
+
+      function getSelectedPollutantsAndPlot()
+      {
+        var pollutant1 = $('#pollutant1').find(":selected").text();
+        var pollutant2 = $('#pollutant2').find(":selected").text();
+        getScatterPlotGraph({{ displayContent1 | safe }}, pollutant1 , pollutant2 ) ;
+      }      
+
+      function getSelectedPollutantAndBoxPlot()
+      {
+        var pollutant = $('#pollutant3').find(":selected").text();
+        getBoxPlotGraph({{ displayContent1 | safe }}, pollutant ) ;
+      }
+
+      function getSelectedPollutantAndDoubleYAxisPlot()
+      {
+        var pollutant1 = $('#pollutant4').find(":selected").text();
+        var pollutant2 = $('#pollutant5').find(":selected").text();
+        getDoubleYAxisPlotGraph({{ displayContent1 | safe }}, pollutant1 , pollutant2)
+      }
+
+      
+
       {% if displayContent2 %}
         getCompareTimeSeriesGraph({{ displayContent1 | safe }},{{ displayContent2 | safe }}, 'Temperature');
+
+        function getCompareSelectedPollutantAndPlot()
+        {
+          var pollutant = $('#pollutant').find(":selected").text();
+          getCompareTimeSeriesGraph({{ displayContent1 | safe }}, {{ displayContent2 | safe }} , pollutant )   ;
+        }
+  
+        function getCompareSelectedPollutantsAndPlot()
+        {
+          var pollutant1 = $('#pollutant1').find(":selected").text();
+          var pollutant2 = $('#pollutant2').find(":selected").text();
+          getCompareScatterPlotGraph({{ displayContent1 | safe }}, {{ displayContent2 | safe }},    pollutant1 , pollutant2 ) ;
+        }
+  
+        function getCompareSelectedPollutantAndBoxPlot()
+        {
+          var pollutant = $('#pollutant3').find(":selected").text();
+          getCompareBoxPlotGraph({{ displayContent1 | safe }}, {{ displayContent2 | safe }}, pollutant ) ;
+        }
         // console.log("Compare Function")
       {% else %}
         getTimeSeriesGraph({{ displayContent1 | safe }}, 'Temperature');

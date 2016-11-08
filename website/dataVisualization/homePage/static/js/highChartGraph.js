@@ -153,15 +153,15 @@ function getScatterPlotGraph(content, field1, field2) {
 };
 
 
-function getDoubleYAxisPlotGraph(content)
+function getDoubleYAxisPlotGraph(content,field1,field2)
 {
     "use strict",
     data1 = []
     data2 = []
     function logArrayElements(element, index, array) {
         dateFromPython = new Date(element['Date']).valueOf()
-        data1.push( [dateFromPython,parseFloat(element['Temperature'])])
-        data2.push( [dateFromPython,parseFloat(element['Humidity'])])
+        data1.push( [dateFromPython,parseFloat(element[field1])])
+        data2.push( [dateFromPython,parseFloat(element[field2])])
     }   
     content.forEach(logArrayElements)
     // console.log(data1)
@@ -172,7 +172,7 @@ function getDoubleYAxisPlotGraph(content)
             zoomType: 'xy'
         },
         title: {
-            text: 'Weather Information from the Pod'
+            text: 'Pollutant Information from the Pod : ' + field1 + " and " + field2
         },
         subtitle: {
             text: 'UPOD Data'
@@ -187,15 +187,15 @@ function getDoubleYAxisPlotGraph(content)
             },
         yAxis: [{ // Primary yAxis
             labels: {
-                format: '{value}°C',
+                // format: '{value}°C',
                 style: {
-                    color: Highcharts.getOptions().colors[0]
+                    color: Highcharts.getOptions().colors[1]
                 }
             },
             title: {
-                text: 'Temperature',
+                text: field2 ,
                 style: {
-                    color: Highcharts.getOptions().colors[0]
+                    color: Highcharts.getOptions().colors[1]
                 }
             },
             opposite: true
@@ -204,15 +204,15 @@ function getDoubleYAxisPlotGraph(content)
         { // Tertiary yAxis
             gridLineWidth: 0,
             title: {
-                text: 'Humidity',
+                text: field1 ,
                 style: {
-                    color: Highcharts.getOptions().colors[1]
+                    color: Highcharts.getOptions().colors[0]
                 }
             },
             labels: {
-                format: '{value} grams per cubic meter',
+                // format: '{value} grams per cubic meter',
                 style: {
-                    color: Highcharts.getOptions().colors[1]
+                    color: Highcharts.getOptions().colors[0]
                 }
             },
             opposite: true
@@ -232,7 +232,7 @@ function getDoubleYAxisPlotGraph(content)
         },
         series: [
          {
-            name: 'Temperature',
+            name: field1 ,
             type: 'spline',
             yAxis: 1,
             data: data1,
@@ -240,24 +240,24 @@ function getDoubleYAxisPlotGraph(content)
                 enabled: false
             },
             dashStyle: 'shortdot',
-            tooltip: {
-                valueSuffix: ' °C'
-            }
+            // tooltip: {
+            //     valueSuffix: ' °C'
+            // }
 
         }, {
-            name: 'Humidity',
+            name: field2 ,
             type: 'spline',
             yAxis: 0,
             data: data2,
-            tooltip: {
-                valueSuffix: ' grams per cubic meter'
-            }
+            // tooltip: {
+            //     valueSuffix: ' grams per cubic meter'
+            // }
         }]
     });
 }
 
 
-function getBoxPlotGraph(content) {
+function getBoxPlotGraph(content,field) {
     // console.log('clicked')
     "use strict",
     data = []
@@ -270,20 +270,23 @@ function getBoxPlotGraph(content) {
     //             dictContent['fig280_sens'] = splitLine[21]
     //             dictContent['e2vo3_sens'] = splitLine[25]
 
-    Temperature = [];
-    Humidity = [];
-    CO2 = [];
-    fig210_sens = [];
-    fig280_sens = [];
-    e2vo3_sens = [];
+    // Temperature = [];
+    // Humidity = [];
+    // CO2 = [];
+    // fig210_sens = [];
+    // fig280_sens = [];
+    // e2vo3_sens = [];
+
+    Field = [];
 
     function logArrayElements(element, index, array) {
-        Temperature.push([parseFloat(element['Temperature'])])
-        Humidity.push([parseFloat(element['Humidity'])])
-        CO2.push([parseFloat(element['CO2'])])
-        fig210_sens.push([parseFloat(element['fig210_sens'])])
-        fig280_sens.push([parseFloat(element['fig280_sens'])])
-        e2vo3_sens.push([parseFloat(element['e2vo3_sens'])])
+        // Temperature.push([parseFloat(element['Temperature'])])
+        // Humidity.push([parseFloat(element['Humidity'])])
+        // CO2.push([parseFloat(element['CO2'])])
+        // fig210_sens.push([parseFloat(element['fig210_sens'])])
+        // fig280_sens.push([parseFloat(element['fig280_sens'])])
+        // e2vo3_sens.push([parseFloat(element['e2vo3_sens'])])
+        Field.push([parseFloat(element[field])])
     }   
     content.forEach(logArrayElements)  
 
@@ -312,14 +315,14 @@ function getBoxPlotGraph(content) {
     function getBoxValues(data) {
         var boxValues = [];
         boxValues.push(Math.min.apply(Math,data));
-        boxValues.push(getPercentile(data, 25)[0]);
-        boxValues.push(getPercentile(data, 50)[0]);
-        boxValues.push(getPercentile(data, 75)[0]);
+        boxValues.push(getPercentile(data, 25));
+        boxValues.push(getPercentile(data, 50));
+        boxValues.push(getPercentile(data, 75));
         boxValues.push(Math.max.apply(Math,data));
         return boxValues;
     }
 
-    data.push(getBoxValues(Temperature));
+    data.push(getBoxValues(Field));
     // data.push(getBoxValues(Humidity));
     // data.push(getBoxValues(CO2));
     // data.push(getBoxValues(fig210_sens));
@@ -343,7 +346,7 @@ function getBoxPlotGraph(content) {
         },
     
         title: {
-            text: 'Box Plot for different pollutants'
+            text: 'Box Plot for ' + field
         },
     
         legend: {
@@ -351,7 +354,7 @@ function getBoxPlotGraph(content) {
         },
     
         xAxis: {
-            categories: ['Temperature'],//, 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens'],
+            categories: field, //['Temperature'],//, 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens'],
             title: {
                 text: 'Pollutant'
             }
@@ -360,27 +363,28 @@ function getBoxPlotGraph(content) {
         yAxis: {
             title: {
                 text: 'Observations'
-            },
-            plotLines: [{
-                value: 932,
-                color: 'red',
-                width: 1,
-                label: {
-                    text: 'Theoretical mean: 932',
-                    align: 'center',
-                    style: {
-                        color: 'gray'
-                    }
-                }
-            }]
+            }
+            //,
+            // plotLines: [{
+            //     value: 932,
+            //     color: 'red',
+            //     width: 1,
+            //     label: {
+            //         text: 'Theoretical mean: 932',
+            //         align: 'center',
+            //         style: {
+            //             color: 'gray'
+            //         }
+            //     }
+            // }]
         },
     
         series: [{
             name: 'Observations',
             data: data,
-            tooltip: {
-                headerFormat: '<em>Experiment No {point.key}</em><br/>'
-            }
+            // tooltip: {
+            //     headerFormat: '<em>Experiment No {point.key}</em><br/>'
+            // }
         }]
     
     });
@@ -650,7 +654,7 @@ function getCompareScatterPlotGraph(content1, content2, field1, field2) {
 
 
 
-function getCompareBoxPlotGraph(content1,content2) {
+function getCompareBoxPlotGraph(content1,content2,field) {
     // console.log('clicked')
     "use strict",
     data1 = []
@@ -663,56 +667,77 @@ function getCompareBoxPlotGraph(content1,content2) {
     //             dictContent['fig280_sens'] = splitLine[21]
     //             dictContent['e2vo3_sens'] = splitLine[25]
 
-    Temperature1 = [];
-    Humidity1 = [];
-    CO21 = [];
-    fig210_sens1 = [];
-    fig280_sens1 = [];
-    e2vo3_sens1 = [];
+    // Temperature1 = [];
+    // Humidity1 = [];
+    // CO21 = [];
+    // fig210_sens1 = [];
+    // fig280_sens1 = [];
+    // e2vo3_sens1 = [];
 
-    Temperature2 = [];
-    Humidity2 = [];
-    CO22 = [];
-    fig210_sens2 = [];
-    fig280_sens2 = [];
-    e2vo3_sens2 = [];
+
+    // Temperature2 = [];
+    // Humidity2 = [];
+    // CO22 = [];
+    // fig210_sens2 = [];
+    // fig280_sens2 = [];
+    // e2vo3_sens2 = [];
+
+    Field1 = [];
+    Field2 = [];
 
     function logArrayElements1(element, index, array) {
-        Temperature1.push([parseFloat(element['Temperature'])])
-        Humidity1.push([parseFloat(element['Humidity'])])
-        CO21.push([parseFloat(element['CO2'])])
-        fig210_sens1.push([parseFloat(element['fig210_sens'])])
-        fig280_sens1.push([parseFloat(element['fig280_sens'])])
-        e2vo3_sens1.push([parseFloat(element['e2vo3_sens'])])
+        Field1.push(parseFloat(element[field]))
+        // Temperature1.push([parseFloat(element['Temperature'])])
+        // Humidity1.push([parseFloat(element['Humidity'])])
+        // CO21.push([parseFloat(element['CO2'])])
+        // fig210_sens1.push([parseFloat(element['fig210_sens'])])
+        // fig280_sens1.push([parseFloat(element['fig280_sens'])])
+        // e2vo3_sens1.push([parseFloat(element['e2vo3_sens'])])
     }   
     content1.forEach(logArrayElements1)  
 
     function logArrayElements2(element, index, array) {
-        Temperature2.push([parseFloat(element['Temperature'])])
-        Humidity2.push([parseFloat(element['Humidity'])])
-        CO22.push([parseFloat(element['CO2'])])
-        fig210_sens2.push([parseFloat(element['fig210_sens'])])
-        fig280_sens2.push([parseFloat(element['fig280_sens'])])
-        e2vo3_sens2.push([parseFloat(element['e2vo3_sens'])])
+        Field2.push(parseFloat(element[field]))
+        // Temperature2.push([parseFloat(element['Temperature'])])
+        // Humidity2.push([parseFloat(element['Humidity'])])
+        // CO22.push([parseFloat(element['CO2'])])
+        // fig210_sens2.push([parseFloat(element['fig210_sens'])])
+        // fig280_sens2.push([parseFloat(element['fig280_sens'])])
+        // e2vo3_sens2.push([parseFloat(element['e2vo3_sens'])])
     }   
     content2.forEach(logArrayElements2)  
 
     //get any percentile from an array
+    // function getPercentile(data, percentile) {
+    //     data.sort(numSort);
+    //     var index = (percentile/100) * data.length; 
+    //     var result;
+    //     if (Math.floor(index) == index) {
+    //         // console.log("Inside If: " + index ) 
+    //          // console.log((data[(index-1)][0] + data[index][0]))
+    //          result = [(data[(index-1)][0] + data[index][0])/2];
+    //     }
+    //     else {
+    //         result = data[Math.floor(index)];
+    //     }
+    //     // console.log(result)
+    //     return result;
+    // }
+
+
     function getPercentile(data, percentile) {
         data.sort(numSort);
-        var index = (percentile/100) * data.length; 
+        var index = (percentile/100) * data.length;
         var result;
         if (Math.floor(index) == index) {
-            // console.log("Inside If: " + index ) 
-             // console.log((data[(index-1)][0] + data[index][0]))
-             result = [(data[(index-1)][0] + data[index][0])/2];
+             result = (data[(index-1)] + data[index])/2;
         }
         else {
             result = data[Math.floor(index)];
         }
-        // console.log(result)
         return result;
     }
+
     //because .sort() doesn't sort numbers correctly
     function numSort(a,b) { 
         return a - b; 
@@ -723,17 +748,17 @@ function getCompareBoxPlotGraph(content1,content2) {
     function getBoxValues(data) {
         var boxValues = [];
         boxValues.push(Math.min.apply(Math,data));
-        boxValues.push(getPercentile(data, 25)[0]);
+        boxValues.push(getPercentile(data, 25));
         // console.log("Median",getPercentile(data, 50)[0] ) 
-        boxValues.push(getPercentile(data, 50)[0]);
-        boxValues.push(getPercentile(data, 75)[0]);
+        boxValues.push(getPercentile(data, 50));
+        boxValues.push(getPercentile(data, 75));
         boxValues.push(Math.max.apply(Math,data));
         return boxValues;
     }
 
-    data1.push(getBoxValues(Temperature1));
+    data1.push(getBoxValues(Field1));
     // console.log(data1)
-    data2.push(getBoxValues(Temperature2));
+    data2.push(getBoxValues(Field2));
     // console.log(data2)
     // data.push(getBoxValues(Humidity));
     // data.push(getBoxValues(CO2));
@@ -758,7 +783,7 @@ function getCompareBoxPlotGraph(content1,content2) {
         },
     
         title: {
-            text: 'Box Plot for different pollutants'
+            text: 'Box Plot for the pollutant ' + field
         },
     
         legend: {
@@ -766,7 +791,7 @@ function getCompareBoxPlotGraph(content1,content2) {
         },
     
         xAxis: {
-            categories: ['Temperature'],//, 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens'],
+            categories: [field],//['Temperature'],//, 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens'],
             title: {
                 text: 'Pollutant'
             }
@@ -775,34 +800,35 @@ function getCompareBoxPlotGraph(content1,content2) {
         yAxis: {
             title: {
                 text: 'Observations'
-            },
-            plotLines: [{
-                value: 932,
-                color: 'red',
-                width: 1,
-                label: {
-                    text: 'Theoretical mean: 932',
-                    align: 'center',
-                    style: {
-                        color: 'gray'
-                    }
-                }
-            }]
+            }
+            //,
+            // plotLines: [{
+            //     value: 932,
+            //     color: 'red',
+            //     width: 1,
+            //     label: {
+            //         text: 'Theoretical mean: 932',
+            //         align: 'center',
+            //         style: {
+            //             color: 'gray'
+            //         }
+            //     }
+            // }]
         },
     
         series: [{
-            name: 'Observations',
+            name: 'POD1',
             data: data1,
-            tooltip: {
-                headerFormat: '<em>Experiment No {point.key}</em><br/>'
-            }
+            // tooltip: {
+            //     headerFormat: '<em>Experiment No {point.key}</em><br/>'
+            // }
         },
         {
-            name: 'Observations',
+            name: 'POD2',
             data: data2,
-            tooltip: {
-                headerFormat: '<em>Experiment No {point.key}</em><br/>'
-            }
+            // tooltip: {
+            //     headerFormat: '<em>Experiment No {point.key}</em><br/>'
+            // }
         }
 
         ]

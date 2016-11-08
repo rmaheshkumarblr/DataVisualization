@@ -81,3 +81,5 @@ CREATE ROLE datavis WITH LOGIN PASSWORD 'data';
 GRANT ALL PRIVILEGES ON DATABASE dataVisualizationdb TO dataVis;
 ALTER USER dataVis CREATEDB; 
 
+postgres -D /usr/local/var/postgres
+
