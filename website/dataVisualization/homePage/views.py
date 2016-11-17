@@ -345,7 +345,7 @@ def getRawCSV(request,locationOfDocument1):
     if filename:
         output_file = FileWrapper(open(filename, 'rb'))
         response = HttpResponse(output_file,content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=%s' % (locationOfDocument1.split(".")[0] + ".csv")
+        response['Content-Disposition'] = 'attachment; filename=%s' % (locationOfDocument1)
         return response
     return  HttpResponseNotFound('<h1>File not found</h1>')
 
@@ -369,73 +369,79 @@ def getSelectedCSV(request,locationOfDocument1):
     return  HttpResponseNotFound('<h1>File not found</h1>')
 
 
+def getContentsOfTxtFile(locationOfDocument):
+    outputContent = []
+    with open("media/"+locationOfDocument) as fileHandler:
+        for line in fileHandler:
+            dictContent = {}
+            line = line.strip()
+            if(len(line) > 0):
+                splitLine = line.split(',')
+                dictContent['Date'] = splitLine[1] + " " + splitLine[2]
+                dictContent['Temperature'] = splitLine[5]
+                dictContent['Humidity'] = splitLine[6]
+                dictContent['CO2'] = splitLine[7]
+                dictContent['fig210_sens'] = splitLine[19]
+                dictContent['fig280_sens'] = splitLine[21]
+                dictContent['e2vo3_sens'] = splitLine[25]
+                outputContent.append(dictContent)
+    return outputContent
+
+def getContentsOfCSVFile(locationOfDocument):
+    outputContent = []
+    with open("media/"+locationOfDocument) as fileHandler:
+        for line in fileHandler:
+            dictContent = {}
+            line = line.strip()
+            if(len(line) > 0):
+                splitLine = line.split(',')
+                dictContent['Date'] = splitLine[0]
+                dictContent['Temperature'] = splitLine[1]
+                dictContent['Humidity'] = splitLine[2]
+                dictContent['CO2'] = splitLine[3]
+                dictContent['fig210_sens'] = splitLine[4]
+                dictContent['fig280_sens'] = splitLine[5]
+                dictContent['e2vo3_sens'] = splitLine[6]
+                outputContent.append(dictContent)
+    return outputContent
+
+
 
 @login_required
 def dataAnalysis(request, locationOfDocument1, locationOfDocument2):
     
+    # Both file names are provided - Must Ideally never happen
     if locationOfDocument2 == "":
         if locationOfDocument1 == "":
-            return render(
-            request,
-            'displayDataAnalysis.html',
-            )
+            return render(request,'displayDataAnalysis.html')
+
+    # Only one file name is provided - TXT or CSV
         outputContent1 = []
-        with open("media/"+locationOfDocument1) as fileHandler:
-            for line in fileHandler:
-                dictContent1 = {}
-                line = line.strip()
-                if(len(line) > 0):
-                    splitLine = line.split(',')
-                    dictContent1['Date'] = splitLine[1] + " " + splitLine[2]
-                    dictContent1['Temperature'] = splitLine[5]
-                    dictContent1['Humidity'] = splitLine[6]
-                    dictContent1['CO2'] = splitLine[7]
-                    dictContent1['fig210_sens'] = splitLine[19]
-                    dictContent1['fig280_sens'] = splitLine[21]
-                    dictContent1['e2vo3_sens'] = splitLine[25]
-                    outputContent1.append(dictContent1)
-        return render(
-            request,
-            'displayDataAnalysis.html',
-            {'displayContent1': json.dumps(outputContent1)}
-            )
+        if locationOfDocument1.split(".")[1] == "txt":
+            outputContent1 = getContentsOfTxtFile(locationOfDocument1)
+            return render(request,'displayDataAnalysis.html', {'displayContent1': json.dumps(outputContent1)})
+        else:
+            outputContent1 = getContentsOfCSVFile(locationOfDocument1)
+            return render(request,'displayDataAnalysis.html',{'displayContent1': json.dumps(outputContent1)})
+
+    # Two file names are provided - TXT or CSV
     else:
         outputContent1 = []
-        with open("media/"+locationOfDocument1) as fileHandler:
-            for line in fileHandler:
-                dictContent1 = {}
-                line = line.strip()
-                if(len(line) > 0):
-                    splitLine = line.split(',')
-                    dictContent1['Date'] = splitLine[1] + " " + splitLine[2]
-                    dictContent1['Temperature'] = splitLine[5]
-                    dictContent1['Humidity'] = splitLine[6]
-                    dictContent1['CO2'] = splitLine[7]
-                    dictContent1['fig210_sens'] = splitLine[19]
-                    dictContent1['fig280_sens'] = splitLine[21]
-                    dictContent1['e2vo3_sens'] = splitLine[25]
-                    outputContent1.append(dictContent1)
         outputContent2 = []
-        with open("media/"+locationOfDocument2) as fileHandler:
-            for line in fileHandler:
-                dictContent2 = {}
-                line = line.strip()
-                if(len(line) > 0):
-                    splitLine = line.split(',')
-                    dictContent2['Date'] = splitLine[1] + " " + splitLine[2]
-                    dictContent2['Temperature'] = splitLine[5]
-                    dictContent2['Humidity'] = splitLine[6]
-                    dictContent2['CO2'] = splitLine[7]
-                    dictContent2['fig210_sens'] = splitLine[19]
-                    dictContent2['fig280_sens'] = splitLine[21]
-                    dictContent2['e2vo3_sens'] = splitLine[25]
-                    outputContent2.append(dictContent2)
-        print "Two"
-        return render(
-            request,
-            'displayDataAnalysis.html',
-            {'displayContent1': json.dumps(outputContent1),'displayContent2': json.dumps(outputContent2)}
-            )
+
+        # Processing for the 1st file
+        if locationOfDocument1.split(".")[1] == "txt":
+            outputContent1 = getContentsOfTxtFile(locationOfDocument1)
+        else:
+            outputContent1 = getContentsOfCSVFile(locationOfDocument1)
+
+        # Processing for the 2nd file
+        if locationOfDocument2.split(".")[1] == "txt":
+            outputContent2 = getContentsOfTxtFile(locationOfDocument2)
+        else:
+            outputContent2 = getContentsOfCSVFile(locationOfDocument2)
+
+        return render(request,'displayDataAnalysis.html',{'displayContent1': json.dumps(outputContent1),'displayContent2': json.dumps(outputContent2)})
 
 @login_required
 def multipleDataAnalysis(request, locationOfDocument1, locationOfDocument2):

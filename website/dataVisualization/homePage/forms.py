@@ -43,7 +43,7 @@ class DocumentForm(forms.Form):
     podId = forms.CharField(label='Pod ID', max_length=30,widget=forms.TextInput(attrs={'class': 'form-control'}))
     projectName = forms.CharField(label='Project Name', max_length=30, widget=forms.TextInput(attrs={'class': 'form-control'}))
     school = forms.CharField(label='Name of your School', max_length=30, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    mentorName = forms.CharField(label='Name of your Mentor', max_length=30, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mentorName = forms.CharField(label='Name of your CU Mentor', max_length=30, widget=forms.TextInput(attrs={'class': 'form-control'}))
     location = forms.CharField(label='Location', max_length=30,widget=forms.TextInput(attrs={'class': 'form-control'}))
     startDate = forms.DateField(label='Start Date',widget=DateTimePicker(options={"format": "YYYY-MM-DD"}))
     endDate = forms.DateField(label='End Date',widget=DateTimePicker(options={"format": "YYYY-MM-DD"}))
