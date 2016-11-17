@@ -4,6 +4,13 @@
 {% block 'container' %}
 
 <h4 class="well"> List of uploaded documents </h4>
+<ul class="well"> Note
+    <li>R stands for Raw Data</li>
+    <li>M stands for Minutely Average Data</li>
+    <li>H stands for Hourly Average Data</li>
+    <li>D stands for Daily Average Data</li>
+     
+</ul>
 <!-- List of uploaded documents -->
 
 {% if documents %}
@@ -14,10 +21,13 @@
                 <th>Location</th> 
                 <th>Start Date</th> 
                 <th>End Date</th> 
-                <th>Plot</th> 
                 <th>Uploaded By</th> 
-                <th>Download</th>
-                <th>Compare</th>
+                <th>Plot</th> 
+                <th>Download Compare -> </th>
+                <th>R</th>
+                <th>M</th>
+                <th>H</th>
+                <th>D</th>
             </tr> 
         </thead> 
         <tbody>
@@ -27,6 +37,7 @@
                 <td>{{ document.location }}</td> 
                 <td>{{ document.startDate }}</td> 
                 <td>{{ document.endDate }}</td>
+                <td>{{ document.userName }}</td>
                 <!-- <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.docfile }}</a> </td> -->
                 <td>
                     <div class="dropdown">
@@ -42,7 +53,7 @@
                         </ul>
                     </div>
                 </td>
-                <td>{{ document.userName }}</td>
+                
                 <!-- <td><a href="/getRawCSV/{{ document.docfile.name }}"> raw </a> , <a href="/getSelectedCSV/{{ document.docfile.name }}"> selected </a> , <a href="/getRawCSV/{{ document.averageMinuteFile.name }}"> Minute Average </a> , <a href="/getRawCSV/{{ document.docfile.name }}"> Hour Average </a> , <a href="/getRawCSV/{{ document.averageHourFile.name }}"> Daily Average </a>  </td> -->
                 <td>
                     <div class="dropdown">
@@ -59,13 +70,32 @@
                         </ul>
                     </div>
                 </td>
-                <td> <input type="checkbox" name='Option' value="{{ document.averageDayFile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
+                <td> <input type="checkbox" name='Option' value="{{ document.docfile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
+                <td> <input type="checkbox" name='Option2' value="{{ document.averageMinuteFile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
+                <td> <input type="checkbox" name='Option3' value="{{ document.averageHourFile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
+                <td> <input type="checkbox" name='Option4' value="{{ document.averageDayFile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
             </tr>
             {% endfor %}
         </tbody> 
     </table>
 
 <button class="btn btn-primary btn-block" id="compare" onclick="checkBoxChecked()" disabled> Compare </button>
+<!-- button class="btn btn-primary btn-block" id="compare1" onclick="checkBoxChecked()" disabled> Compare Minutely Average </button>
+<button class="btn btn-primary btn-block" id="compare2" onclick="checkBoxChecked()" disabled> Compare Hourly Average </button>
+<button class="btn btn-primary btn-block" id="compare3" onclick="checkBoxChecked()" disabled> Compare Daily Average</button>
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup=" true" aria-expanded="true" disabled>
+      Compare using 
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu btn-block" aria-labelledby="dropdownMenu2">
+      <li><a href="/dataAnalysis/{{ document.docfile.name }}">Raw Format</a></li>
+      <li><a href="/dataAnalysis/{{ document.averageMinuteFile.name }}"> Minutely Average </a></li>
+      <li><a href="/dataAnalysis/{{ document.averageHourFile.name }}"> Hourly Average </a></li>
+      <li><a href="/dataAnalysis/{{ document.averageDayFile.name }}"> Daily Average </a></li>
+    </ul>
+</div> -->
+
 <script type="text/javascript">
 function checkHowManyCheckBoxesClicked()
 {
@@ -73,11 +103,20 @@ function checkHowManyCheckBoxesClicked()
     {
         $('#table').children('tbody').children('tr').children('td').find('input:checkbox:not(:checked)').prop('disabled', true);
         $('#compare').prop('disabled', false);
+        $('#compare1').prop('disabled', false);
+        $('#compare2').prop('disabled', false);
+        $('#compare3').prop('disabled', false);
+        // $('#dropdownMenu2').prop('disabled', false);
     }
     else
     {
         $('#table').children('tbody').children('tr').children('td').find('input:checkbox:not(:checked)').prop('disabled', false);
         $('#compare').prop('disabled', true);
+        $('#compare1').prop('disabled', true);
+        $('#compare2').prop('disabled', true);
+        $('#compare3').prop('disabled', true);
+        // $('#dropdownMenu2').prop('disabled', true);
+
     }
 }
 
@@ -90,7 +129,7 @@ function checkBoxChecked()
         selectedFiles.push($(this).val());
     });
 
-    // console.log(selectedFiles);
+    console.log(selectedFiles);
     window.location.replace("/dataAnalysis/" + selectedFiles[0] + "/" + selectedFiles[1]);
     
 }
