@@ -14,7 +14,7 @@
                 <th>Location</th> 
                 <th>Start Date</th> 
                 <th>End Date</th> 
-                <th>Uploaded File</th> 
+                <th>Plot</th> 
                 <th>Uploaded By</th> 
                 <th>Download</th>
                 <th>Compare</th>
@@ -23,15 +23,43 @@
         <tbody>
             {% for document in documents %} 
             <tr> 
-                
                 <td>{{ document.podId }}</th> 
                 <td>{{ document.location }}</td> 
                 <td>{{ document.startDate }}</td> 
                 <td>{{ document.endDate }}</td>
-                <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.docfile }}</a> </td>
+                <!-- <td><a href="/dataAnalysis/{{ document.docfile.name }}">{{ document.docfile }}</a> </td> -->
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-   haspopup=" true" aria-expanded="true" style="">
+                          Plot using 
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                          <li><a href="/dataAnalysis/{{ document.docfile.name }}">Raw Format</a></li>
+                          <li><a href="/dataAnalysisAveraged/{{ document.averageMinuteFile.name }}"> Minutely Average </a></li>
+                          <li><a href="/dataAnalysisAveraged/{{ document.averageHourFile.name }}"> Hourly Average </a></li>
+                          <li><a href="/dataAnalysisAveraged/{{ document.averageDayFile.name }}"> Daily Average </a></li>
+                        </ul>
+                    </div>
+                </td>
                 <td>{{ document.userName }}</td>
-                <td><a href="/getRawCSV/{{ document.docfile.name }}"> raw </a> , <a href="/getSelectedCSV/{{ document.docfile.name }}"> selected </a>  </td>
-                <td> <input type="checkbox" name='Option' value="{{ document.docfile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
+                <!-- <td><a href="/getRawCSV/{{ document.docfile.name }}"> raw </a> , <a href="/getSelectedCSV/{{ document.docfile.name }}"> selected </a> , <a href="/getRawCSV/{{ document.averageMinuteFile.name }}"> Minute Average </a> , <a href="/getRawCSV/{{ document.docfile.name }}"> Hour Average </a> , <a href="/getRawCSV/{{ document.averageHourFile.name }}"> Daily Average </a>  </td> -->
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-   haspopup=" true" aria-expanded="true" style="">
+                          Download as 
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                          <li><a href="/getRawCSV/{{ document.docfile.name }}"> Raw Format </a></li>
+                          <li><a href="/getSelectedCSV/{{ document.docfile.name }}"> Selected Fields </a></li>
+                          <li><a href="/getRawCSV/{{ document.averageMinuteFile.name }}"> Minutely Average </a></li>
+                          <li><a href="/getRawCSV/{{ document.averageHourFile.name }}"> Hourly Average </a></li>
+                          <li><a href="/getRawCSV/{{ document.averageDayFile.name }}"> Daily Average </a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td> <input type="checkbox" name='Option' value="{{ document.averageDayFile.name }}" onclick="checkHowManyCheckBoxesClicked()"></input> </td>
             </tr>
             {% endfor %}
         </tbody> 

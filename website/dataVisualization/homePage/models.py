@@ -17,6 +17,9 @@ POLLUTANTOFINTEREST = ((1, 'VOC1'),
 class Document(models.Model):
     podId = models.CharField(max_length=30)
     location = models.CharField(max_length=30)
+    projectName = models.CharField(max_length=30)
+    mentorName = models.CharField(max_length=30)
+    school = models.CharField(max_length=30)
     startDate = models.DateField()
     endDate = models.DateField()
     podUseType = MultiSelectField(choices=USETYPE,max_choices=4,max_length=4)
@@ -24,3 +27,8 @@ class Document(models.Model):
     podUseReason = models.TextField()
     userName = models.CharField(max_length=30)
     docfile = models.FileField(upload_to='')
+    averageMinuteFile = models.FileField(upload_to='')
+    averageDayFile = models.FileField(upload_to='')
+    averageHourFile = models.FileField(upload_to='')
+    
+

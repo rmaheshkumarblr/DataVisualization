@@ -14,7 +14,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from wsgiref.util import FileWrapper
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+
 import csv
+
+
+
+
 
 def create_user_view(request):
     if request.method == 'GET':
@@ -205,16 +212,97 @@ def personalUploadedFiles(request):
         )
 
 
+def averaging(path,fileName):
+    
+    df = pd.read_csv("media/"+path,header=0,usecols=[1,2,5,6,7,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
+    df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
+    times = pd.DatetimeIndex(df.Date)
+
+    # # Minute Averaging
+    groupedMinute = df.groupby([times.date, times.hour, times.minute])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens"].mean().reset_index()
+    groupedMinute['Date'] =  pd.to_datetime(groupedMinute['level_0']) +  (pd.to_timedelta(groupedMinute['level_1'],unit='h') + pd.to_timedelta(groupedMinute['level_2'],unit='m'))
+    groupedMinute.drop(['level_0','level_1','level_2'],axis=1,inplace=True)
+    groupedMinute = groupedMinute[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
+
+    # # Hour Averaging
+    groupedHour = df.groupby([times.date, times.hour])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens"].mean().reset_index()
+    groupedHour['Date'] =  pd.to_datetime(groupedHour['level_0']) +  (pd.to_timedelta(groupedHour['level_1'],unit='h'))
+    groupedHour.drop(['level_0','level_1'],axis=1,inplace=True)
+    groupedHour = groupedHour[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
+
+    # # Day Averaging
+    groupedDaily = df.groupby([times.date])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens"].mean().reset_index()
+    groupedDaily['Date'] =  pd.to_datetime(groupedDaily['index'])
+    groupedDaily.drop(['index'],axis=1,inplace=True)
+    groupedDaily = groupedDaily[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
+
+    fileName = fileName.split(".")[0]
+
+    groupedMinute.to_csv(fileName + "_" + path.split(".")[0] + '_minute' + ".csv",index=False)
+    groupedHour.to_csv(fileName + "_" + path.split(".")[0] + '_hour' + ".csv",index=False)
+    groupedDaily.to_csv(fileName + "_" + path.split(".")[0] + '_daily' + ".csv",index=False)
+
+    os.remove("media/" + path)
+
+    return fileName + "_" + path.split(".")[0]
+
+# def hourAveraging(path,fileName):    
+#     # # Hourly Averaging
+#     df = pd.read_csv("media/"+path,header=0,usecols=[1,2,5,6,7,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
+#     df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
+#     times = pd.DatetimeIndex(df.Date)
+
+#     grouped = df.groupby([times.date, times.hour])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens"].mean().reset_index()
+#     grouped['Date'] =  pd.to_datetime(grouped['level_0']) +  (pd.to_timedelta(grouped['level_1'],unit='h'))
+#     grouped.drop(['level_0','level_1'],axis=1,inplace=True)
+#     grouped = grouped[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
+
+
+# # Daily Averaging
+
+# df = pd.read_csv('test.txt',header=0,usecols=[1,2,5,6,7,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
+# df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
+# times = pd.DatetimeIndex(df.Date)
+# grouped = df.groupby([times.date])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens"].mean().reset_index()
+# grouped['Date'] =  pd.to_datetime(grouped['index'])
+# grouped.drop(['index'],axis=1,inplace=True)
+# grouped = grouped[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
+
+
+
 @login_required
 def uploadAFile(request):
     # Handle file upload
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         some_file = File(request.FILES['docfile'])
+        
 
+        
         # import pdb
         # pdb.set_trace()
+        # print averageMinuteFileContent
         if form.is_valid():
+            path = default_storage.save('averaging.txt', ContentFile(some_file.read()))
+
+            averageFileName = averaging(path,some_file.name)
+
+            averageMinuteFile = averageFileName + '_minute.csv'
+            averageHourFile = averageFileName + '_hour.csv'
+            averageDailyFile = averageFileName + '_daily.csv'
+
+            fileHandlerMinute = open(averageMinuteFile, 'rb')
+            fileHandlerHour = open(averageHourFile, 'rb')
+            fileHandlerDay = open(averageDailyFile, 'rb')
+
+
+            averageMinuteFileHandle = File(fileHandlerMinute)
+            averageHourFileHandle = File(fileHandlerHour)
+            averageDayFileHandle = File(fileHandlerDay)
+
+
+            # print averageMinuteFileHandle.__dict__
+            # print some_file.__dict__
             newdoc = Document(podId=request.POST['podId'],
                               location=request.POST['location'],
                               startDate=request.POST['startDate'],
@@ -222,11 +310,22 @@ def uploadAFile(request):
                               podUseType=request.POST['podUseType'],
                               pollutantOfInterest=request.POST['pollutantOfInterest'],
                               podUseReason=request.POST['podUseReason'],
-                              userName = request.user.first_name,
-                              docfile=some_file
+                              projectName=request.POST['projectName'],
+                              mentorName=request.POST['mentorName'],
+                              school=request.POST['school'],
+                              userName=request.user.first_name,
+                              docfile=some_file,
+                              averageMinuteFile=averageMinuteFileHandle,
+                              averageHourFile=averageHourFileHandle,
+                              averageDayFile=averageDayFileHandle
+                              # averageMinuteFile=averageMinuteFileHandle
                              )
+
             # print request.FILES['docfile']
             newdoc.save()
+            os.remove(averageMinuteFile)
+            os.remove(averageHourFile)
+            os.remove(averageDailyFile)
 
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('uploadedFiles'))

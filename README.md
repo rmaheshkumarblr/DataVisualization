@@ -83,3 +83,10 @@ ALTER USER dataVis CREATEDB;
 
 postgres -D /usr/local/var/postgres
 
+/Users/maheshkumar/PostgreSQL/pg96/bin/postgres -D /Users/maheshkumar/PostgreSQL/data/pg96 -r /Users/maheshkumar/PostgreSQL/logs/pg96/serverlog.txt
+
+
+#https://stackoverflow.com/questions/28446361/how-to-reset-postgresql-database
+
+Delete the content of the database completely. Can be used when new fields are being added. Note: It deletes the complete database.
+ ./manage.py flush 
