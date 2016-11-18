@@ -4,17 +4,26 @@
 {% block 'container' %}
 
 <h4 class="well"> List of uploaded documents </h4>
-<ul class="well"> Note
-    <li>R stands for Raw Data</li>
-    <li>M stands for Minutely Average Data</li>
-    <li>H stands for Hourly Average Data</li>
-    <li>D stands for Daily Average Data</li>
-     
-</ul>
+    <table class="table table-striped" id="table1"> 
+        <tbody> 
+            <tr> 
+                <th>R stands for Raw Data</th>
+                <th>M stands for Minutely Average Data</th>
+                <th>H stands for Hourly Average Data</th>
+                <th>D stands for Daily Average Data</th>
+            </tr>
+        </tbody>
+    </table>
+
 <!-- List of uploaded documents -->
 
 {% if documents %}
     <table class="table table-striped" id="table"> 
+        <thead> 
+            <tr> 
+                <b> &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspCompare </b>
+            </tr> 
+        </thead> 
         <thead> 
             <tr> 
                 <th>Pod ID</th> 
@@ -23,7 +32,7 @@
                 <th>End Date</th> 
                 <th>Uploaded By</th> 
                 <th>Plot</th> 
-                <th>Download Compare -> </th>
+                <th>Download</th>
                 <th>R</th>
                 <th>M</th>
                 <th>H</th>
@@ -103,18 +112,18 @@ function checkHowManyCheckBoxesClicked()
     {
         $('#table').children('tbody').children('tr').children('td').find('input:checkbox:not(:checked)').prop('disabled', true);
         $('#compare').prop('disabled', false);
-        $('#compare1').prop('disabled', false);
-        $('#compare2').prop('disabled', false);
-        $('#compare3').prop('disabled', false);
+        // $('#compare1').prop('disabled', false);
+        // $('#compare2').prop('disabled', false);
+        // $('#compare3').prop('disabled', false);
         // $('#dropdownMenu2').prop('disabled', false);
     }
     else
     {
         $('#table').children('tbody').children('tr').children('td').find('input:checkbox:not(:checked)').prop('disabled', false);
         $('#compare').prop('disabled', true);
-        $('#compare1').prop('disabled', true);
-        $('#compare2').prop('disabled', true);
-        $('#compare3').prop('disabled', true);
+        // $('#compare1').prop('disabled', true);
+        // $('#compare2').prop('disabled', true);
+        // $('#compare3').prop('disabled', true);
         // $('#dropdownMenu2').prop('disabled', true);
 
     }

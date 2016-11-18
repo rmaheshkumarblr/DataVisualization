@@ -1,4 +1,10 @@
 // var getGraph = (function (content) {
+Highcharts.setOptions({
+  global: {
+    useUTC: false
+  }
+});
+
 function getTimeSeriesGraph(content, field) {
     // console.log('clicked' + ' ' + field)
 	"use strict",
@@ -8,9 +14,13 @@ function getTimeSeriesGraph(content, field) {
 	function logArrayElements(element, index, array) {
         // console.log(element['Date'],element['Temperature'])
         dateFromPython = new Date(element['Date'])
-        data.push([ Date.UTC(dateFromPython.getUTCFullYear(), dateFromPython.getUTCMonth(), dateFromPython.getUTCDate(),  dateFromPython.getUTCHours(), dateFromPython.getUTCMinutes(), dateFromPython.getUTCSeconds() ), parseInt(element[field])])
+        // console.log(dateFromPython)
+        // data.push([ Date.UTC(dateFromPython.getUTCFullYear(), dateFromPython.getUTCMonth(), dateFromPython.getUTCDate(),  dateFromPython.getUTCHours(), dateFromPython.getUTCMinutes(), dateFromPython.getUTCSeconds() ), parseInt(element[field])])
+        data.push([dateFromPython.getTime(), parseInt(element[field])])
 	}	
 	content.forEach(logArrayElements)
+
+    // console.log(data)
 
 	// console.log(data)
         $('#container').highcharts({
@@ -27,7 +37,25 @@ function getTimeSeriesGraph(content, field) {
                         'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
             },
             xAxis: {
-                type: 'datetime'
+                type: 'datetime',
+                // labels: {
+                //     enabled: true
+                // },
+                // labels : {
+                // formatter: function() {
+                //     console.log(this.value)
+                //     var myDate = new Date(this.value);
+                //     // var newDateMs = Date.UTC(myDate.getUTCFullYear(),myDate.getUTCMonth()-1,myDate.getUTCDate());   
+                    
+                //     return Highcharts.dateFormat('%d-%b-%y %H:%M:%S',myDate);   
+
+                //  } 
+                // }
+                
+
+                // dateTimeLabelFormats: {
+                //    day: '%d-%b-%y %H:%M:%S'    //ex- 01 Jan 2016
+                // }
             },
             yAxis: {
                 title: {
@@ -35,7 +63,7 @@ function getTimeSeriesGraph(content, field) {
                 }
             },
             legend: {
-                enabled: false
+                enabled: true
             },
             plotOptions: {
                 area: {
@@ -59,8 +87,8 @@ function getTimeSeriesGraph(content, field) {
                         hover: {
                             lineWidth: 1
                         }
-                    },
-                    threshold: null
+                    }//,
+                    //threshold: null
                 }
             },
 
@@ -160,8 +188,8 @@ function getDoubleYAxisPlotGraph(content,field1,field2)
     data2 = []
     function logArrayElements(element, index, array) {
         dateFromPython = new Date(element['Date']).valueOf()
-        data1.push( [dateFromPython,parseFloat(element[field1])])
-        data2.push( [dateFromPython,parseFloat(element[field2])])
+        data1.push( [dateFromPython.getTime(),parseFloat(element[field1])])
+        data2.push( [dateFromPython.getTime(),parseFloat(element[field2])])
     }   
     content.forEach(logArrayElements)
     // console.log(data1)
@@ -401,15 +429,25 @@ function getCompareTimeSeriesGraph(content1,content2, field) {
     function logArrayElements1(element, index, array) {
         // console.log(element['Date'],element['Temperature'])
         dateFromPython = new Date(element['Date'])
-        data1.push([ Date.UTC(dateFromPython.getUTCFullYear(), dateFromPython.getUTCMonth(), dateFromPython.getUTCDate(),  dateFromPython.getUTCHours(), dateFromPython.getUTCMinutes(), dateFromPython.getUTCSeconds() ), parseInt(element[field])])
+        // data1.push([ Date.UTC(dateFromPython.getUTCFullYear(), dateFromPython.getUTCMonth(), dateFromPython.getUTCDate(),  dateFromPython.getUTCHours(), dateFromPython.getUTCMinutes(), dateFromPython.getUTCSeconds() ), parseInt(element[field])])
+        data1.push([dateFromPython.getTime(),parseInt(element[field])])
     } 
     function logArrayElements2(element, index, array) {
         // console.log(element['Date'],element['Temperature'])
         dateFromPython = new Date(element['Date'])
-        data2.push([ Date.UTC(dateFromPython.getUTCFullYear(), dateFromPython.getUTCMonth(), dateFromPython.getUTCDate(),  dateFromPython.getUTCHours(), dateFromPython.getUTCMinutes(), dateFromPython.getUTCSeconds() ), parseInt(element[field])])
+        // data2.push([ Date.UTC(dateFromPython.getUTCFullYear(), dateFromPython.getUTCMonth(), dateFromPython.getUTCDate(),  dateFromPython.getUTCHours(), dateFromPython.getUTCMinutes(), dateFromPython.getUTCSeconds() ), parseInt(element[field])])
+        data2.push([dateFromPython.getTime(),parseInt(element[field])])
     }   
     content1.forEach(logArrayElements1)
     content2.forEach(logArrayElements2)
+
+    // console.log(data1[0])
+    // console.log(data2[0])
+    // console.log(data1)
+    // console.log(data2)
+
+    // console.log(data1)
+    // console.log(data2)
     // console.log(data1)
     // console.log(data)
     //     $('#container').highcharts({

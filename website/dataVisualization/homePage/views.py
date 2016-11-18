@@ -232,7 +232,7 @@ def averaging(path,fileName):
 
     # # Day Averaging
     groupedDaily = df.groupby([times.date])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens"].mean().reset_index()
-    groupedDaily['Date'] =  pd.to_datetime(groupedDaily['index'])
+    groupedDaily['Date'] =  pd.to_datetime(groupedDaily['index']) + (pd.to_timedelta(1,unit='s'))
     groupedDaily.drop(['index'],axis=1,inplace=True)
     groupedDaily = groupedDaily[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
 
@@ -390,7 +390,11 @@ def getContentsOfTxtFile(locationOfDocument):
 def getContentsOfCSVFile(locationOfDocument):
     outputContent = []
     with open("media/"+locationOfDocument) as fileHandler:
+        count = 0
         for line in fileHandler:
+            count += 1
+            if count == 1:
+                continue
             dictContent = {}
             line = line.strip()
             if(len(line) > 0):

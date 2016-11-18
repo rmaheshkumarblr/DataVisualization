@@ -184,10 +184,13 @@
   {% block 'justbeforebodyends' %}
   <script type="text/javascript">
 
+      // console.log({{ displayContent1 | safe }})
+      
       function getSelectedPollutantAndPlot()
       {
         var pollutant = $('#pollutant').find(":selected").text();
         getTimeSeriesGraph({{ displayContent1 | safe }}, pollutant ) ;
+
       }
 
       function getSelectedPollutantsAndPlot()
