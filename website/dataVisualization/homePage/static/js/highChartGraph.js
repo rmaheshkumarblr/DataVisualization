@@ -26,8 +26,8 @@ function getTimeSeriesGraph(content, field) {
         $('#container').highcharts({
             chart: {
                 zoomType: 'x',
-		width: 1032,
-		height: 400
+		        width: 1200,
+		        height: 900
             },
             title: {
                 text: field + ' against Time'
@@ -115,7 +115,9 @@ function getScatterPlotGraph(content, field1, field2) {
     $('#container').highcharts({
     chart: {
         type: 'scatter',
-        zoomType: 'xy'
+        zoomType: 'xy',
+        width: 1200,
+        height: 900
     },
     title: {
         text: field1 + ' Versus ' + field2
@@ -187,7 +189,7 @@ function getDoubleYAxisPlotGraph(content,field1,field2)
     data1 = []
     data2 = []
     function logArrayElements(element, index, array) {
-        dateFromPython = new Date(element['Date']).valueOf()
+        dateFromPython = new Date(element['Date']) //.valueOf()
         data1.push( [dateFromPython.getTime(),parseFloat(element[field1])])
         data2.push( [dateFromPython.getTime(),parseFloat(element[field2])])
     }   
@@ -197,7 +199,9 @@ function getDoubleYAxisPlotGraph(content,field1,field2)
 
     $('#container').highcharts({
         chart: {
-            zoomType: 'xy'
+            zoomType: 'xy',
+            width: 1200,
+            height: 900
         },
         title: {
             text: 'Pollutant Information from the Pod : ' + field1 + " and " + field2
@@ -370,7 +374,9 @@ function getBoxPlotGraph(content,field) {
     $('#container').highcharts(
     {
         chart: {
-            type: 'boxplot'
+            type: 'boxplot',
+            width: 1200,
+            height: 900
         },
     
         title: {
@@ -505,8 +511,8 @@ function getCompareTimeSeriesGraph(content1,content2, field) {
 $('#container').highcharts({
             chart: {
                 zoomType: 'x',
-        width: 1032,
-        height: 400
+                width: 1200,
+                height: 900
             },
             title: {
                 text: field + ' against Time'
@@ -618,7 +624,9 @@ function getCompareScatterPlotGraph(content1, content2, field1, field2) {
     $('#container').highcharts({
     chart: {
         type: 'scatter',
-        zoomType: 'xy'
+        zoomType: 'xy',
+        width: 1200,
+        height: 900
     },
     title: {
         text: field1 + ' Versus ' + field2
@@ -817,7 +825,9 @@ function getCompareBoxPlotGraph(content1,content2,field) {
     $('#container').highcharts(
     {
         chart: {
-            type: 'boxplot'
+            type: 'boxplot',
+            width: 1200,
+            height: 900
         },
     
         title: {
