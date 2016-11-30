@@ -353,7 +353,7 @@ function getBoxPlotGraph(content,field) {
         boxValues.push(Math.max.apply(Math,data));
         return boxValues;
     }
-
+    console.log(getBoxValues(Field))
     data.push(getBoxValues(Field));
     // data.push(getBoxValues(Humidity));
     // data.push(getBoxValues(CO2));
