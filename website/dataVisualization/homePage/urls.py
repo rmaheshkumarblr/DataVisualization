@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^documents/', views.documents, name='documents'),
     url(r'^display/(?P<locationOfDocument>.*)$', views.display, name='display'),
     url(r'^uploadedFiles/', views.uploadedFiles, name='uploadedFiles'),
+    url(r'^uploadedFilesFiltered/(?P<projectName>.*)/(?P<mentorName>.*)/(?P<school>.*)$', views.uploadedFilesFiltered, name='uploadedFilesFiltered'),
     url(r'^personalUploadedFiles/', views.personalUploadedFiles, name='personalUploadedFiles'),
     url(r'^uploadAFile/', views.uploadAFile, name='uploadAFile'),
     url(r'^dataAnalysis/(?P<locationOfDocument1>.*)/(?P<locationOfDocument2>.*)$', views.dataAnalysis, name='dataAnalysis'),

@@ -192,13 +192,45 @@ def uploadedFiles(request):
     # Load documents for the list page
     documents = Document.objects.all()
 
+    # filterDict = {}
+    # if projectName != "":
+    #     filterDict['projectName'] = projectName
+    # if mentorName != "":
+    #     filterDict['mentorName'] = mentorName
+    # if school != "":
+    #     filterDict['school'] = school
+
+    # documents = documents.filter(**filterDict)
+    
+
     return render(
         request,
         'displayUploadedFiles.html',
         {'documents': documents}
         )
 
+@login_required
+def uploadedFilesFiltered(request, projectName, mentorName, school):
+    # Load documents for the list page
+    documents = Document.objects.all()
+    print projectName, mentorName, school
 
+    # filterDict = {}
+    # if projectName != "":
+    #     filterDict['projectName'] = projectName
+    # if mentorName != "":
+    #     filterDict['mentorName'] = mentorName
+    # if school != "":
+    #     filterDict['school'] = school
+
+    # documents = documents.filter(**filterDict)
+    documents = documents.filter(projectName__icontains=projectName).filter(mentorName__icontains=mentorName).filter(school__icontains=school)
+
+    return render(
+        request,
+        'displayUploadedFiles.html',
+        {'documents': documents}
+        )
 
 @login_required
 def personalUploadedFiles(request):
