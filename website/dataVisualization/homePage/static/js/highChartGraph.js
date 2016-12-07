@@ -26,7 +26,7 @@ function getTimeSeriesGraph(content, field) {
         $('#container').highcharts({
             chart: {
                 zoomType: 'x',
-		        width: 1032,
+		        width: 950,
 		        height: 500
             },
             title: {
@@ -116,7 +116,7 @@ function getScatterPlotGraph(content, field1, field2) {
     chart: {
         type: 'scatter',
         zoomType: 'xy',
-        width: 1032,
+        width: 950,
         height: 500
     },
     title: {
@@ -200,7 +200,7 @@ function getDoubleYAxisPlotGraph(content,field1,field2)
     $('#container').highcharts({
         chart: {
             zoomType: 'xy',
-            width: 1032,
+            width: 950,
             height: 500
         },
         title: {
@@ -375,7 +375,7 @@ function getBoxPlotGraph(content,field) {
     {
         chart: {
             type: 'boxplot',
-            width: 1032,
+            width: 950,
             height: 500
         },
     
@@ -511,7 +511,7 @@ function getCompareTimeSeriesGraph(content1,content2, field) {
 $('#container').highcharts({
             chart: {
                 zoomType: 'x',
-                width: 1032,
+                width: 950,
                 height: 500
             },
             title: {
@@ -625,7 +625,7 @@ function getCompareScatterPlotGraph(content1, content2, field1, field2) {
     chart: {
         type: 'scatter',
         zoomType: 'xy',
-        width: 1032,
+        width: 950,
         height: 500
     },
     title: {
@@ -826,7 +826,7 @@ function getCompareBoxPlotGraph(content1,content2,field) {
     {
         chart: {
             type: 'boxplot',
-            width: 1032,
+            width: 950,
             height: 500
         },
     
