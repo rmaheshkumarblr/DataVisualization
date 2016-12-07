@@ -86,20 +86,31 @@ WSGI_APPLICATION = 'dataVisualization.wsgi.application'
 #     }
 # }
 
-POSTGRES_DB_NAME = os.environ.get('POSTGRES_DB_NAME', None)
-POSTGRES_USERNAME = os.environ.get('POSTGRES_USERNAME', None)
-POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', None)
+#POSTGRES_DB_NAME = os.environ.get('POSTGRES_DB_NAME', None)
+#POSTGRES_USERNAME = os.environ.get('POSTGRES_USERNAME', None)
+#POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', None)
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': POSTGRES_DB_NAME,
+#        'USER': POSTGRES_USERNAME,
+#        'PASSWORD': POSTGRES_PASSWORD,
+#        'HOST': 'localhost',
+#        'PORT': '',
+#    }
+#}
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': POSTGRES_DB_NAME,
-        'USER': POSTGRES_USERNAME,
-        'PASSWORD': POSTGRES_PASSWORD,
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': '/home/ec2-user/DataVisualization/website/dataVisualization/dataVisualization/my.cnf',
+        },
     }
 }
+
+
 
 LOGIN_URL = '/login'
 
