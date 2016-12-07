@@ -26,8 +26,8 @@ function getTimeSeriesGraph(content, field) {
         $('#container').highcharts({
             chart: {
                 zoomType: 'x',
-		        width: 1200,
-		        height: 900
+		        width: 1032,
+		        height: 500
             },
             title: {
                 text: field + ' against Time'
@@ -116,8 +116,8 @@ function getScatterPlotGraph(content, field1, field2) {
     chart: {
         type: 'scatter',
         zoomType: 'xy',
-        width: 1200,
-        height: 900
+        width: 1032,
+        height: 500
     },
     title: {
         text: field1 + ' Versus ' + field2
@@ -200,8 +200,8 @@ function getDoubleYAxisPlotGraph(content,field1,field2)
     $('#container').highcharts({
         chart: {
             zoomType: 'xy',
-            width: 1200,
-            height: 900
+            width: 1032,
+            height: 500
         },
         title: {
             text: 'Pollutant Information from the Pod : ' + field1 + " and " + field2
@@ -375,8 +375,8 @@ function getBoxPlotGraph(content,field) {
     {
         chart: {
             type: 'boxplot',
-            width: 1200,
-            height: 900
+            width: 1032,
+            height: 500
         },
     
         title: {
@@ -511,8 +511,8 @@ function getCompareTimeSeriesGraph(content1,content2, field) {
 $('#container').highcharts({
             chart: {
                 zoomType: 'x',
-                width: 1200,
-                height: 900
+                width: 1032,
+                height: 500
             },
             title: {
                 text: field + ' against Time'
@@ -625,8 +625,8 @@ function getCompareScatterPlotGraph(content1, content2, field1, field2) {
     chart: {
         type: 'scatter',
         zoomType: 'xy',
-        width: 1200,
-        height: 900
+        width: 1032,
+        height: 500
     },
     title: {
         text: field1 + ' Versus ' + field2
@@ -826,8 +826,8 @@ function getCompareBoxPlotGraph(content1,content2,field) {
     {
         chart: {
             type: 'boxplot',
-            width: 1200,
-            height: 900
+            width: 1032,
+            height: 500
         },
     
         title: {
