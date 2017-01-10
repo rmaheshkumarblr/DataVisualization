@@ -2,9 +2,9 @@
 {% load staticfiles %}
 
 {% block 'includeOtherJSFiles' %}
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="{%static 'js/highcharts.js'%}"></script>
+    <script src="{%static 'js/highcharts-more.js'%}"></script>
+    <script src="{%static 'js/exporting.js'%}"></script>
     <script src="{%static 'js/highChartGraph.js'%}"> </script>
     <script src="{%static 'js/jquery-ui.js'%}" charset="utf-8"></script>
 {% endblock %}
@@ -20,17 +20,17 @@
             <!-- <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'Temperature');return false;">  Temperature   </a></li>
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }},  'Humidity');return false;" >Humidity  </a></li>
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'CO2');return false;">CO2</a></li>
-            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'fig210_sens');return false;">  fig210_sens</a></li>
-            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'fig280_sens');return false;">  fig280_sens</a></li>
-            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }},{{ displayContent2 }},  'e2vo3_sens');return false;"> e2vo3_sens</a>  </li> -->
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'Light VOCs');return false;">  Light VOCs</a></li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'Heavy VOCs');return false;">  Heavy VOCs</a></li>
+            <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }},{{ displayContent2 }},  'O3');return false;"> O3</a>  </li> -->
             <label for="pollutant">Pollutant : </label>
              <select name="pollutant" id="pollutant">
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
-                <option>fig210_sens</option>
-                <option>fig280_sens</option>
-                <option>e2vo3_sens</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
               </select>
               <button onclick="getCompareSelectedPollutantAndPlot()" class="btn btn-primary btn-block">Plot</button>
           </ul>
@@ -42,9 +42,9 @@
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
-                <option>fig210_sens</option>
-                <option>fig280_sens</option>
-                <option>e2vo3_sens</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
               </select>
               <br>
               <label for="pollutant2">Pollutant 2: </label>
@@ -52,9 +52,9 @@
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
-                <option>fig210_sens</option>
-                <option>fig280_sens</option>
-                <option>e2vo3_sens</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
               </select>
               <br>
               <button onclick="getCompareSelectedPollutantsAndPlot()" class="btn btn-primary btn-block">Plot</button>
@@ -67,9 +67,9 @@
               <option selected="selected">Temperature</option>
               <option>Humidity</option>
               <option>CO2</option>
-              <option>fig210_sens</option>
-              <option>fig280_sens</option>
-              <option>e2vo3_sens</option>
+              <option>Light VOCs</option>
+              <option>Heavy VOCs</option>
+              <option>O3</option>
             </select>
             <br>
             <button onclick="getCompareSelectedPollutantAndBoxPlot()" class="btn btn-primary btn-block">Plot</button>
@@ -87,17 +87,17 @@
              <!-- <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Temperature');return false;">   Temperature   </a></li>
              <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Humidity');return false;" > Humidity  </a></li>
              <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'CO2');return false;">CO2</a></li>
-             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'fig210_sens');return false;">   fig210_sens</a></li>
-             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'fig280_sens');return false;">   fig280_sens</a></li>
-             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'e2vo3_sens');return false;">  e2vo3_sens</a>  </li> -->
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Light VOCs');return false;">   Light VOCs</a></li>
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'Heavy VOCs');return false;">   Heavy VOCs</a></li>
+             <li><a href="#" onclick="getTimeSeriesGraph({{ displayContent1 }},'O3');return false;">  O3</a>  </li> -->
              <label for="pollutant">Pollutant : </label>
              <select name="pollutant" id="pollutant">
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
-                <option>fig210_sens</option>
-                <option>fig280_sens</option>
-                <option>e2vo3_sens</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
               </select>
               <button onclick="getSelectedPollutantAndPlot()" class="btn btn-primary btn-block">Plot</button>
            </ul>
@@ -110,9 +110,9 @@
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
-                <option>fig210_sens</option>
-                <option>fig280_sens</option>
-                <option>e2vo3_sens</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
               </select>
               <br>
               <label for="pollutant2">Pollutant 2: </label>
@@ -120,9 +120,9 @@
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
-                <option>fig210_sens</option>
-                <option>fig280_sens</option>
-                <option>e2vo3_sens</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
               </select>
               <br>
               <button onclick="getSelectedPollutantsAndPlot()" class="btn btn-primary btn-block">Plot</button>
@@ -137,9 +137,9 @@
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
-                <option>fig210_sens</option>
-                <option>fig280_sens</option>
-                <option>e2vo3_sens</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
               </select>
               <br>
               <button onclick="getSelectedPollutantAndBoxPlot()" class="btn btn-primary btn-block">Plot</button>
@@ -153,9 +153,9 @@
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
-                <option>fig210_sens</option>
-                <option>fig280_sens</option>
-                <option>e2vo3_sens</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
               </select>
               <br>
               <label for="pollutant5">Pollutant 2: </label>
@@ -163,9 +163,9 @@
                   <option selected="selected">Temperature</option>
                   <option>Humidity</option>
                   <option>CO2</option>
-                  <option>fig210_sens</option>
-                  <option>fig280_sens</option>
-                  <option>e2vo3_sens</option>
+                  <option>Light VOCs</option>
+                  <option>Heavy VOCs</option>
+                  <option>O3</option>
                 </select>
               <br>
               <button onclick="getSelectedPollutantAndDoubleYAxisPlot()" class="btn btn-primary btn-block">Plot</button>
