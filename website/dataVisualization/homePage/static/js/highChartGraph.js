@@ -5,6 +5,7 @@ Highcharts.setOptions({
 });
 
 fieldName = ""
+axisfieldName = ""
 
 function updateFieldName(field) {
     if (field == "O3") {
@@ -16,10 +17,29 @@ function updateFieldName(field) {
     } else {
         fieldName = field
     }
+
+    if (field == "O3") {
+        axisfieldName = "O3 Electronic Signal (Voltage Equivalent)"
+    } else if (field == "Light VOCs") {
+        axisfieldName = "Light VOCs Electronic Signal (Voltage Equivalent)"
+    } else if (field == "Heavy VOCs") {
+        axisfieldName = "Heavy VOCs Electronic Signal (Voltage Equivalent)"
+    } else if (field == "Temperature") {
+        axisfieldName = "Temperature (deg Celsius)"
+    } else if (field == "Humidity") {
+        axisfieldName = "Relative Humidity (%)"
+    } else if (field == "CO2") {
+        axisfieldName = "CO2 Electronic Signal (Voltage Equivalent)"
+    } else {
+        axisfieldName = field
+    }
 }
+
 
 fieldName1 = ""
 fieldName2 = ""
+axisfieldName1 = ""
+axisfieldName2 = ""
 
 function updateFieldsName(field1, field2) {
     if (field1 == "O3") {
@@ -41,7 +61,41 @@ function updateFieldsName(field1, field2) {
     } else {
         fieldName2 = field2
     }
+
+    if (field1 == "O3") {
+        axisfieldName1 = "O3 Electronic Signal (Voltage Equivalent)"
+    } else if (field1 == "Light VOCs") {
+        axisfieldName1 = "Light VOCs Electronic Signal (Voltage Equivalent)"
+    } else if (field1 == "Heavy VOCs") {
+        axisfieldName1 = "Heavy VOCs Electronic Signal (Voltage Equivalent)"
+    } else if (field1 == "Temperature") {
+        axisfieldName1 = "Temperature (deg Celsius)"
+    } else if (field1 == "Humidity") {
+        axisfieldName1 = "Relative Humidity (%)"
+    } else if (field1 == "CO2") {
+        axisfieldName1 = "CO2 Electronic Signal (Voltage Equivalent)"
+    } else {
+        axisfieldName1 = field1
+    }
+
+    if (field2 == "O3") {
+        axisfieldName2 = "O3 Electronic Signal (Voltage Equivalent)"
+    } else if (field2 == "Light VOCs") {
+        axisfieldName2 = "Light VOCs Electronic Signal (Voltage Equivalent)"
+    } else if (field2 == "Heavy VOCs") {
+        axisfieldName2 = "Heavy VOCs Electronic Signal (Voltage Equivalent)"
+    } else if (field2 == "Temperature") {
+        axisfieldName2 = "Temperature (deg Celsius)"
+    } else if (field2 == "Humidity") {
+        axisfieldName2 = "Relative Humidity (%)"
+    } else if (field2 == "CO2") {
+        axisfieldName2 = "CO2 Electronic Signal (Voltage Equivalent)"
+    } else {
+        axisfieldName2 = field2
+    }
 }
+
+
 
 function getTimeSeriesGraph(content, field) {
     "use strict",
@@ -75,7 +129,7 @@ function getTimeSeriesGraph(content, field) {
         },
         yAxis: {
             title: {
-                text: field
+                text: axisfieldName
             }
         },
         legend: {
@@ -141,7 +195,7 @@ function getScatterPlotGraph(content, field1, field2) {
         xAxis: {
             title: {
                 enabled: true,
-                text: field1
+                text: axisfieldName1
             },
             startOnTick: true,
             endOnTick: true,
@@ -149,7 +203,7 @@ function getScatterPlotGraph(content, field1, field2) {
         },
         yAxis: {
             title: {
-                text: field2
+                text: axisfieldName2
             }
         },
         legend: {
@@ -233,7 +287,7 @@ function getDoubleYAxisPlotGraph(content, field1, field2) {
                 }
             },
             title: {
-                text: field2,
+                text: axisfieldName2,
                 style: {
                     color: Highcharts.getOptions().colors[1]
                 }
@@ -243,7 +297,7 @@ function getDoubleYAxisPlotGraph(content, field1, field2) {
         }, { // Tertiary yAxis
             gridLineWidth: 0,
             title: {
-                text: field1,
+                text: axisfieldName1,
                 style: {
                     color: Highcharts.getOptions().colors[0]
                 }
@@ -415,7 +469,7 @@ function getCompareTimeSeriesGraph(content1, content2, field) {
         },
         yAxis: {
             title: {
-                text: field
+                text: axisfieldName
             }
         },
         legend: {
@@ -500,7 +554,7 @@ function getCompareScatterPlotGraph(content1, content2, field1, field2) {
         xAxis: {
             title: {
                 enabled: true,
-                text: field1
+                text: axisfieldName1
             },
             startOnTick: true,
             endOnTick: true,
@@ -508,7 +562,7 @@ function getCompareScatterPlotGraph(content1, content2, field1, field2) {
         },
         yAxis: {
             title: {
-                text: field2
+                text: axisfieldName2
             }
         },
         legend: {
