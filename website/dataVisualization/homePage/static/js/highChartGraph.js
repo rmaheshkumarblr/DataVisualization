@@ -165,7 +165,14 @@ function getTimeSeriesGraph(content, field) {
             type: 'area',
             name: field + ' against Time',
             data: data
-        }]
+        }],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
 
     });
 };
@@ -244,7 +251,14 @@ function getScatterPlotGraph(content, field1, field2) {
             name: field1 + ' Versus ' + field2,
             color: 'rgba(119, 152, 191, .5)',
             data: data
-        }]
+        }],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
 
     });
 };
@@ -343,7 +357,14 @@ function getDoubleYAxisPlotGraph(content, field1, field2) {
             // tooltip: {
             //     valueSuffix: ' grams per cubic meter'
             // }
-        }]
+        }],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
     });
 }
 
@@ -426,7 +447,14 @@ function getBoxPlotGraph(content, field) {
         series: [{
             name: 'Observations',
             data: data
-        }]
+        }],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
 
     });
 };
@@ -518,7 +546,14 @@ function getCompareTimeSeriesGraph(content1, content2, field) {
                     [1, Highcharts.Color(Highcharts.getOptions().colors[2]).setOpacity(0.3).get('rgba')]
                 ]
             }
-        }]
+        }],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
 
     });
 };
@@ -609,7 +644,14 @@ function getCompareScatterPlotGraph(content1, content2, field1, field2) {
                 data: data2
             }
 
-        ]
+        ],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
 
     });
 };
@@ -705,7 +747,14 @@ function getCompareBoxPlotGraph(content1, content2, field) {
                 data: data2
             }
 
-        ]
+        ],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
 
     });
 };
