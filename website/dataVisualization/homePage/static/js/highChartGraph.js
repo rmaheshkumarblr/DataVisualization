@@ -72,14 +72,14 @@ function updateFieldName(field) {
         fieldName = "fig210_sens"
     } else if (field == "Heavy VOCs") {
         fieldName = "fig280_sens"
-    } else if (fieldName = "CO2 (PPM)") {
+    } else if (fieldName == "CO2 (PPM)") {
         fieldName = "CO2"
-    } else if (fieldName = "O3 (PPB)") {
+    } else if (fieldName == "O3 (PPB)") {
         fieldName = "O3"
-    } else if (fieldName = "Light VOCs (PPM)") {
-        fieldName = "CO2"
-    } else if (fieldName = "Heavy VOCs (PPM)") {
-        fieldName = "CO2"
+    } else if (fieldName == "Light VOCs (PPM)") {
+        fieldName = "voc1_ppm"
+    } else if (fieldName == "Heavy VOCs (PPM)") {
+        fieldName = "voc2_ppm"
     }
     else {
         fieldName = field
@@ -180,19 +180,14 @@ function getTimeSeriesGraph(content, field) {
     data = []
     updateFieldName(field)
 
-    // console.log(content)
-
-    if(field == "CO2 (PPM)")
-    {
-        extraPlotInfo = content.pop();
-    }
-
+    console.log(field + " " + fieldName)
     function logArrayElements(element, index, array) {
         dateFromPython = new Date(element['Date'])
         data.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
     }
     content.forEach(logArrayElements)
 
+    console.log(data)
     $('#container').highcharts({
         chart: {
             zoomType: 'x',
