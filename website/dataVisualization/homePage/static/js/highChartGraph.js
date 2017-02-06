@@ -180,14 +180,14 @@ function getTimeSeriesGraph(content, field) {
     data = []
     updateFieldName(field)
 
-    console.log(field + " " + fieldName)
+    // console.log(field + " " + fieldName)
     function logArrayElements(element, index, array) {
         dateFromPython = new Date(element['Date'])
         data.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
     }
     content.forEach(logArrayElements)
 
-    console.log(data)
+    // console.log(data)
     $('#container').highcharts({
         chart: {
             zoomType: 'x',
