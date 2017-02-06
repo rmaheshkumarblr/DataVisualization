@@ -7,6 +7,64 @@ Highcharts.setOptions({
 fieldName = ""
 axisfieldName = ""
 
+// console.log("From High Chars Library:" + specialValues)
+
+// Calculation of the Default Equations value
+
+// x = minimum(CO2_SensorData)
+// slope1 = ((5000-390)/(4500 - x))
+// int1 = (5000 - ((5000-390)/(4500 - x))
+
+// final equation: CO2 (units ppm) = slope1*CO2_SensorData + int1
+// *slope1 and int1 should be adjustable
+
+// ________________________________________________________________
+        
+// x = 1/(mean(O3_SensorData))
+// slope2 = ((35-0)./(x - (1/3150)))
+// int2 = (35 - ((35-0)./(x - (1/3150))).*x)
+
+// final equation: O3 (units ppb) = slope2*(1/O3_SensorData) + int2
+// *slope2 and int2 should be adjustable
+
+// _______________________________________________________________
+       
+// x = minimum(Fig1_SensorData);
+// VOC1 = (Fig1_SensorData-x)./(4500-x);
+
+// final equation: VOC1 (units ppm) = 20.*VOC1 + 1.8;
+// *20 and 1.8 shoudl be adjustable)
+        
+// ________________________________________________________________
+
+//  x = minimum(Fig2_SensorData);
+// VOC2 = (poddata.Fig2 - x)./(4500 - x);
+
+// final equation: VOC2 (units ppm) = 10.*VOC2;
+// 10 should be adjustable
+// _________________________________________________________________
+
+// GPS Conversions to usable lat and long:
+        
+// Lat = poddata.NS.*(floor(poddata.Lat./100) +((poddata.Lat./100-(floor(poddata.Lat./100)))*100/60));
+// Long = poddata.EW.*(floor(poddata.Lon./100) + ((poddata.Lon./100-(floor(poddata.Lon/100)))*100/60));
+
+// __________________________________________________________________
+
+// More Complex Equations: 
+
+// Text for user: "use an equation that corrects for temperature and humidity; note you will need to input your own coefficients"
+
+// CO2: x1*CO2_SensorData + x2*Temperature + x3*Humidity + x4 (units ppm)
+
+// O3: x1*O3_SensorData + x2*Temperature + x3*Humidity + x4 (units ppb)
+
+// VOC1: x1*VOC1_SensorData + x2*Temperature + x3*Humidity + x4 (units ppm)
+
+// VOC2: x1*VOC2_SensorData + x2*Temperature + x3*Humidity + x4 (units ppm)
+
+// In each case the user will need to input a coefficient for the sensor data, for temp, and humidity as well as an intercept (x1, x2, x3, x4)
+
 function updateFieldName(field) {
     if (field == "O3") {
         fieldName = "e2vo3_sens"
@@ -14,7 +72,16 @@ function updateFieldName(field) {
         fieldName = "fig210_sens"
     } else if (field == "Heavy VOCs") {
         fieldName = "fig280_sens"
-    } else {
+    } else if (fieldName = "CO2 (PPM)") {
+        fieldName = "CO2"
+    } else if (fieldName = "O3 (PPB)") {
+        fieldName = "O3"
+    } else if (fieldName = "Light VOCs (PPM)") {
+        fieldName = "CO2"
+    } else if (fieldName = "Heavy VOCs (PPM)") {
+        fieldName = "CO2"
+    }
+    else {
         fieldName = field
     }
 
@@ -30,7 +97,16 @@ function updateFieldName(field) {
         axisfieldName = "Relative Humidity (%)"
     } else if (field == "CO2") {
         axisfieldName = "CO2 Electronic Signal (Voltage Equivalent)"
-    } else {
+    } else if (field == "CO2 (PPM)") {
+        axisfieldName = "CO2 Electronic Signal (PPM)"
+    }  else if (field == "O3 (PPB)") {
+        axisfieldName = "O3 Electronic Signal (PPM)"
+    }  else if (field == "Light VOCs (PPM)") {
+        axisfieldName = "Light VOCs Electronic Signal (PPM)"
+    }  else if (field == "Heavy VOCs (PPM)") {
+        axisfieldName = "Heavy VOCs Electronic Signal (PPM)"
+    } 
+    else {
         axisfieldName = field
     }
 }
@@ -97,14 +173,121 @@ function updateFieldsName(field1, field2) {
 
 
 
+
+
 function getTimeSeriesGraph(content, field) {
     "use strict",
     data = []
     updateFieldName(field)
 
+    // console.log(content)
+
+    if(field == "CO2 (PPM)")
+    {
+        extraPlotInfo = content.pop();
+    }
+
     function logArrayElements(element, index, array) {
         dateFromPython = new Date(element['Date'])
-        data.push([dateFromPython.getTime(), parseInt(element[fieldName])])
+        data.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
+    }
+    content.forEach(logArrayElements)
+
+    $('#container').highcharts({
+        chart: {
+            zoomType: 'x',
+            width: 950,
+            height: 500
+        },
+        title: {
+            text: field + ' against Time'
+        },
+        subtitle: {
+            text: document.ontouchstart === undefined ?
+                'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        },
+        xAxis: {
+            type: 'datetime',
+            title: {
+                text: "Time"
+            }
+        },
+        yAxis: {
+            title: {
+                text: axisfieldName
+            }
+        },
+        legend: {
+            enabled: true
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                }
+            }
+        },
+
+        series: [{
+            type: 'area',
+            name: field + ' against Time',
+            data: data
+        }],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
+
+    });
+};
+
+
+// This Time Series is graph is for the Default Equations which have 2 extra parameters which are modifiableby the user
+function getTimeSeriesGraphWithExtraParameters(content, field, slope, intercept) {
+    // console.log("From Time Series with patameters: " + field + " " + slope + " " + intercept )
+    "use strict",
+    data = []
+    updateFieldName(field)
+
+    // console.log(content)
+
+    if(field == "CO2 (PPM)")
+    {
+        extraPlotInfo = content.pop();
+    }
+
+    function logArrayElements(element, index, array) {
+        dateFromPython = new Date(element['Date'])
+        if(field == "CO2 (PPM)"){
+            data.push([dateFromPython.getTime(), ( parseFloat(slope) * parseFloat(element[fieldName]) ) + parseFloat(intercept)] )
+        } else if (field == "O3 (PPB)"){
+            data.push([dateFromPython.getTime(), ( parseFloat(slope) * (1/parseFloat(element[fieldName])) ) + parseFloat(intercept)] )
+        } else if (field == "Light VOCs (PPM)"){
+            data.push([dateFromPython.getTime(), ( parseFloat(slope) * parseFloat(element[fieldName]) ) + parseFloat(intercept)] )
+        } else if (field == "High VOCs (PPM)"){
+            data.push([dateFromPython.getTime(), ( parseFloat(slope) * parseFloat(element[fieldName]) )] )
+        } 
     }
     content.forEach(logArrayElements)
 
@@ -185,7 +368,7 @@ function getScatterPlotGraph(content, field1, field2) {
     updateFieldsName(field1, field2)
 
     function logArrayElements(element, index, array) {
-        data.push([parseFloat(element[fieldName1]), parseInt(element[fieldName2])])
+        data.push([parseFloat(element[fieldName1]), parseFloat(element[fieldName2])])
     }
     content.forEach(logArrayElements)
 
@@ -469,12 +652,12 @@ function getCompareTimeSeriesGraph(content1, content2, field) {
 
     function logArrayElements1(element, index, array) {
         dateFromPython = new Date(element['Date'])
-        data1.push([dateFromPython.getTime(), parseInt(element[fieldName])])
+        data1.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
     }
 
     function logArrayElements2(element, index, array) {
         dateFromPython = new Date(element['Date'])
-        data2.push([dateFromPython.getTime(), parseInt(element[fieldName])])
+        data2.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
     }
     content1.forEach(logArrayElements1)
     content2.forEach(logArrayElements2)
@@ -567,12 +750,12 @@ function getCompareScatterPlotGraph(content1, content2, field1, field2) {
     updateFieldsName(field1, field2)
 
     function logArrayElements1(element, index, array) {
-        data1.push([parseFloat(element[fieldName1]), parseInt(element[fieldName2])])
+        data1.push([parseFloat(element[fieldName1]), parseFloat(element[fieldName2])])
     }
     content1.forEach(logArrayElements1)
 
     function logArrayElements2(element, index, array) {
-        data2.push([parseFloat(element[fieldName1]), parseInt(element[fieldName2])])
+        data2.push([parseFloat(element[fieldName1]), parseFloat(element[fieldName2])])
     }
     content2.forEach(logArrayElements2)
 

@@ -403,12 +403,34 @@ def getSelectedCSV(request,locationOfDocument1):
 
 def getContentsOfTxtFile(locationOfDocument):
     outputContent = []
+    
+    CO2_ppm_min = float("inf")
+    CO2_ppm_slope = 0
+    CO2_ppm_int = 0
+
+    O3_ppb_sum = 0
+    O3_ppb_mean_inverse = 0
+    O3_ppb_slope = 0
+    O3_ppb_int = 0
+
+    VOC1_ppm_min = pd.read_csv("media/"+locationOfDocument,header=0,usecols=[19],delimiter=",").min(axis=0).values[0]
+    VOC2_ppm_min = pd.read_csv("media/"+locationOfDocument,header=0,usecols=[21],delimiter=",").min(axis=0).values[0]
+
+
+    Count_To_Find_Mean = 0
+
     with open("media/"+locationOfDocument) as fileHandler:
         for line in fileHandler:
             dictContent = {}
+            specialContent = {}
             line = line.strip()
             if(len(line) > 0):
+                Count_To_Find_Mean += 1
                 splitLine = line.split(',')
+                # Calculated Value for Plots
+                CO2_ppm_min = min(CO2_ppm_min,float(splitLine[7]))
+                O3_ppb_sum += float(splitLine[25])
+                # Default Value for Plots
                 dictContent['Date'] = splitLine[1] + " " + splitLine[2]
                 dictContent['Temperature'] = splitLine[5]
                 dictContent['Humidity'] = splitLine[6]
@@ -416,11 +438,45 @@ def getContentsOfTxtFile(locationOfDocument):
                 dictContent['fig210_sens'] = splitLine[19]
                 dictContent['fig280_sens'] = splitLine[21]
                 dictContent['e2vo3_sens'] = splitLine[25]
+                dictContent['voc1_ppm'] = (float(splitLine[19]) - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)
+                dictContent['voc2_ppm'] = (float(splitLine[21]) - VOC2_ppm_min)/float(4500 - VOC2_ppm_min)
                 outputContent.append(dictContent)
+            else:
+                # Just to avoid divide by zero
+                Count_To_Find_Mean = 1
+        # CO2 Equations Calculations
+        CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
+        CO2_ppm_int = (5000 - ((5000-390)/float(4500 - CO2_ppm_min)))
+        # O3 Equations Calculations
+        O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
+        O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
+        O3_ppb_slope = ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150))))
+        O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
+        # Append the calculated useful value to JSON
+        specialContent['CO2_ppm_slope'] = CO2_ppm_slope
+        specialContent['CO2_ppm_int'] = CO2_ppm_int
+        specialContent['O3_ppb_slope'] = O3_ppb_slope
+        specialContent['O3_ppb_int'] = O3_ppb_int
+        outputContent.append(specialContent)
     return outputContent
 
 def getContentsOfCSVFile(locationOfDocument):
     outputContent = []
+
+    CO2_ppm_min = float("inf")
+    CO2_ppm_slope = 0
+    CO2_ppm_int = 0
+
+    O3_ppb_sum = 0
+    O3_ppb_mean_inverse = 0
+    O3_ppb_slope = 0
+    O3_ppb_int = 0
+
+    VOC1_ppm_min = pd.read_csv("media/"+locationOfDocument,header=1,usecols=[4],delimiter=",").min(axis=0).values[0]
+    VOC2_ppm_min = pd.read_csv("media/"+locationOfDocument,header=1,usecols=[5],delimiter=",").min(axis=0).values[0]
+
+    Count_To_Find_Mean = 0
+
     with open("media/"+locationOfDocument) as fileHandler:
         count = 0
         for line in fileHandler:
@@ -428,9 +484,15 @@ def getContentsOfCSVFile(locationOfDocument):
             if count == 1:
                 continue
             dictContent = {}
+            specialContent = {}
             line = line.strip()
             if(len(line) > 0):
+                Count_To_Find_Mean += 1
                 splitLine = line.split(',')
+                # Calculated Value for Plots
+                CO2_ppm_min = min(CO2_ppm_min,float(splitLine[3]))
+                O3_ppb_sum += float(splitLine[6])
+                # Default Value for Plots
                 dictContent['Date'] = splitLine[0]
                 dictContent['Temperature'] = splitLine[1]
                 dictContent['Humidity'] = splitLine[2]
@@ -438,7 +500,26 @@ def getContentsOfCSVFile(locationOfDocument):
                 dictContent['fig210_sens'] = splitLine[4]
                 dictContent['fig280_sens'] = splitLine[5]
                 dictContent['e2vo3_sens'] = splitLine[6]
+                dictContent['voc1_ppm'] = (float(splitLine[4]) - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)
+                dictContent['voc2_ppm'] = (float(splitLine[5]) - VOC2_ppm_min)/float(4500 - VOC2_ppm_min)
                 outputContent.append(dictContent)
+            else:
+                # Just to avoid divide by zero
+                Count_To_Find_Mean = 1
+        # CO2 Equations Calculations
+        CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
+        CO2_ppm_int = (5000 - ((5000-390)/float(4500 - CO2_ppm_min)))
+        # O3 Equations Calculations
+        O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
+        O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
+        O3_ppb_slope = ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150))))
+        O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
+        # Append the calculated useful value to JSON
+        specialContent['CO2_ppm_slope'] = CO2_ppm_slope
+        specialContent['CO2_ppm_int'] = CO2_ppm_int
+        specialContent['O3_ppb_slope'] = O3_ppb_slope
+        specialContent['O3_ppb_int'] = O3_ppb_int
+        outputContent.append(specialContent)
     return outputContent
 
 

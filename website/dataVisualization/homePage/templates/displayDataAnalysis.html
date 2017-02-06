@@ -95,9 +95,13 @@
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
+                <option>CO2 (PPM)</option>
                 <option>Light VOCs</option>
+                <option>Light VOCs (PPM)</option>
                 <option>Heavy VOCs</option>
+                <option>Heavy VOCs (PPM)</option>
                 <option>O3</option>
+                <option>O3 (PPB)</option>
               </select>
               <button onclick="getSelectedPollutantAndPlot()" class="btn btn-primary btn-block">Plot</button>
            </ul>
@@ -186,11 +190,85 @@
 
       // console.log({{ displayContent1 | safe }})
       
+      var specialValues = {{ displayContent1 | safe }}.pop()
+
+      // jQuery for Slope
+      var divSpecialSlope = $('<div/>', {
+        'class': 'input-group',
+        'id': 'slopeParameter'
+      })
+      var divSpecialSlopeSpan = $('<span/>', {
+        'class': 'input-group-addon',
+        'id': 'basic-addon3'
+      }).html('Slope');
+      var divSpecialSlopeSpanInput = $('<input/>',{
+        'type': 'text',
+        'class':'form-control',
+        'id': 'slope',
+        'aria-describedby': 'basic-addon3'
+      })
+      // jQuery for Intercept
+      var divSpecialIntercept = $('<div/>', {
+        'class': 'input-group',
+        'id':'interceptParameter'
+      })
+      var divSpecialInterceptSpan = $('<span/>', {
+        'class': 'input-group-addon',
+        'id': 'basic-addon3'
+      }).html('Intercept');
+      var divSpecialInterceptSpanInput = $('<input/>',{
+        'type': 'text',
+        'class':'form-control',
+        'id': 'intercept',
+        'aria-describedby': 'basic-addon3'
+      })
+
+
+      $('#pollutant').change(function(){
+          
+          // Logic for which button is clicked, the slope and intercept are updated accordingly
+          if ($('#pollutant').find(":selected").text() == "CO2 (PPM)"){
+            divSpecialSlopeSpanInput.val(specialValues.CO2_ppm_slope)
+            divSpecialInterceptSpanInput.val(specialValues.CO2_ppm_int)
+            $('#pollutant').after(divSpecialIntercept.append(divSpecialInterceptSpan,divSpecialInterceptSpanInput).show())
+            $('#pollutant').after(divSpecialSlope.append(divSpecialSlopeSpan,divSpecialSlopeSpanInput).show())
+          }
+          else if ($('#pollutant').find(":selected").text() == "O3 (PPB)"){
+            divSpecialSlopeSpanInput.val(specialValues.O3_ppb_slope)
+            divSpecialInterceptSpanInput.val(specialValues.O3_ppb_int)
+            $('#pollutant').after(divSpecialIntercept.append(divSpecialInterceptSpan,divSpecialInterceptSpanInput).show())
+            $('#pollutant').after(divSpecialSlope.append(divSpecialSlopeSpan,divSpecialSlopeSpanInput).show())
+          }
+          else if ($('#pollutant').find(":selected").text() == "Light VOCs (PPM)"){
+            divSpecialSlopeSpanInput.val(20)
+            divSpecialInterceptSpanInput.val(1.8)
+            $('#pollutant').after(divSpecialIntercept.append(divSpecialInterceptSpan,divSpecialInterceptSpanInput).show())
+            $('#pollutant').after(divSpecialSlope.append(divSpecialSlopeSpan,divSpecialSlopeSpanInput))
+          }
+          else if ($('#pollutant').find(":selected").text() == "Heavy VOCs (PPM)"){
+            divSpecialSlopeSpanInput.val(10)
+            divSpecialInterceptSpanInput.val(0)
+            $('#pollutant').after(divSpecialIntercept.append(divSpecialInterceptSpan,divSpecialInterceptSpanInput).hide())
+            $('#pollutant').after(divSpecialSlope.append(divSpecialSlopeSpan,divSpecialSlopeSpanInput))
+          }
+          else {
+            $('#slopeParameter').remove()
+            $('#interceptParameter').remove()
+          }
+
+          
+          
+      })
+
+      console.log("Special Values:" , specialValues )
       function getSelectedPollutantAndPlot()
       {
         var pollutant = $('#pollutant').find(":selected").text();
-        getTimeSeriesGraph({{ displayContent1 | safe }}, pollutant ) ;
-
+        if ( pollutant == "CO2 (PPM)" || pollutant == "O3 (PPB)" || pollutant == "Light VOCs (PPM)" || pollutant == "High VOCs (PPM)" ) {
+          getTimeSeriesGraphWithExtraParameters({{ displayContent1 | safe }}, pollutant , $('#slope').val() , $('#intercept').val() )
+        } else {
+          getTimeSeriesGraph({{ displayContent1 | safe }}, pollutant ) ;
+        }
       }
 
       function getSelectedPollutantsAndPlot()
