@@ -72,13 +72,13 @@ function updateFieldName(field) {
         fieldName = "fig210_sens"
     } else if (field == "Heavy VOCs") {
         fieldName = "fig280_sens"
-    } else if (fieldName == "CO2 (PPM)") {
+    } else if (field == "CO2 (PPM)") {
         fieldName = "CO2"
-    } else if (fieldName == "O3 (PPB)") {
+    } else if (field == "O3 (PPB)") {
         fieldName = "O3"
-    } else if (fieldName == "Light VOCs (PPM)") {
+    } else if (field == "Light VOCs (PPM)") {
         fieldName = "voc1_ppm"
-    } else if (fieldName == "Heavy VOCs (PPM)") {
+    } else if (field == "Heavy VOCs (PPM)") {
         fieldName = "voc2_ppm"
     }
     else {
@@ -260,18 +260,12 @@ function getTimeSeriesGraph(content, field) {
 
 // This Time Series is graph is for the Default Equations which have 2 extra parameters which are modifiableby the user
 function getTimeSeriesGraphWithExtraParameters(content, field, slope, intercept) {
-    // console.log("From Time Series with patameters: " + field + " " + slope + " " + intercept )
+
     "use strict",
     data = []
     updateFieldName(field)
 
-    // console.log(content)
-
-    if(field == "CO2 (PPM)")
-    {
-        extraPlotInfo = content.pop();
-    }
-
+    // console.log("From Time Series with patameters: " + field + " " + slope + " " + intercept + " " + fieldName)
     function logArrayElements(element, index, array) {
         dateFromPython = new Date(element['Date'])
         if(field == "CO2 (PPM)"){
@@ -285,7 +279,7 @@ function getTimeSeriesGraphWithExtraParameters(content, field, slope, intercept)
         } 
     }
     content.forEach(logArrayElements)
-
+    // console.log(data)
     $('#container').highcharts({
         chart: {
             zoomType: 'x',
