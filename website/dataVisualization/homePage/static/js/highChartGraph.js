@@ -75,7 +75,7 @@ function updateFieldName(field) {
     } else if (field == "CO2 (PPM)") {
         fieldName = "CO2"
     } else if (field == "O3 (PPB)") {
-        fieldName = "O3"
+        fieldName = "e2vo3_sens"
     } else if (field == "Light VOCs (PPM)") {
         fieldName = "voc1_ppm"
     } else if (field == "Heavy VOCs (PPM)") {
