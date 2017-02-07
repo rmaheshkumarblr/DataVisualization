@@ -76,9 +76,9 @@ function updateFieldName(field) {
         fieldName = "CO2"
     } else if (field == "O3 (PPB)") {
         fieldName = "e2vo3_sens"
-    } else if (field == "Light VOCs (PPM)") {
+    } else if (field == "Light VOCs (PPB)") {
         fieldName = "voc1_ppm"
-    } else if (field == "Heavy VOCs (PPM)") {
+    } else if (field == "Heavy VOCs (PPB)") {
         fieldName = "voc2_ppm"
     }
     else {
@@ -98,13 +98,13 @@ function updateFieldName(field) {
     } else if (field == "CO2") {
         axisfieldName = "CO2 Electronic Signal (Voltage Equivalent)"
     } else if (field == "CO2 (PPM)") {
-        axisfieldName = "CO2 Electronic Signal (PPM)"
+        axisfieldName = "CO2 (PPM)"
     }  else if (field == "O3 (PPB)") {
-        axisfieldName = "O3 Electronic Signal (PPM)"
-    }  else if (field == "Light VOCs (PPM)") {
-        axisfieldName = "Light VOCs Electronic Signal (PPM)"
-    }  else if (field == "Heavy VOCs (PPM)") {
-        axisfieldName = "Heavy VOCs Electronic Signal (PPM)"
+        axisfieldName = "O3 (PPB)"
+    }  else if (field == "Light VOCs (PPB)") {
+        axisfieldName = "Light VOCs (PPB)"
+    }  else if (field == "Heavy VOCs (PPB)") {
+        axisfieldName = "Heavy VOCs (PPB)"
     } 
     else {
         axisfieldName = field

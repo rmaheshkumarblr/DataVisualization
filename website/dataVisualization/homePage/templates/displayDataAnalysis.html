@@ -97,9 +97,9 @@
                 <option>CO2</option>
                 <option>CO2 (PPM)</option>
                 <option>Light VOCs</option>
-                <option>Light VOCs (PPM)</option>
+                <option>Light VOCs (PPB)</option>
                 <option>Heavy VOCs</option>
-                <option>Heavy VOCs (PPM)</option>
+                <option>Heavy VOCs (PPB)</option>
                 <option>O3</option>
                 <option>O3 (PPB)</option>
               </select>
@@ -239,13 +239,13 @@
             $('#pollutant').after(divSpecialIntercept.append(divSpecialInterceptSpan,divSpecialInterceptSpanInput).show())
             $('#pollutant').after(divSpecialSlope.append(divSpecialSlopeSpan,divSpecialSlopeSpanInput).show())
           }
-          else if ($('#pollutant').find(":selected").text() == "Light VOCs (PPM)"){
+          else if ($('#pollutant').find(":selected").text() == "Light VOCs (PPB)"){
             divSpecialSlopeSpanInput.val(20)
             divSpecialInterceptSpanInput.val(1.8)
             $('#pollutant').after(divSpecialIntercept.append(divSpecialInterceptSpan,divSpecialInterceptSpanInput).show())
             $('#pollutant').after(divSpecialSlope.append(divSpecialSlopeSpan,divSpecialSlopeSpanInput))
           }
-          else if ($('#pollutant').find(":selected").text() == "Heavy VOCs (PPM)"){
+          else if ($('#pollutant').find(":selected").text() == "Heavy VOCs (PPB)"){
             divSpecialSlopeSpanInput.val(10)
             divSpecialInterceptSpanInput.val(0)
             $('#pollutant').after(divSpecialIntercept.append(divSpecialInterceptSpan,divSpecialInterceptSpanInput).hide())
