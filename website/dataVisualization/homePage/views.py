@@ -446,7 +446,7 @@ def getContentsOfTxtFile(locationOfDocument):
                 Count_To_Find_Mean = 1
         # CO2 Equations Calculations
         CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
-        CO2_ppm_int = (5000 - ((5000-390)/float(4500 - CO2_ppm_min)))
+        CO2_ppm_int = 5000 - (4500*slope1)
         # O3 Equations Calculations
         O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
         O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
