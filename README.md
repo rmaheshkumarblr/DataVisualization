@@ -89,4 +89,6 @@ postgres -D /usr/local/var/postgres
 #https://stackoverflow.com/questions/28446361/how-to-reset-postgresql-database
 
 Delete the content of the database completely. Can be used when new fields are being added. Note: It deletes the complete database.
- ./manage.py flush 
+ ./manage.py flush
+
+# Start MySQL on local system (MAC) - /usr/local/mysql/bin/mysqld --user=_mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --plugin-dir=/usr/local/mysql/lib/plugin --log-error=/usr/local/mysql/data/mysqld.local.err --pid-file=/usr/local/mysql/data/mysqld.local.pid 
