@@ -265,7 +265,7 @@
       {
         var pollutant = $('#pollutant').find(":selected").text();
 
-        if ( pollutant == "CO2 (PPM)" || pollutant == "O3 (PPB)" || pollutant == "Light VOCs (PPM)" || pollutant == "High VOCs (PPM)" ) {
+        if ( pollutant == "CO2 (PPM)" || pollutant == "O3 (PPB)" || pollutant == "Light VOCs (PPM)" || pollutant == "Heavy VOCs (PPM)" ) {
           getTimeSeriesGraphWithExtraParameters({{ displayContent1 | safe }}, pollutant , $('#slope').val() , $('#intercept').val() )
         } else {
           getTimeSeriesGraph({{ displayContent1 | safe }}, pollutant ) ;

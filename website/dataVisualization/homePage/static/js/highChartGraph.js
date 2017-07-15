@@ -258,9 +258,8 @@ function getTimeSeriesGraph(content, field) {
 };
 
 
-// This Time Series is graph is for the Default Equations which have 2 extra parameters which are modifiableby the user
+// This Time Series is graph for the Default Equations which have 2 extra parameters which are modifiable by the user
 function getTimeSeriesGraphWithExtraParameters(content, field, slope, intercept) {
-
     "use strict",
     data = []
     updateFieldName(field)
@@ -274,7 +273,7 @@ function getTimeSeriesGraphWithExtraParameters(content, field, slope, intercept)
             data.push([dateFromPython.getTime(), ( parseFloat(slope) * (1/parseFloat(element[fieldName])) ) + parseFloat(intercept)] )
         } else if (field == "Light VOCs (PPM)"){
             data.push([dateFromPython.getTime(), ( parseFloat(slope) * parseFloat(element[fieldName]) ) + parseFloat(intercept)] )
-        } else if (field == "High VOCs (PPM)"){
+        } else if (field == "Heavy VOCs (PPM)"){
             data.push([dateFromPython.getTime(), ( parseFloat(slope) * parseFloat(element[fieldName]) )] )
         } 
     }

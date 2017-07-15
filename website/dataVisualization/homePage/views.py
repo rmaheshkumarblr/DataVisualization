@@ -243,6 +243,25 @@ def personalUploadedFiles(request):
         {'documents': documents}
         )
 
+def includeConcentationToDataFrame(df):
+    VOC1_ppm_min = df.fig210_sens.min(axis=0)
+    VOC2_ppm_min = df.fig280_sens.min(axis=0)
+    
+    CO2_ppm_min = df.CO2.min(axis=0)
+    CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
+    CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
+    
+    O3_ppb_mean = df.e2vo3_sens.mean()
+    O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
+    O3_ppb_slope = ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150))))
+    O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
+    
+    df['CO2_ppm'] = (CO2_ppm_slope * df['CO2']) + CO2_ppm_int
+    df['voc1_ppm'] = (20*(df['fig210_sens'] - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)) + 1.8
+    df['voc2_ppm'] = 10*(df['fig280_sens'] - VOC2_ppm_min)/float(4500 - VOC2_ppm_min)
+    df['O3_ppb'] = O3_ppb_slope * (1/df['e2vo3_sens']) + O3_ppb_int
+    return df
+
 
 def averaging(path,fileName):
     
@@ -255,19 +274,22 @@ def averaging(path,fileName):
     groupedMinute['Date'] =  pd.to_datetime(groupedMinute['level_0']) +  (pd.to_timedelta(groupedMinute['level_1'],unit='h') + pd.to_timedelta(groupedMinute['level_2'],unit='m'))
     groupedMinute.drop(['level_0','level_1','level_2'],axis=1,inplace=True)
     groupedMinute = groupedMinute[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
+    groupedMinute = includeConcentationToDataFrame(groupedMinute)
 
     # # Hour Averaging
     groupedHour = df.groupby([times.date, times.hour])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens"].mean().reset_index()
     groupedHour['Date'] =  pd.to_datetime(groupedHour['level_0']) +  (pd.to_timedelta(groupedHour['level_1'],unit='h'))
     groupedHour.drop(['level_0','level_1'],axis=1,inplace=True)
     groupedHour = groupedHour[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
+    groupedHour = includeConcentationToDataFrame(groupedHour)
 
     # # Day Averaging
     groupedDaily = df.groupby([times.date])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens"].mean().reset_index()
     groupedDaily['Date'] =  pd.to_datetime(groupedDaily['index']) + (pd.to_timedelta(1,unit='s'))
     groupedDaily.drop(['index'],axis=1,inplace=True)
     groupedDaily = groupedDaily[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
-
+    groupedDaily = includeConcentationToDataFrame(groupedDaily)
+    
     fileName = fileName.split(".")[0]
 
     groupedMinute.to_csv(fileName + "_" + path.split(".")[0] + '_minute' + ".csv",index=False)
