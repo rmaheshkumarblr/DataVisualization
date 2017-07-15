@@ -1,19 +1,30 @@
 {% extends 'overAllTemplate.html' %} 
 {% load bootstrap %}
 
-{% block 'container' %}
+{% block 'navbar' %}
+<p>
+<table class="table table-striped" id="table1"> 
+    <tbody> 
+        <tr> 
+            <th>R stands for Raw Data</th>
+            <th>M stands for Minutely Average Data</th>
+            <th>H stands for Hourly Average Data</th>
+            <th>D stands for Daily Average Data</th>
+        </tr>
+    </tbody>
+</table>
+</p>
 
-<h4 class="well"> List of uploaded documents </h4>
-    <table class="table table-striped" id="table1"> 
-        <tbody> 
-            <tr> 
-                <th>R stands for Raw Data</th>
-                <th>M stands for Minutely Average Data</th>
-                <th>H stands for Hourly Average Data</th>
-                <th>D stands for Daily Average Data</th>
-            </tr>
-        </tbody>
-    </table>
+
+{% endblock %}
+
+{% block 'container' %}
+<br>
+<br>
+<br>
+<h4 class="well"> <center>List of uploaded documents</center> </h4>
+
+    
 
 <!-- List of uploaded documents -->
 
@@ -53,12 +64,12 @@
       </div>
     </div>
     <br>
-    <table class="table table-striped" id="table"> 
-        <thead> 
+    <table class="table table-striped sticky-header" id="table"> 
+<!--         <thead> 
             <tr> 
                 <b> &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspCompare </b>
             </tr> 
-        </thead> 
+        </thead>  -->
         <thead> 
             <tr> 
                 <th>Pod ID</th> 
@@ -146,7 +157,21 @@
     </ul>
 </div> -->
 
+<script>
+
+
+
+
+$(document).ready(function(){
+
+$(".sticky-header").floatThead({scrollingTop:110});
+
+});
+</script>
+
 <script type="text/javascript">
+
+
 function checkHowManyCheckBoxesClicked()
 {
     if ($('#table').children('tbody').children('tr').children('td').find('input:checked').length == 2) 
@@ -225,7 +250,6 @@ $('.filter').click(function() {
         // });  
 
 });
-
 </script>   
 {% else %}
     <p>No documents.</p>

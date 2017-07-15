@@ -76,3 +76,10 @@ input[type="file"]{
   float: right;
   color: white;
 }
+
+/* CSS for Floating Table */
+table.floatThead-table {
+    border-top: none;
+    border-bottom: none;
+    background-color: #FFF;
+}
