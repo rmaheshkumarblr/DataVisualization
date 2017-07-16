@@ -258,6 +258,8 @@ function getTimeSeriesGraph(content, field) {
 };
 
 
+
+
 // This Time Series is graph for the Default Equations which have 2 extra parameters which are modifiable by the user
 function getTimeSeriesGraphWithExtraParameters(content, field, slope, intercept) {
     "use strict",
@@ -728,6 +730,102 @@ function getCompareTimeSeriesGraph(content1, content2, field) {
 
     });
 };
+
+function getPollutantNonTimeSeriesComparePlotGraph(content1, content2, field) {
+    "use strict",
+    data1 = []
+    data2 = []
+
+    updateFieldName(field)
+
+    function logArrayElements1(element, index, array) {
+        data1.push([index, parseFloat(element[fieldName])])
+    }
+
+    function logArrayElements2(element, index, array) {
+        data2.push([index, parseFloat(element[fieldName])])
+    }
+    content1.forEach(logArrayElements1)
+    content2.forEach(logArrayElements2)
+
+    $('#container').highcharts({
+        chart: {
+            zoomType: 'x',
+            width: 950,
+            height: 500
+        },
+        title: {
+            text: field + ' against Index'
+        },
+        subtitle: {
+            text: document.ontouchstart === undefined ?
+                'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        },
+        xAxis: {
+            type: 'String'
+        },
+        yAxis: {
+            title: {
+                text: axisfieldName
+            }
+        },
+        legend: {
+            enabled: true
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
+            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+        },
+        plotOptions: {
+            area: {
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+
+        series: [{
+            type: 'area',
+            name: field + ' against Index' + " for POD1",
+            data: data1,
+            color: Highcharts.getOptions().colors[8],
+            fillColor: {
+                linearGradient: [0, 0, 0, 100],
+                stops: [
+                    [0, Highcharts.getOptions().colors[8]],
+                    [1, Highcharts.Color(Highcharts.getOptions().colors[8]).setOpacity(0.3).get('rgba')]
+                ]
+            }
+        }, {
+            type: 'area',
+            name: field + ' against Index' + " for POD2",
+            data: data2,
+            color: Highcharts.getOptions().colors[2],
+            fillColor: {
+                linearGradient: [0, 0, 0, 100],
+                stops: [
+                    [0, Highcharts.getOptions().colors[2]],
+                    [1, Highcharts.Color(Highcharts.getOptions().colors[2]).setOpacity(0.3).get('rgba')]
+                ]
+            }
+        }],
+        exporting: {
+            buttons: {
+                contextButton: {
+                    text: 'Download'
+                }
+            }
+        }
+
+    });
+}
 
 function getCompareScatterPlotGraph(content1, content2, field1, field2) {
 

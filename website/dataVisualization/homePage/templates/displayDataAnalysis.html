@@ -34,6 +34,21 @@
               </select>
               <button onclick="getCompareSelectedPollutantAndPlot()" class="btn btn-primary btn-block">Plot</button>
           </ul>
+          <h4>Non-Timeseries Plot</h4>
+           <ul class="nav nav-sidebar">
+             <!-- <li><a href="#" onclick="getDoubleYAxisPlotGraph({{ displayContent1 }});return false;">Temperature Vs Humidity</a></li> -->
+             <label for="pollutant4">Pollutant 1: </label>
+              <select name="pollutant4" id="pollutant4">
+                <option selected="selected">Temperature</option>
+                <option>Humidity</option>
+                <option>CO2</option>
+                <option>Light VOCs</option>
+                <option>Heavy VOCs</option>
+                <option>O3</option>
+              </select>
+              <br>
+              <button onclick="getSelectedPollutantNonTimeSeriesComparePlot()" class="btn btn-primary btn-block">Plot</button>
+           </ul>
           <h4>Scatter Plot</h4>
           <ul class="nav nav-sidebar">
             <!-- <li><a href="#" onclick="getCompareScatterPlotGraph({{ displayContent1 }},{{ displayContent2 }}, 'Temperature' , 'Humidity');return   false;  ">Temperature Vs Humidity </a></li> -->
@@ -308,6 +323,13 @@
           var pollutant1 = $('#pollutant1').find(":selected").text();
           var pollutant2 = $('#pollutant2').find(":selected").text();
           getCompareScatterPlotGraph({{ displayContent1 | safe }}, {{ displayContent2 | safe }},    pollutant1 , pollutant2 ) ;
+        }
+
+        function getSelectedPollutantNonTimeSeriesComparePlot()
+        {
+          var pollutant = $('#pollutant4').find(":selected").text();
+          getPollutantNonTimeSeriesComparePlotGraph({{ displayContent1 | safe }}, {{ displayContent2 | safe }}, pollutant ) ;
+
         }
   
         function getCompareSelectedPollutantAndBoxPlot()
