@@ -552,7 +552,10 @@ function getBoxPlotGraph(content, field) {
     Field = [];
 
     function logArrayElements(element, index, array) {
-        Field.push([parseFloat(element[fieldName])])
+        if (fieldName in element)
+        {
+            Field.push([parseFloat(element[fieldName])])
+        }
     }
     content.forEach(logArrayElements)
 
@@ -586,7 +589,6 @@ function getBoxPlotGraph(content, field) {
         boxValues.push(Math.max.apply(Math, data));
         return boxValues;
     }
-    console.log(getBoxValues(Field))
     data.push(getBoxValues(Field));
 
     $('#container').highcharts({
@@ -938,12 +940,18 @@ function getCompareBoxPlotGraph(content1, content2, field) {
     updateFieldName(field)
 
     function logArrayElements1(element, index, array) {
-        Field1.push(parseFloat(element[fieldName]))
+        if (fieldName in element)
+        {
+            Field1.push(parseFloat(element[fieldName]))
+        }
     }
     content1.forEach(logArrayElements1)
 
     function logArrayElements2(element, index, array) {
-        Field2.push(parseFloat(element[fieldName]))
+        if (fieldName in element)
+        {
+            Field2.push(parseFloat(element[fieldName]))
+        }
     }
     content2.forEach(logArrayElements2)
 
