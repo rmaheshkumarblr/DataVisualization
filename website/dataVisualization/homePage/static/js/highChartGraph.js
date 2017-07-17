@@ -642,14 +642,37 @@ function getCompareTimeSeriesGraph(content1, content2, field) {
 
     updateFieldName(field)
 
+    specialValues1 = content1.pop()
+    specialValues2 = content2.pop()
+    
     function logArrayElements1(element, index, array) {
         dateFromPython = new Date(element['Date'])
-        data1.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
+        if(field == "CO2 (PPM)"){
+            data1.push([dateFromPython.getTime(), ( parseFloat(specialValues1['CO2_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues1['CO2_ppm_int'])] )
+        } else if (field == "O3 (PPB)"){
+            data1.push([dateFromPython.getTime(), ( parseFloat(specialValues1['O3_ppb_slope']) * (1/parseFloat(element[fieldName])) ) + parseFloat(specialValues1['O3_ppb_int'])] )
+        } else if (field == "Light VOCs (PPM)"){
+            data1.push([dateFromPython.getTime(), ( parseFloat(20) * parseFloat(element[fieldName]) ) + parseFloat(1.8)] )
+        } else if (field == "Heavy VOCs (PPM)"){
+            data1.push([dateFromPython.getTime(), ( parseFloat(10) * parseFloat(element[fieldName]) )] )
+        } else {
+            data1.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
+        }
     }
 
     function logArrayElements2(element, index, array) {
         dateFromPython = new Date(element['Date'])
-        data2.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
+        if(field == "CO2 (PPM)"){
+            data2.push([dateFromPython.getTime(), ( parseFloat(specialValues2['CO2_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues2['CO2_ppm_int'])] )
+        } else if (field == "O3 (PPB)"){
+            data2.push([dateFromPython.getTime(), ( parseFloat(specialValues2['O3_ppb_slope']) * (1/parseFloat(element[fieldName])) ) + parseFloat(specialValues2['O3_ppb_int'])] )
+        } else if (field == "Light VOCs (PPM)"){
+            data2.push([dateFromPython.getTime(), ( parseFloat(20) * parseFloat(element[fieldName]) ) + parseFloat(1.8)] )
+        } else if (field == "Heavy VOCs (PPM)"){
+            data2.push([dateFromPython.getTime(), ( parseFloat(10) * parseFloat(element[fieldName]) )] )
+        } else {
+            data2.push([dateFromPython.getTime(), parseFloat(element[fieldName])])
+        }
     }
     content1.forEach(logArrayElements1)
     content2.forEach(logArrayElements2)
@@ -740,12 +763,35 @@ function getPollutantNonTimeSeriesComparePlotGraph(content1, content2, field) {
 
     updateFieldName(field)
 
+    specialValues1 = content1.pop()
+    specialValues2 = content2.pop()
+
     function logArrayElements1(element, index, array) {
-        data1.push([index, parseFloat(element[fieldName])])
+        if(field == "CO2 (PPM)"){
+            data1.push([index, ( parseFloat(specialValues1['CO2_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues1['CO2_ppm_int'])] )
+        } else if (field == "O3 (PPB)"){
+            data1.push([index, ( parseFloat(specialValues1['O3_ppb_slope']) * (1/parseFloat(element[fieldName])) ) + parseFloat(specialValues1['O3_ppb_int'])] )
+        } else if (field == "Light VOCs (PPM)"){
+            data1.push([index, ( parseFloat(20) * parseFloat(element[fieldName]) ) + parseFloat(1.8)] )
+        } else if (field == "Heavy VOCs (PPM)"){
+            data1.push([index, ( parseFloat(10) * parseFloat(element[fieldName]) )] )
+        } else {
+            data1.push([index, parseFloat(element[fieldName])])
+        }
     }
 
     function logArrayElements2(element, index, array) {
-        data2.push([index, parseFloat(element[fieldName])])
+        if(field == "CO2 (PPM)"){
+            data2.push([index, ( parseFloat(specialValues2['CO2_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues2['CO2_ppm_int'])] )
+        } else if (field == "O3 (PPB)"){
+            data2.push([index, ( parseFloat(specialValues2['O3_ppb_slope']) * (1/parseFloat(element[fieldName])) ) + parseFloat(specialValues2['O3_ppb_int'])] )
+        } else if (field == "Light VOCs (PPM)"){
+            data2.push([index, ( parseFloat(20) * parseFloat(element[fieldName]) ) + parseFloat(1.8)] )
+        } else if (field == "Heavy VOCs (PPM)"){
+            data2.push([index, ( parseFloat(10) * parseFloat(element[fieldName]) )] )
+        } else {
+            data2.push([index, parseFloat(element[fieldName])])
+        }
     }
     content1.forEach(logArrayElements1)
     content2.forEach(logArrayElements2)

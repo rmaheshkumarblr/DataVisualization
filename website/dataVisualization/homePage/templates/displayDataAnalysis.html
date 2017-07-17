@@ -23,28 +23,36 @@
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'Light VOCs');return false;">  Light VOCs</a></li>
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }}, {{ displayContent2 }}, 'Heavy VOCs');return false;">  Heavy VOCs</a></li>
             <li><a href="#" onclick="getCompareTimeSeriesGraph({{ displayContent1 }},{{ displayContent2 }},  'O3');return false;"> O3</a>  </li> -->
-            <label for="pollutant">Pollutant : </label>
-             <select name="pollutant" id="pollutant">
+            <label for="pollutant6">Pollutant : </label>
+             <select name="pollutant6" id="pollutant6">
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
+                <option>CO2 (PPM)</option>
                 <option>Light VOCs</option>
+                <option>Light VOCs (PPM)</option>
                 <option>Heavy VOCs</option>
+                <option>Heavy VOCs (PPM)</option>
                 <option>O3</option>
+                <option>O3 (PPB)</option>
               </select>
               <button onclick="getCompareSelectedPollutantAndPlot()" class="btn btn-primary btn-block">Plot</button>
           </ul>
           <h4>Non-Timeseries Plot</h4>
            <ul class="nav nav-sidebar">
              <!-- <li><a href="#" onclick="getDoubleYAxisPlotGraph({{ displayContent1 }});return false;">Temperature Vs Humidity</a></li> -->
-             <label for="pollutant4">Pollutant: </label>
-              <select name="pollutant4" id="pollutant4">
+             <label for="pollutant7">Pollutant: </label>
+              <select name="pollutant7" id="pollutant7">
                 <option selected="selected">Temperature</option>
                 <option>Humidity</option>
                 <option>CO2</option>
+                <option>CO2 (PPM)</option>
                 <option>Light VOCs</option>
+                <option>Light VOCs (PPM)</option>
                 <option>Heavy VOCs</option>
+                <option>Heavy VOCs (PPM)</option>
                 <option>O3</option>
+                <option>O3 (PPB)</option>
               </select>
               <br>
               <button onclick="getSelectedPollutantNonTimeSeriesComparePlot()" class="btn btn-primary btn-block">Plot</button>
@@ -314,7 +322,7 @@
 
         function getCompareSelectedPollutantAndPlot()
         {
-          var pollutant = $('#pollutant').find(":selected").text();
+          var pollutant = $('#pollutant6').find(":selected").text();
           getCompareTimeSeriesGraph({{ displayContent1 | safe }}, {{ displayContent2 | safe }} , pollutant )   ;
         }
   
@@ -327,7 +335,7 @@
 
         function getSelectedPollutantNonTimeSeriesComparePlot()
         {
-          var pollutant = $('#pollutant4').find(":selected").text();
+          var pollutant = $('#pollutant7').find(":selected").text();
           getPollutantNonTimeSeriesComparePlotGraph({{ displayContent1 | safe }}, {{ displayContent2 | safe }}, pollutant ) ;
 
         }
