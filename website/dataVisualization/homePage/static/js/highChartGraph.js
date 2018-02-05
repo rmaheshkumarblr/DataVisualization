@@ -74,6 +74,8 @@ function updateFieldName(field) {
         fieldName = "fig280_sens"
     } else if (field == "CO2 (PPM)") {
         fieldName = "CO2"
+    } else if (field == "CO (PPM)") {
+        fieldName = "CO"
     } else if (field == "O3 (PPB)") {
         fieldName = "e2vo3_sens"
     } else if (field == "Light VOCs (PPM)") {
@@ -99,11 +101,15 @@ function updateFieldName(field) {
         axisfieldName = "CO2 Electronic Signal (Voltage Equivalent)"
     } else if (field == "CO2 (PPM)") {
         axisfieldName = "CO2 (PPM)"
-    }  else if (field == "O3 (PPB)") {
+    } else if (field == "CO") {
+        axisfieldName = "CO Electronic Signal (Voltage Equivalent)"
+    } else if (field == "CO (PPM)") {
+        axisfieldName = "CO (PPM)"
+    } else if (field == "O3 (PPB)") {
         axisfieldName = "O3 (PPB)"
-    }  else if (field == "Light VOCs (PPM)") {
+    } else if (field == "Light VOCs (PPM)") {
         axisfieldName = "Light VOCs (PPM)"
-    }  else if (field == "Heavy VOCs (PPM)") {
+    } else if (field == "Heavy VOCs (PPM)") {
         axisfieldName = "Heavy VOCs (PPM)"
     } 
     else {
@@ -150,6 +156,8 @@ function updateFieldsName(field1, field2) {
         axisfieldName1 = "Relative Humidity (%)"
     } else if (field1 == "CO2") {
         axisfieldName1 = "CO2 Electronic Signal (Voltage Equivalent)"
+    } else if (field1 == "CO") {
+        axisfieldName1 = "CO Electronic Signal (Voltage Equivalent)"
     } else {
         axisfieldName1 = field1
     }
@@ -166,6 +174,8 @@ function updateFieldsName(field1, field2) {
         axisfieldName2 = "Relative Humidity (%)"
     } else if (field2 == "CO2") {
         axisfieldName2 = "CO2 Electronic Signal (Voltage Equivalent)"
+    } else if (field2 == "CO") {
+        axisfieldName2 = "CO Electronic Signal (Voltage Equivalent)"
     } else {
         axisfieldName2 = field2
     }
@@ -270,6 +280,8 @@ function getTimeSeriesGraphWithExtraParameters(content, field, slope, intercept)
     function logArrayElements(element, index, array) {
         dateFromPython = new Date(element['Date'])
         if(field == "CO2 (PPM)"){
+            data.push([dateFromPython.getTime(), ( parseFloat(slope) * parseFloat(element[fieldName]) ) + parseFloat(intercept)] )
+        } else if (field == "CO (PPM)"){
             data.push([dateFromPython.getTime(), ( parseFloat(slope) * parseFloat(element[fieldName]) ) + parseFloat(intercept)] )
         } else if (field == "O3 (PPB)"){
             data.push([dateFromPython.getTime(), ( parseFloat(slope) * (1/parseFloat(element[fieldName])) ) + parseFloat(intercept)] )
@@ -649,6 +661,8 @@ function getCompareTimeSeriesGraph(content1, content2, field) {
         dateFromPython = new Date(element['Date'])
         if(field == "CO2 (PPM)"){
             data1.push([dateFromPython.getTime(), ( parseFloat(specialValues1['CO2_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues1['CO2_ppm_int'])] )
+        } else if(field == "CO (PPM)"){
+            data1.push([dateFromPython.getTime(), ( parseFloat(specialValues1['CO_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues1['CO_ppm_int'])] )
         } else if (field == "O3 (PPB)"){
             data1.push([dateFromPython.getTime(), ( parseFloat(specialValues1['O3_ppb_slope']) * (1/parseFloat(element[fieldName])) ) + parseFloat(specialValues1['O3_ppb_int'])] )
         } else if (field == "Light VOCs (PPM)"){
@@ -664,6 +678,8 @@ function getCompareTimeSeriesGraph(content1, content2, field) {
         dateFromPython = new Date(element['Date'])
         if(field == "CO2 (PPM)"){
             data2.push([dateFromPython.getTime(), ( parseFloat(specialValues2['CO2_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues2['CO2_ppm_int'])] )
+        } else if (field == "CO (PPM)"){
+            data2.push([dateFromPython.getTime(), ( parseFloat(specialValues2['CO_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues2['CO_ppm_int'])] )
         } else if (field == "O3 (PPB)"){
             data2.push([dateFromPython.getTime(), ( parseFloat(specialValues2['O3_ppb_slope']) * (1/parseFloat(element[fieldName])) ) + parseFloat(specialValues2['O3_ppb_int'])] )
         } else if (field == "Light VOCs (PPM)"){
@@ -769,6 +785,8 @@ function getPollutantNonTimeSeriesComparePlotGraph(content1, content2, field) {
     function logArrayElements1(element, index, array) {
         if(field == "CO2 (PPM)"){
             data1.push([index, ( parseFloat(specialValues1['CO2_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues1['CO2_ppm_int'])] )
+        } else if (field == "CO (PPM)"){
+            data1.push([index, ( parseFloat(specialValues1['CO_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues1['CO_ppm_int'])] )
         } else if (field == "O3 (PPB)"){
             data1.push([index, ( parseFloat(specialValues1['O3_ppb_slope']) * (1/parseFloat(element[fieldName])) ) + parseFloat(specialValues1['O3_ppb_int'])] )
         } else if (field == "Light VOCs (PPM)"){
@@ -783,6 +801,8 @@ function getPollutantNonTimeSeriesComparePlotGraph(content1, content2, field) {
     function logArrayElements2(element, index, array) {
         if(field == "CO2 (PPM)"){
             data2.push([index, ( parseFloat(specialValues2['CO2_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues2['CO2_ppm_int'])] )
+        } else if(field == "CO (PPM)"){
+            data2.push([index, ( parseFloat(specialValues2['CO_ppm_slope']) * parseFloat(element[fieldName]) ) + parseFloat(specialValues2['CO_ppm_int'])] )
         } else if (field == "O3 (PPB)"){
             data2.push([index, ( parseFloat(specialValues2['O3_ppb_slope']) * (1/parseFloat(element[fieldName])) ) + parseFloat(specialValues2['O3_ppb_int'])] )
         } else if (field == "Light VOCs (PPM)"){

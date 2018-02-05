@@ -40,17 +40,18 @@ python manage.py runserver
 ##### Deleting the old content from the database - Note everything on the database will be deleted.
 
 If you are in early development cycle and don't care about your current database data you can just remove it and than migrate. But first you need to clean migrations dir
-
+```
 rm  your_app/migrations/*
 
 rm db.sqlite3
 python manage.py makemigrations
 python manage.py migrate
-
+```
 
 ##### Creating the Schema on the database
+```
 python manage.py migrate --run-syncdb
-
+```
 
 As per the recent discussions, objectives as follows:
 
@@ -75,6 +76,7 @@ Better to use HighCharts than to use D3
 
 
 ##### Connecting to the PostGresSQL
+```
 psql -U postgres
 create database datavisdb;
 CREATE ROLE datavis WITH LOGIN PASSWORD 'data';
@@ -84,11 +86,15 @@ ALTER USER dataVis CREATEDB;
 postgres -D /usr/local/var/postgres
 
 /Users/maheshkumar/PostgreSQL/pg96/bin/postgres -D /Users/maheshkumar/PostgreSQL/data/pg96 -r /Users/maheshkumar/PostgreSQL/logs/pg96/serverlog.txt
-
+```
 
 #https://stackoverflow.com/questions/28446361/how-to-reset-postgresql-database
 
 Delete the content of the database completely. Can be used when new fields are being added. Note: It deletes the complete database.
+```
  ./manage.py flush
-
-# Start MySQL on local system (MAC) - /usr/local/mysql/bin/mysqld --user=_mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --plugin-dir=/usr/local/mysql/lib/plugin --log-error=/usr/local/mysql/data/mysqld.local.err --pid-file=/usr/local/mysql/data/mysqld.local.pid 
+```
+# Start MySQL on local system (MAC)
+```
+/usr/local/mysql/bin/mysqld --user=_mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --plugin-dir=/usr/local/mysql/lib/plugin --log-error=/usr/local/mysql/data/mysqld.local.err --pid-file=/usr/local/mysql/data/mysqld.local.pid 
+```
