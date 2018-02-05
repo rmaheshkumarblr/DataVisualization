@@ -105,7 +105,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': '/home/ec2-user/DataVisualization/website/dataVisualization/dataVisualization/my.cnf',
+            'read_default_file': '/Users/maheshkumar/git/DataVisualization/website/dataVisualization/dataVisualization/my.cnf',
         },
     }
 }
