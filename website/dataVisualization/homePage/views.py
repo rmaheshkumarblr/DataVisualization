@@ -600,7 +600,7 @@ def getContentsOfCSVFile(locationOfDocument):
                 dictContent['Humidity'] = splitLine[2]
                 dictContent['CO2'] = splitLine[3]
                 dictContent['CO_red'] = getValueOfIndexIfPresent(splitLine,7)
-                dictContent['CO_green'] = getValueOfIndexIfPresent(splitLine,7)
+                dictContent['CO_green'] = getValueOfIndexIfPresent(splitLine,8)
                 dictContent['fig210_sens'] = splitLine[4]
                 dictContent['fig280_sens'] = splitLine[5]
                 dictContent['e2vo3_sens'] = splitLine[6]
