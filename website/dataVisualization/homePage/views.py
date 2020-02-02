@@ -252,8 +252,11 @@ def includeConcentationToDataFrame(df):
     CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
 
     #CO_ppm_min = df.CO.min(axis=0)
-    CO_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
-    CO_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
+    CO_green_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_green_ppm_min))
+    CO_green_ppm_int = 0.0792 #5000 - (4500*CO_green_ppm_slope)
+    
+    CO_red_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_red_ppm_min))
+    CO_red_ppm_int = 0.0792 #5000 - (4500*CO_red_ppm_slope)
     
     O3_ppb_mean = df.e2vo3_sens.mean()
     O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
@@ -261,7 +264,8 @@ def includeConcentationToDataFrame(df):
     O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
     
     df['CO2_ppm'] = (CO2_ppm_slope * df['CO2']) + CO2_ppm_int
-    df['CO_ppm'] = (CO_ppm_slope * df['CO']) + CO_ppm_int
+    df['CO_green_ppm'] = (CO_green_ppm_slope * df['CO_green']) + CO_green_ppm_int
+    df['CO_red_ppm'] = (CO_red_ppm_slope * df['CO_red']) + CO_red_ppm_int
     df['voc1_ppm'] = (20*(df['fig210_sens'] - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)) + 1.8
     df['voc2_ppm'] = 10*(df['fig280_sens'] - VOC2_ppm_min)/float(4500 - VOC2_ppm_min)
     df['O3_ppb'] = O3_ppb_slope * (1/df['e2vo3_sens']) + O3_ppb_int
@@ -270,29 +274,29 @@ def includeConcentationToDataFrame(df):
 
 def averaging(path,fileName):
     
-    df = pd.read_csv("media/"+path,header=0,usecols=[1,2,5,6,7,13,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","CO","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
+    df = pd.read_csv("media/"+path,header=0,usecols=[1,2,5,6,7,13,22,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","CO (Red Board)","CO (Green Board)","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
     df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
     times = pd.DatetimeIndex(df.Date)
 
     # # Minute Averaging
-    groupedMinute = df.groupby([times.date, times.hour, times.minute])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens","CO"].mean().reset_index()
+    groupedMinute = df.groupby([times.date, times.hour, times.minute])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens","CO (Red Board)","CO (Green Board)"].mean().reset_index()
     groupedMinute['Date'] =  pd.to_datetime(groupedMinute['level_0']) +  (pd.to_timedelta(groupedMinute['level_1'],unit='h') + pd.to_timedelta(groupedMinute['level_2'],unit='m'))
     groupedMinute.drop(['level_0','level_1','level_2'],axis=1,inplace=True)
-    groupedMinute = groupedMinute[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens','CO']]
+    groupedMinute = groupedMinute[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens','CO_red','CO_green']]
     groupedMinute = includeConcentationToDataFrame(groupedMinute)
 
     # # Hour Averaging
-    groupedHour = df.groupby([times.date, times.hour])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens","CO"].mean().reset_index()
+    groupedHour = df.groupby([times.date, times.hour])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens","CO (Red Board)","CO (Green Board)"].mean().reset_index()
     groupedHour['Date'] =  pd.to_datetime(groupedHour['level_0']) +  (pd.to_timedelta(groupedHour['level_1'],unit='h'))
     groupedHour.drop(['level_0','level_1'],axis=1,inplace=True)
-    groupedHour = groupedHour[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO']]
+    groupedHour = groupedHour[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO_red','CO_green']]
     groupedHour = includeConcentationToDataFrame(groupedHour)
 
     # # Day Averaging
-    groupedDaily = df.groupby([times.date])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens","CO"].mean().reset_index()
+    groupedDaily = df.groupby([times.date])['Temperature','Humidity',"CO2","fig210_sens","fig280_sens","e2vo3_sens","CO (Red Board)","CO (Green Board)"].mean().reset_index()
     groupedDaily['Date'] =  pd.to_datetime(groupedDaily['index']) + (pd.to_timedelta(1,unit='s'))
     groupedDaily.drop(['index'],axis=1,inplace=True)
-    groupedDaily = groupedDaily[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens','CO']]
+    groupedDaily = groupedDaily[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens','CO_red','CO_green']]
     groupedDaily = includeConcentationToDataFrame(groupedDaily)
     
     fileName = fileName.split(".")[0]
@@ -417,9 +421,9 @@ def getSelectedCSV(request,locationOfDocument1):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s' % (locationOfDocument1.split(".")[0] + ".csv")
         writer = csv.writer(response)
-        writer.writerow(['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO', 'CO2_ppm', 'CO_ppm', 'voc1_ppm', 'voc2_ppm', 'O3_ppb'])
+        writer.writerow(['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO_red', 'CO_green', 'CO2_ppm', 'CO_red_ppm', 'CO_green_ppm', 'voc1_ppm', 'voc2_ppm', 'O3_ppb'])
         
-        df = pd.read_csv("media/"+locationOfDocument1,header=0,usecols=[1,2,5,6,7,13,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","CO","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
+        df = pd.read_csv("media/"+locationOfDocument1,header=0,usecols=[1,2,5,6,7,13,22,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","CO (Red Board)","CO (Green Board)","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
         df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
         
         VOC1_ppm_min = df.fig210_sens.min(axis=0)
@@ -427,14 +431,16 @@ def getSelectedCSV(request,locationOfDocument1):
         CO2_ppm_min = df.CO2.min(axis=0)
         CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
         CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
-        CO_ppm_slope = 0.0000283
-        CO_ppm_int = 0.0792
+        CO_red_ppm_slope = 0.0000283
+        CO_red_ppm_int = 0.0792
+        CO_green_ppm_slope = 0.0000283
+        CO_green_ppm_int = 0.0792
         O3_ppb_mean = df.e2vo3_sens.mean()
         O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
         O3_ppb_slope = ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150))))
         O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
         
-        print CO2_ppm_slope, CO_ppm_slope, VOC1_ppm_min, VOC1_ppm_min, VOC2_ppm_min, VOC2_ppm_min, O3_ppb_slope, O3_ppb_int
+        print CO2_ppm_slope, CO_red_ppm_slope, CO_green_ppm_slope, VOC1_ppm_min, VOC1_ppm_min, VOC2_ppm_min, VOC2_ppm_min, O3_ppb_slope, O3_ppb_int
         with open(filename) as fileHandler:
             for line in fileHandler:
                 line = line.strip()
@@ -449,8 +455,10 @@ def getSelectedCSV(request,locationOfDocument1):
                         splitLine[21],
                         splitLine[25],
                         splitLine[13], 
+                        splitLine[22], 
                         (CO2_ppm_slope * float(splitLine[7])) + CO2_ppm_int, 
-                        (CO_ppm_slope * float(splitLine[13])) + CO_ppm_int,
+                        (CO_red_ppm_slope * float(splitLine[13])) + CO_red_ppm_int,
+                        (CO_green_ppm_slope * float(splitLine[22])) + CO_green_ppm_int,
                         (20*(float(splitLine[19]) - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)) + 1.8,
                         10*(float(splitLine[21]) - VOC2_ppm_min)/float(4500 - VOC2_ppm_min),
                         O3_ppb_slope * (1/float(splitLine[25])) + O3_ppb_int
@@ -467,8 +475,11 @@ def getContentsOfTxtFile(locationOfDocument):
     CO2_ppm_int = 0
 
     #CO_ppm_min = float("inf")
-    CO_ppm_slope = 0
-    CO_ppm_int = 0
+    CO_red_ppm_slope = 0
+    CO_red_ppm_int = 0
+    
+    CO_green_ppm_slope = 0
+    CO_green_ppm_int = 0
 
     O3_ppb_sum = 0
     O3_ppb_mean_inverse = 0
@@ -498,7 +509,8 @@ def getContentsOfTxtFile(locationOfDocument):
                 dictContent['Temperature'] = splitLine[5]
                 dictContent['Humidity'] = splitLine[6]
                 dictContent['CO2'] = splitLine[7]
-                dictContent['CO'] = splitLine[13]
+                dictContent['CO_red'] = splitLine[13]
+                dictContent['CO_green'] = splitLine[22]
                 dictContent['fig210_sens'] = splitLine[19]
                 dictContent['fig280_sens'] = splitLine[21]
                 dictContent['e2vo3_sens'] = splitLine[25]
@@ -512,8 +524,11 @@ def getContentsOfTxtFile(locationOfDocument):
         CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
         CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
         # CO Equations Calculations
-        CO_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
-        CO_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
+        CO_red_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
+        CO_red_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
+        
+        CO_green_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
+        CO_green_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
         # O3 Equations Calculations
         O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
         O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
@@ -522,8 +537,10 @@ def getContentsOfTxtFile(locationOfDocument):
         # Append the calculated useful value to JSON
         specialContent['CO2_ppm_slope'] = CO2_ppm_slope
         specialContent['CO2_ppm_int'] = CO2_ppm_int
-        specialContent['CO_ppm_slope'] = CO_ppm_slope
-        specialContent['CO_ppm_int'] = CO_ppm_int
+        specialContent['CO_red_ppm_slope'] = CO_red_ppm_slope
+        specialContent['CO_red_ppm_int'] = CO_red_ppm_int
+        specialContent['CO_green_ppm_slope'] = CO_green_ppm_slope
+        specialContent['CO_green_ppm_int'] = CO_green_ppm_int
         specialContent['O3_ppb_slope'] = O3_ppb_slope
         specialContent['O3_ppb_int'] = O3_ppb_int
         outputContent.append(specialContent)
@@ -544,8 +561,11 @@ def getContentsOfCSVFile(locationOfDocument):
     CO2_ppm_int = 0
 
     #CO_ppm_min = float("inf")
-    CO_ppm_slope = 0
-    CO_ppm_int = 0
+    CO_red_ppm_slope = 0
+    CO_red_ppm_int = 0
+    
+    CO_green_ppm_slope = 0
+    CO_green_ppm_int = 0
 
     O3_ppb_sum = 0
     O3_ppb_mean_inverse = 0
@@ -579,7 +599,8 @@ def getContentsOfCSVFile(locationOfDocument):
                 dictContent['Temperature'] = splitLine[1]
                 dictContent['Humidity'] = splitLine[2]
                 dictContent['CO2'] = splitLine[3]
-                dictContent['CO'] = getValueOfIndexIfPresent(splitLine,7)
+                dictContent['CO_red'] = getValueOfIndexIfPresent(splitLine,7)
+                dictContent['CO_green'] = getValueOfIndexIfPresent(splitLine,7)
                 dictContent['fig210_sens'] = splitLine[4]
                 dictContent['fig280_sens'] = splitLine[5]
                 dictContent['e2vo3_sens'] = splitLine[6]
@@ -593,8 +614,10 @@ def getContentsOfCSVFile(locationOfDocument):
         CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
         CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
         # CO Equations Calculations
-        CO_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
-        CO_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
+        CO_red_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
+        CO_red_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
+        CO_green_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
+        CO_green_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
         # O3 Equations Calculations
         O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
         O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
@@ -603,8 +626,10 @@ def getContentsOfCSVFile(locationOfDocument):
         # Append the calculated useful value to JSON
         specialContent['CO2_ppm_slope'] = CO2_ppm_slope
         specialContent['CO2_ppm_int'] = CO2_ppm_int
-        specialContent['CO_ppm_slope'] = CO_ppm_slope
-        specialContent['CO_ppm_int'] = CO_ppm_int
+        specialContent['CO_red_ppm_slope'] = CO_red_ppm_slope
+        specialContent['CO_red_ppm_int'] = CO_red_ppm_int
+        specialContent['CO_green_ppm_slope'] = CO_green_ppm_slope
+        specialContent['CO_green_ppm_int'] = CO_green_ppm_int
         specialContent['O3_ppb_slope'] = O3_ppb_slope
         specialContent['O3_ppb_int'] = O3_ppb_int
         outputContent.append(specialContent)
