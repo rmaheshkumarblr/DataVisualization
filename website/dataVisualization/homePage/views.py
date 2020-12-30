@@ -21,8 +21,6 @@ import csv
 
 
 
-
-
 def create_user_view(request):
     if request.method == 'GET':
         form = CreateUserForm()
@@ -68,7 +66,6 @@ def create_user_view(request):
                 })
 
 
-
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -91,7 +88,8 @@ def login_view(request):
                 next_url = request.POST.get('next', None)
 
                 if next_url:
-                    print 'Got Next parameter'
+                    print
+                    'Got Next parameter'
                     return HttpResponseRedirect(next_url)
 
                 return render(request, 'index.html', {
@@ -138,19 +136,20 @@ def index(request):
     return render(
         request,
         'index.html'
-        )
+    )
 
 
 @login_required
 def documents(request):
-    locationOfDocument=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/media' + request.path
-    print locationOfDocument
+    locationOfDocument = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/media' + request.path
+    print
+    locationOfDocument
     outputContent = []
     with open(locationOfDocument) as fileHandler:
         for line in fileHandler:
             dictContent = {}
             line = line.strip()
-            if(len(line) > 0):
+            if (len(line) > 0):
                 splitLine = line.split(',')
                 dictContent['date'] = splitLine[1] + " " + splitLine[2]
                 # datetime.datetime.strptime(splitLine[1] + " " + splitLine[2],'%Y-%m-%d %H:%M:%S')
@@ -162,18 +161,19 @@ def documents(request):
         request,
         'display.html',
         {'displayContent': json.dumps(outputContent)}
-        )
+    )
 
 
 @login_required
 def display(request, locationOfDocument):
-    print locationOfDocument
+    print
+    locationOfDocument
     outputContent = []
     with open(locationOfDocument) as fileHandler:
         for line in fileHandler:
             dictContent = {}
             line = line.strip()
-            if(len(line) > 0):
+            if (len(line) > 0):
                 splitLine = line.split(',')
                 dictContent['Date'] = splitLine[1] + " " + splitLine[2]
                 dictContent['Temperature'] = splitLine[15]
@@ -184,7 +184,7 @@ def display(request, locationOfDocument):
         request,
         'display.html',
         {'displayContent': json.dumps(outputContent)}
-        )
+    )
 
 
 @login_required
@@ -201,19 +201,20 @@ def uploadedFiles(request):
     #     filterDict['school'] = school
 
     # documents = documents.filter(**filterDict)
-    
 
     return render(
         request,
         'displayUploadedFiles.html',
         {'documents': documents}
-        )
+    )
+
 
 @login_required
 def uploadedFilesFiltered(request, projectName, mentorName, school):
     # Load documents for the list page
     documents = Document.objects.all()
-    print projectName, mentorName, school
+    print
+    projectName, mentorName, school
 
     # filterDict = {}
     # if projectName != "":
@@ -224,13 +225,15 @@ def uploadedFilesFiltered(request, projectName, mentorName, school):
     #     filterDict['school'] = school
 
     # documents = documents.filter(**filterDict)
-    documents = documents.filter(projectName__icontains=projectName).filter(mentorName__icontains=mentorName).filter(school__icontains=school)
+    documents = documents.filter(projectName__icontains=projectName).filter(mentorName__icontains=mentorName).filter(
+        school__icontains=school)
 
     return render(
         request,
         'displayUploadedFiles.html',
         {'documents': documents}
-        )
+    )
+
 
 @login_required
 def personalUploadedFiles(request):
@@ -241,48 +244,42 @@ def personalUploadedFiles(request):
         request,
         'personalDisplayUploadedFiles.html',
         {'documents': documents}
-        )
+    )
+
 
 def includeConcentationToDataFrame(df):
     VOC1_ppm_min = df.fig210_sens.min(axis=0)
     VOC2_ppm_min = df.fig280_sens.min(axis=0)
-    
-    CO2_ppm_min = df.CO2.min(axis=0)
-    CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
-    CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
 
-    #CO_ppm_min = df.CO.min(axis=0)
-    CO_aqiq_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_green_ppm_min))
-    CO_aqiq_ppm_int = 0.0792 #5000 - (4500*CO_green_ppm_slope)
-    
-    CO_standard_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_red_ppm_min))
-    CO_standard_ppm_int = 0.0792 #5000 - (4500*CO_red_ppm_slope)
-    
-    CO_emission_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_red_ppm_min))
-    CO_emission_ppm_int = 0.0792 #5000 - (4500*CO_red_ppm_slope)
-    
+    CO2_ppm_min = df.CO2.min(axis=0)
+    CO2_ppm_slope = ((5000 - 390) / float(4500 - CO2_ppm_min))
+    CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
+
+    # CO_ppm_min = df.CO.min(axis=0)
+    CO_ppm_slope = 0.0000283  # ((5000-390)/float(4500 - CO_ppm_min))
+    CO_ppm_int = 0.0792  # 5000 - (4500*CO_ppm_slope)
+
     O3_ppb_mean = df.e2vo3_sens.mean()
     O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
-    O3_ppb_slope = ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150))))
-    O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
-    
+    O3_ppb_slope = ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))))
+    O3_ppb_int = (35 - ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))) * O3_ppb_mean_inverse))
+
     df['CO2_ppm'] = (CO2_ppm_slope * df['CO2']) + CO2_ppm_int
-    df['CO_aqiq_ppm'] = (CO_aqiq_ppm_slope * df['CO_aqiq']) + CO_aqiq_ppm_int
-    df['CO_standard_ppm'] = (CO_standard_ppm_slope * df['CO_standard']) + CO_standard_ppm_int
-    df['CO_emission_ppm'] = (CO_emission_ppm_slope * df['CO_emission']) + CO_emission_ppm_int
-    df['voc1_ppm'] = (20*(df['fig210_sens'] - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)) + 1.8
-    df['voc2_ppm'] = 10*(df['fig280_sens'] - VOC2_ppm_min)/float(4500 - VOC2_ppm_min)
-    df['O3_ppb'] = O3_ppb_slope * (1/df['e2vo3_sens']) + O3_ppb_int
+    df['CO_ppm'] = (CO_ppm_slope * df['CO']) + CO_ppm_int
+    df['voc1_ppm'] = (20 * (df['fig210_sens'] - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)) + 1.8
+    df['voc2_ppm'] = 10 * (df['fig280_sens'] - VOC2_ppm_min) / float(4500 - VOC2_ppm_min)
+    df['O3_ppb'] = O3_ppb_slope * (1 / df['e2vo3_sens']) + O3_ppb_int
     return df
 
 
-def averaging(path,fileName):
+def averaging(path, fileName, fileType):
     if fileType == '1':
         return averaging_from_old_file(path, fileName)
     else:
         return averaging_from_new_file(path, fileName)
-        
-        
+
+
+
 def averaging_from_old_file(path, fileName):
     df = pd.read_csv("media/" + path, header=0, usecols=[1, 2, 5, 6, 7, 13, 19, 21, 25],
                      names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "CO", "fig210_sens", "fig280_sens",
@@ -332,8 +329,7 @@ def averaging_from_old_file(path, fileName):
 
     return fileName + "_" + path.split(".")[0]
 
-
-def averaging_from_new_file(path, fileName):       
+def averaging_from_new_file(path, fileName):
     df = pd.read_csv("media/" + path, header=0, usecols=[1, 2, 5, 6, 7, 8, 9, 10, 15, 12, 14, 18],
                      names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "PM1.0", "PM2.5", "PM10", "CO",
                             "fig210_sens", "fig280_sens",
@@ -386,8 +382,7 @@ def averaging_from_new_file(path, fileName):
 
     return fileName + "_" + path.split(".")[0]
 
-
-# def hourAveraging(path,fileName):    
+# def hourAveraging(path,fileName):
 #     # # Hourly Averaging
 #     df = pd.read_csv("media/"+path,header=0,usecols=[1,2,5,6,7,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
 #     df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
@@ -410,16 +405,13 @@ def averaging_from_new_file(path, fileName):
 # grouped = grouped[['Date','Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens']]
 
 
-
 @login_required
 def uploadAFile(request):
     # Handle file upload
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         some_file = File(request.FILES['docfile'])
-        
 
-        
         # import pdb
         # pdb.set_trace()
         # print averageMinuteFileContent
@@ -427,8 +419,8 @@ def uploadAFile(request):
             path = default_storage.save('averaging.txt', ContentFile(some_file.read()))
 
             fileType = request.POST['typeOfFile']
-            
-            averageFileName = averaging(path,some_file.name,fileType)
+
+            averageFileName = averaging(path, some_file.name, fileType)
 
             averageMinuteFile = averageFileName + '_minute.csv'
             averageHourFile = averageFileName + '_hour.csv'
@@ -438,11 +430,9 @@ def uploadAFile(request):
             fileHandlerHour = open(averageHourFile, 'rb')
             fileHandlerDay = open(averageDailyFile, 'rb')
 
-
             averageMinuteFileHandle = File(fileHandlerMinute)
             averageHourFileHandle = File(fileHandlerHour)
             averageDayFileHandle = File(fileHandlerDay)
-
 
             # print averageMinuteFileHandle.__dict__
             # print some_file.__dict__
@@ -457,13 +447,13 @@ def uploadAFile(request):
                               mentorName=request.POST['mentorName'],
                               school=request.POST['school'],
                               userName=request.user.first_name,
-                              typeofFile=request.POST['typeOfFile'],
+			      typeofFile=request.POST['typeOfFile'],
                               docfile=some_file,
                               averageMinuteFile=averageMinuteFileHandle,
                               averageHourFile=averageHourFileHandle,
                               averageDayFile=averageDayFileHandle
                               # averageMinuteFile=averageMinuteFileHandle
-                             )
+                              )
 
             # print request.FILES['docfile']
             newdoc.save()
@@ -480,163 +470,145 @@ def uploadAFile(request):
         request,
         'upload.html',
         {'form': form}
-        )
+    )
 
 
 @login_required
-def getRawCSV(request,locationOfDocument1):
+def getRawCSV(request, locationOfDocument1):
     filename = "media/" + locationOfDocument1
     if filename:
         output_file = FileWrapper(open(filename, 'rb'))
-        response = HttpResponse(output_file,content_type='text/csv')
+        response = HttpResponse(output_file, content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s' % (locationOfDocument1)
         return response
-    return  HttpResponseNotFound('<h1>File not found</h1>')
-
+    return HttpResponseNotFound('<h1>File not found</h1>')
 
 
 @login_required
-def getSelectedCSV(request,locationOfDocument1):
+def getSelectedCSV(request, locationOfDocument1):
     filename = "media/" + locationOfDocument1
     if filename:
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s' % (locationOfDocument1.split(".")[0] + ".csv")
         writer = csv.writer(response)
-        writer.writerow(['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO_standard', 'CO_aqiq', 'CO_emission', 'CO2_ppm', 'CO_standard_ppm', 'CO_aqiq_ppm', 'CO_emission_ppm', 'voc1_ppm', 'voc2_ppm', 'O3_ppb'])
-        
-        df = pd.read_csv("media/"+locationOfDocument1,header=0,usecols=[1,2,5,6,7,13,22,13,19,21,25],names=["oldDate", "Time", "Temperature","Humidity","CO2","CO (Standard)","CO (AQIQ)","CO (Emission)","fig210_sens","fig280_sens","e2vo3_sens"],delimiter=",")
+        writer.writerow(
+            ['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO', 'CO2_ppm',
+             'CO_ppm', 'voc1_ppm', 'voc2_ppm', 'O3_ppb'])
+
+        df = pd.read_csv("media/" + locationOfDocument1, header=0, usecols=[1, 2, 5, 6, 7, 13, 19, 21, 25],
+                         names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "CO", "fig210_sens", "fig280_sens",
+                                "e2vo3_sens"], delimiter=",")
         df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
-        
+
         VOC1_ppm_min = df.fig210_sens.min(axis=0)
         VOC2_ppm_min = df.fig280_sens.min(axis=0)
         CO2_ppm_min = df.CO2.min(axis=0)
-        CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
-        CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
-        CO_standard_ppm_slope = 0.0000283
-        CO_standard_ppm_int = 0.0792
-        CO_aqiq_ppm_slope = 0.0000283
-        CO_aqiq_ppm_int = 0.0792
-        CO_emission_ppm_slope = 0.0000283
-        CO_emission_ppm_int = 0.0792
+        CO2_ppm_slope = ((5000 - 390) / float(4500 - CO2_ppm_min))
+        CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
+        CO_ppm_slope = 0.0000283
+        CO_ppm_int = 0.0792
         O3_ppb_mean = df.e2vo3_sens.mean()
         O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
-        O3_ppb_slope = ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150))))
-        O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
-        
-        print CO2_ppm_slope, CO_standard_ppm_slope, CO_aqiq_ppm_slope, CO_emission_ppm_slope, VOC1_ppm_min, VOC1_ppm_min, VOC2_ppm_min, VOC2_ppm_min, O3_ppb_slope, O3_ppb_int
+        O3_ppb_slope = ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))))
+        O3_ppb_int = (35 - ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))) * O3_ppb_mean_inverse))
+
+        print
+        CO2_ppm_slope, CO_ppm_slope, VOC1_ppm_min, VOC1_ppm_min, VOC2_ppm_min, VOC2_ppm_min, O3_ppb_slope, O3_ppb_int
         with open(filename) as fileHandler:
             for line in fileHandler:
                 line = line.strip()
-                if(len(line) > 0):
+                if (len(line) > 0):
                     splitLine = line.split(',')
                     writer.writerow(
                         [splitLine[1] + " " + splitLine[2],
-                        splitLine[5],
-                        splitLine[6],
-                        splitLine[7],
-                        splitLine[19],
-                        splitLine[21],
-                        splitLine[25],
-                        splitLine[13], 
-                        splitLine[22], 
-                        splitLine[13], 
-                        (CO2_ppm_slope * float(splitLine[7])) + CO2_ppm_int, 
-                        (CO_standard_ppm_slope * float(splitLine[13])) + CO_standard_ppm_int,
-                        (CO_aqiq_ppm_slope * float(splitLine[22])) + CO_aqiq_ppm_int,
-                        (CO_emission_ppm_slope * float(splitLine[13])) + CO_emission_ppm_int,
-                        (20*(float(splitLine[19]) - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)) + 1.8,
-                        10*(float(splitLine[21]) - VOC2_ppm_min)/float(4500 - VOC2_ppm_min),
-                        O3_ppb_slope * (1/float(splitLine[25])) + O3_ppb_int
+                         splitLine[5],
+                         splitLine[6],
+                         splitLine[7],
+                         splitLine[19],
+                         splitLine[21],
+                         splitLine[25],
+                         splitLine[13],
+                         (CO2_ppm_slope * float(splitLine[7])) + CO2_ppm_int,
+                         (CO_ppm_slope * float(splitLine[13])) + CO_ppm_int,
+                         (20 * (float(splitLine[19]) - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)) + 1.8,
+                         10 * (float(splitLine[21]) - VOC2_ppm_min) / float(4500 - VOC2_ppm_min),
+                         O3_ppb_slope * (1 / float(splitLine[25])) + O3_ppb_int
                          ])
         return response
-    return  HttpResponseNotFound('<h1>File not found</h1>')
+    return HttpResponseNotFound('<h1>File not found</h1>')
 
 
 def getContentsOfTxtFile(locationOfDocument):
     outputContent = []
-    
+
     CO2_ppm_min = float("inf")
     CO2_ppm_slope = 0
     CO2_ppm_int = 0
 
-    #CO_ppm_min = float("inf")
-    CO_standard_ppm_slope = 0
-    CO_standard_ppm_int = 0
-    
-    CO_aqiq_ppm_slope = 0
-    CO_aqiq_ppm_int = 0
-    
-    CO_emission_ppm_slope = 0
-    CO_emission_ppm_int = 0
+    # CO_ppm_min = float("inf")
+    CO_ppm_slope = 0
+    CO_ppm_int = 0
 
     O3_ppb_sum = 0
     O3_ppb_mean_inverse = 0
     O3_ppb_slope = 0
     O3_ppb_int = 0
 
-    VOC1_ppm_min = pd.read_csv("media/"+locationOfDocument,header=0,usecols=[19],delimiter=",").min(axis=0).values[0]
-    VOC2_ppm_min = pd.read_csv("media/"+locationOfDocument,header=0,usecols=[21],delimiter=",").min(axis=0).values[0]
-
+    VOC1_ppm_min = pd.read_csv("media/" + locationOfDocument, header=0, usecols=[19], delimiter=",").min(axis=0).values[
+        0]
+    VOC2_ppm_min = pd.read_csv("media/" + locationOfDocument, header=0, usecols=[21], delimiter=",").min(axis=0).values[
+        0]
 
     Count_To_Find_Mean = 0
 
-    with open("media/"+locationOfDocument) as fileHandler:
+    with open("media/" + locationOfDocument) as fileHandler:
         for line in fileHandler:
             dictContent = {}
             specialContent = {}
             line = line.strip()
-            if(len(line) > 0):
+            if (len(line) > 0):
                 Count_To_Find_Mean += 1
                 splitLine = line.split(',')
                 # Calculated Value for Plots
-                CO2_ppm_min = min(CO2_ppm_min,float(splitLine[7]))
-                #CO_ppm_min = min(CO_ppm_min,float(splitLine[13]))
+                CO2_ppm_min = min(CO2_ppm_min, float(splitLine[7]))
+                # CO_ppm_min = min(CO_ppm_min,float(splitLine[13]))
                 O3_ppb_sum += float(splitLine[25])
                 # Default Value for Plots
                 dictContent['Date'] = splitLine[1] + " " + splitLine[2]
                 dictContent['Temperature'] = splitLine[5]
                 dictContent['Humidity'] = splitLine[6]
                 dictContent['CO2'] = splitLine[7]
-                dictContent['CO_standard'] = splitLine[13]
-                dictContent['CO_aqiq'] = splitLine[22]
-                dictContent['CO_emission'] = splitLine[13]
+                dictContent['CO'] = splitLine[13]
                 dictContent['fig210_sens'] = splitLine[19]
                 dictContent['fig280_sens'] = splitLine[21]
                 dictContent['e2vo3_sens'] = splitLine[25]
-                dictContent['voc1_ppm'] = (float(splitLine[19]) - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)
-                dictContent['voc2_ppm'] = (float(splitLine[21]) - VOC2_ppm_min)/float(4500 - VOC2_ppm_min)
+                dictContent['voc1_ppm'] = (float(splitLine[19]) - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)
+                dictContent['voc2_ppm'] = (float(splitLine[21]) - VOC2_ppm_min) / float(4500 - VOC2_ppm_min)
                 outputContent.append(dictContent)
             else:
                 # Just to avoid divide by zero
                 Count_To_Find_Mean = 1
         # CO2 Equations Calculations
-        CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
-        CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
+        CO2_ppm_slope = ((5000 - 390) / float(4500 - CO2_ppm_min))
+        CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
         # CO Equations Calculations
-        CO_standard_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
-        CO_standard_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
-        CO_aqiq_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
-        CO_aqiq_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
-        CO_emission_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
-        CO_emission_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
+        CO_ppm_slope = 0.0000283  # ((5000-390)/float(4500 - CO_ppm_min))
+        CO_ppm_int = 0.0792  # 5000 - (4500*CO_ppm_slope)
         # O3 Equations Calculations
         O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
         O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
-        O3_ppb_slope = ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150))))
-        O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
+        O3_ppb_slope = ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))))
+        O3_ppb_int = (35 - ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))) * O3_ppb_mean_inverse))
         # Append the calculated useful value to JSON
         specialContent['CO2_ppm_slope'] = CO2_ppm_slope
         specialContent['CO2_ppm_int'] = CO2_ppm_int
-        specialContent['CO_standard_ppm_slope'] = CO_standard_ppm_slope
-        specialContent['CO_standard_ppm_int'] = CO_standard_ppm_int
-        specialContent['CO_aqiq_ppm_slope'] = CO_aqiq_ppm_slope
-        specialContent['CO_aqiq_ppm_int'] = CO_aqiq_ppm_int
-        specialContent['CO_emission_ppm_slope'] = CO_emission_ppm_slope
-        specialContent['CO_emission_ppm_int'] = CO_emission_ppm_int
+        specialContent['CO_ppm_slope'] = CO_ppm_slope
+        specialContent['CO_ppm_int'] = CO_ppm_int
         specialContent['O3_ppb_slope'] = O3_ppb_slope
         specialContent['O3_ppb_int'] = O3_ppb_int
         outputContent.append(specialContent)
     return outputContent
+
 
 def getValueOfIndexIfPresent(list, index):
     try:
@@ -652,27 +624,23 @@ def getContentsOfCSVFile(locationOfDocument):
     CO2_ppm_slope = 0
     CO2_ppm_int = 0
 
-    #CO_ppm_min = float("inf")
-    CO_standard_ppm_slope = 0
-    CO_standard_ppm_int = 0
-    
-    CO_aqiq_ppm_slope = 0
-    CO_aqiq_ppm_int = 0
-    
-    CO_emission_ppm_slope = 0
-    CO_emission_ppm_int = 0
+    # CO_ppm_min = float("inf")
+    CO_ppm_slope = 0
+    CO_ppm_int = 0
 
     O3_ppb_sum = 0
     O3_ppb_mean_inverse = 0
     O3_ppb_slope = 0
     O3_ppb_int = 0
 
-    VOC1_ppm_min = pd.read_csv("media/"+locationOfDocument,header=1,usecols=[4],delimiter=",").min(axis=0).values[0]
-    VOC2_ppm_min = pd.read_csv("media/"+locationOfDocument,header=1,usecols=[5],delimiter=",").min(axis=0).values[0]
+    VOC1_ppm_min = pd.read_csv("media/" + locationOfDocument, header=1, usecols=[4], delimiter=",").min(axis=0).values[
+        0]
+    VOC2_ppm_min = pd.read_csv("media/" + locationOfDocument, header=1, usecols=[5], delimiter=",").min(axis=0).values[
+        0]
 
     Count_To_Find_Mean = 0
 
-    with open("media/"+locationOfDocument) as fileHandler:
+    with open("media/" + locationOfDocument) as fileHandler:
         count = 0
         for line in fileHandler:
             count += 1
@@ -681,76 +649,66 @@ def getContentsOfCSVFile(locationOfDocument):
             dictContent = {}
             specialContent = {}
             line = line.strip()
-            if(len(line) > 0):
+            if (len(line) > 0):
                 Count_To_Find_Mean += 1
                 splitLine = line.split(',')
                 # Calculated Value for Plots
-                CO2_ppm_min = min(CO2_ppm_min,float(splitLine[3]))
+                CO2_ppm_min = min(CO2_ppm_min, float(splitLine[3]))
                 O3_ppb_sum += float(splitLine[6])
-                # If CO exists then calculate for CO 
+                # If CO exists then calculate for CO
                 # CO_ppm_min = min(CO_ppm_min,float(getValueOfIndexIfPresent(splitLine,7)))
                 # Default Value for Plots
                 dictContent['Date'] = splitLine[0]
                 dictContent['Temperature'] = splitLine[1]
                 dictContent['Humidity'] = splitLine[2]
                 dictContent['CO2'] = splitLine[3]
-                dictContent['CO_standard'] = getValueOfIndexIfPresent(splitLine,7)
-                dictContent['CO_aqiq'] = getValueOfIndexIfPresent(splitLine,8)
-                dictContent['CO_emission'] = getValueOfIndexIfPresent(splitLine,9)
+                dictContent['CO'] = getValueOfIndexIfPresent(splitLine, 7)
                 dictContent['fig210_sens'] = splitLine[4]
                 dictContent['fig280_sens'] = splitLine[5]
                 dictContent['e2vo3_sens'] = splitLine[6]
-                dictContent['voc1_ppm'] = (float(splitLine[4]) - VOC1_ppm_min)/float(4500 - VOC1_ppm_min)
-                dictContent['voc2_ppm'] = (float(splitLine[5]) - VOC2_ppm_min)/float(4500 - VOC2_ppm_min)
+                dictContent['voc1_ppm'] = (float(splitLine[4]) - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)
+                dictContent['voc2_ppm'] = (float(splitLine[5]) - VOC2_ppm_min) / float(4500 - VOC2_ppm_min)
                 outputContent.append(dictContent)
             else:
                 # Just to avoid divide by zero
                 Count_To_Find_Mean = 1
         # CO2 Equations Calculations
-        CO2_ppm_slope = ((5000-390)/float(4500 - CO2_ppm_min))
-        CO2_ppm_int = 5000 - (4500*CO2_ppm_slope)
+        CO2_ppm_slope = ((5000 - 390) / float(4500 - CO2_ppm_min))
+        CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
         # CO Equations Calculations
-        CO_red_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
-        CO_red_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
-        CO_green_ppm_slope = 0.0000283 #((5000-390)/float(4500 - CO_ppm_min))
-        CO_green_ppm_int = 0.0792 #5000 - (4500*CO_ppm_slope)
+        CO_ppm_slope = 0.0000283  # ((5000-390)/float(4500 - CO_ppm_min))
+        CO_ppm_int = 0.0792  # 5000 - (4500*CO_ppm_slope)
         # O3 Equations Calculations
         O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
         O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
-        O3_ppb_slope = ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150))))
-        O3_ppb_int = (35 - ((35-0)/float(O3_ppb_mean_inverse - (1/float(3150)))*O3_ppb_mean_inverse))
+        O3_ppb_slope = ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))))
+        O3_ppb_int = (35 - ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))) * O3_ppb_mean_inverse))
         # Append the calculated useful value to JSON
         specialContent['CO2_ppm_slope'] = CO2_ppm_slope
         specialContent['CO2_ppm_int'] = CO2_ppm_int
-        specialContent['CO_standard_ppm_slope'] = CO_standard_ppm_slope
-        specialContent['CO_standard_ppm_int'] = CO_standard_ppm_int
-        specialContent['CO_aqiq_ppm_slope'] = CO_aqiq_ppm_slope
-        specialContent['CO_aqiq_ppm_int'] = CO_aqiq_ppm_int
-        specialContent['CO_emission_ppm_slope'] = CO_emission_ppm_slope
-        specialContent['CO_emission_ppm_int'] = CO_emission_ppm_int
+        specialContent['CO_ppm_slope'] = CO_ppm_slope
+        specialContent['CO_ppm_int'] = CO_ppm_int
         specialContent['O3_ppb_slope'] = O3_ppb_slope
         specialContent['O3_ppb_int'] = O3_ppb_int
         outputContent.append(specialContent)
     return outputContent
 
 
-
 @login_required
 def dataAnalysis(request, locationOfDocument1, locationOfDocument2):
-    
     # Both file names are provided - Must Ideally never happen
     if locationOfDocument2 == "":
         if locationOfDocument1 == "":
-            return render(request,'displayDataAnalysis.html')
+            return render(request, 'displayDataAnalysis.html')
 
-    # Only one file name is provided - TXT or CSV
+        # Only one file name is provided - TXT or CSV
         outputContent1 = []
         if locationOfDocument1.split(".")[1] == "txt":
             outputContent1 = getContentsOfTxtFile(locationOfDocument1)
-            return render(request,'displayDataAnalysis.html', {'displayContent1': json.dumps(outputContent1)})
+            return render(request, 'displayDataAnalysis.html', {'displayContent1': json.dumps(outputContent1)})
         else:
             outputContent1 = getContentsOfCSVFile(locationOfDocument1)
-            return render(request,'displayDataAnalysis.html',{'displayContent1': json.dumps(outputContent1)})
+            return render(request, 'displayDataAnalysis.html', {'displayContent1': json.dumps(outputContent1)})
 
     # Two file names are provided - TXT or CSV
     else:
@@ -769,8 +727,11 @@ def dataAnalysis(request, locationOfDocument1, locationOfDocument2):
         else:
             outputContent2 = getContentsOfCSVFile(locationOfDocument2)
 
-        return render(request,'displayDataAnalysis.html',{'displayContent1': json.dumps(outputContent1),'displayContent2': json.dumps(outputContent2)})
+        return render(request, 'displayDataAnalysis.html',
+                      {'displayContent1': json.dumps(outputContent1), 'displayContent2': json.dumps(outputContent2)})
+
 
 @login_required
 def multipleDataAnalysis(request, locationOfDocument1, locationOfDocument2):
-    print locationOfDocument1 + " " + locationOfDocument2
+    print
+    locationOfDocument1 + " " + locationOfDocument2
