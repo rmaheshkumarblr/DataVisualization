@@ -419,7 +419,7 @@ def uploadAFile(request):
             path = default_storage.save('averaging.txt', ContentFile(some_file.read()))
 
             fileType = request.POST['typeOfFile']
-
+	    print("file type",fileType)
             averageFileName = averaging(path, some_file.name, fileType)
 
             averageMinuteFile = averageFileName + '_minute.csv'
