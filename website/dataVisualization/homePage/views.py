@@ -2,13 +2,13 @@ import os
 import pandas as pd
 import json
 import datetime as datetime
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse,JsonResponse
-from models import Document
-from forms import DocumentForm, LoginForm, CreateUserForm
+from django.http import HttpResponse, JsonResponse
+from .models import Document
+from .forms import DocumentForm, LoginForm, CreateUserForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -18,7 +18,6 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
 import csv
-
 
 
 def create_user_view(request):
@@ -272,7 +271,7 @@ def includeConcentationToDataFrame(df):
     return df
 
 
-def averaging(path, fileName):
+def averaging_from_old_file(path, fileName):
     df = pd.read_csv("media/" + path, header=0, usecols=[1, 2, 5, 6, 7, 13, 19, 21, 25],
                      names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "CO", "fig210_sens", "fig280_sens",
                             "e2vo3_sens"], delimiter=",")
@@ -285,8 +284,8 @@ def averaging(path, fileName):
     groupedMinute = df.groupby([times.date, times.hour, times.minute])[
         'Temperature', 'Humidity', "CO2", "fig210_sens", "fig280_sens", "e2vo3_sens", "CO"].mean().reset_index()
     groupedMinute['Date'] = pd.to_datetime(groupedMinute['level_0']) + (
-                pd.to_timedelta(groupedMinute['level_1'], unit='h') + pd.to_timedelta(groupedMinute['level_2'],
-                                                                                      unit='m'))
+            pd.to_timedelta(groupedMinute['level_1'], unit='h') + pd.to_timedelta(groupedMinute['level_2'],
+                                                                                  unit='m'))
 
     groupedMinute.drop(['level_0', 'level_1', 'level_2'], axis=1, inplace=True)
     groupedMinute = groupedMinute[
@@ -320,6 +319,67 @@ def averaging(path, fileName):
     os.remove("media/" + path)
 
     return fileName + "_" + path.split(".")[0]
+
+
+def averaging_from_new_file(path, fileName):
+    df = pd.read_csv("media/" + path, header=0, usecols=[1, 2, 5, 6, 7, 8, 9, 10, 15, 12, 14, 18],
+                     names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "PM1.0", "PM2.5", "PM10", "CO",
+                            "fig210_sens", "fig280_sens",
+                            "e2vo3_sens"], delimiter=",")
+
+    df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
+
+    times = pd.DatetimeIndex(df.Date)
+
+    # # Minute Averaging
+    groupedMinute = df.groupby([times.date, times.hour, times.minute])[
+        'Temperature', 'Humidity', "CO2", "fig210_sens", "fig280_sens", "e2vo3_sens", "CO", "PM1.0", "PM2.5", "PM10"].mean().reset_index()
+    groupedMinute['Date'] = pd.to_datetime(groupedMinute['level_0']) + (
+            pd.to_timedelta(groupedMinute['level_1'], unit='h') + pd.to_timedelta(groupedMinute['level_2'],
+                                                                                  unit='m'))
+
+    groupedMinute.drop(['level_0', 'level_1', 'level_2'], axis=1, inplace=True)
+    groupedMinute = groupedMinute[
+        ['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO', "PM1.0", "PM2.5",
+         "PM10"]]
+    groupedMinute = includeConcentationToDataFrame(groupedMinute)
+
+    # # Hour Averaging
+    groupedHour = df.groupby([times.date, times.hour])[
+        'Temperature', 'Humidity', "CO2", "fig210_sens", "fig280_sens", "e2vo3_sens", "CO", "PM1.0", "PM2.5", "PM10"].mean().reset_index()
+    groupedHour['Date'] = pd.to_datetime(groupedHour['level_0']) + (pd.to_timedelta(groupedHour['level_1'], unit='h'))
+    groupedHour.drop(['level_0', 'level_1'], axis=1, inplace=True)
+    groupedHour = groupedHour[
+        ['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO', "PM1.0", "PM2.5",
+         "PM10"]]
+    groupedHour = includeConcentationToDataFrame(groupedHour)
+
+    # # Day Averaging
+    groupedDaily = df.groupby([times.date])[
+        'Temperature', 'Humidity', "CO2", "fig210_sens", "fig280_sens", "e2vo3_sens", "CO", "PM1.0", "PM2.5", "PM10"].mean().reset_index()
+    groupedDaily['Date'] = pd.to_datetime(groupedDaily['index']) + (pd.to_timedelta(1, unit='s'))
+    groupedDaily.drop(['index'], axis=1, inplace=True)
+    groupedDaily = groupedDaily[
+        ['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO', "PM1.0", "PM2.5",
+         "PM10"]]
+    groupedDaily = includeConcentationToDataFrame(groupedDaily)
+
+    fileName = fileName.split(".")[0]
+
+    groupedMinute.to_csv(fileName + "_" + path.split(".")[0] + '_minute' + ".csv", index=False)
+    groupedHour.to_csv(fileName + "_" + path.split(".")[0] + '_hour' + ".csv", index=False)
+    groupedDaily.to_csv(fileName + "_" + path.split(".")[0] + '_daily' + ".csv", index=False)
+
+    os.remove("media/" + path)
+
+    return fileName + "_" + path.split(".")[0]
+
+
+def averaging(path, fileName, fileType):
+    if fileType == '1':
+        return averaging_from_old_file(path, fileName)
+    else:
+        return averaging_from_new_file(path, fileName)
 
 
 # def hourAveraging(path,fileName):
@@ -358,7 +418,9 @@ def uploadAFile(request):
         if form.is_valid():
             path = default_storage.save('averaging.txt', ContentFile(some_file.read()))
 
-            averageFileName = averaging(path, some_file.name)
+            fileType = request.POST['typeOfFile']
+
+            averageFileName = averaging(path, some_file.name, fileType)
 
             averageMinuteFile = averageFileName + '_minute.csv'
             averageHourFile = averageFileName + '_hour.csv'
@@ -385,6 +447,7 @@ def uploadAFile(request):
                               mentorName=request.POST['mentorName'],
                               school=request.POST['school'],
                               userName=request.user.first_name,
+                              typeofFile=request.POST['typeOfFile'],
                               docfile=some_file,
                               averageMinuteFile=averageMinuteFileHandle,
                               averageHourFile=averageHourFileHandle,
@@ -519,6 +582,9 @@ def getContentsOfTxtFile(locationOfDocument):
                 dictContent['fig210_sens'] = splitLine[19]
                 dictContent['fig280_sens'] = splitLine[21]
                 dictContent['e2vo3_sens'] = splitLine[25]
+                dictContent['PM1.0'] = splitLine[8]
+                dictContent['PM2.5'] = splitLine[9]
+                dictContent['PM10'] = splitLine[10]
                 dictContent['voc1_ppm'] = (float(splitLine[19]) - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)
                 dictContent['voc2_ppm'] = (float(splitLine[21]) - VOC2_ppm_min) / float(4500 - VOC2_ppm_min)
                 outputContent.append(dictContent)
