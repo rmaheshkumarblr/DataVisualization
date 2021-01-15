@@ -52,7 +52,8 @@ class DocumentForm(forms.Form):
     endDate = forms.DateField(label='End Date',widget=DateTimePicker(options={"format": "YYYY-MM-DD"}))
     podUseType = forms.MultipleChoiceField(label='POD Usage type', choices=USETYPE,widget=forms.CheckboxSelectMultiple())
     pollutantOfInterest = forms.MultipleChoiceField(label='Pollutants of Interest', choices=POLLUTANTOFINTEREST,widget=forms.CheckboxSelectMultiple())
-    typeOfFile=forms.ChoiceField(label='Type of File',choices=TYPEOFFILE, widget=forms.RadioSelect)
+    typeOfFile=forms.MultipleChoiceField(label='Type of File',choices=TYPEOFFILE, widget=forms.CheckboxSelectMultiple())
+
     podUseReason = forms.CharField(label='POD Usage Reason',widget=forms.Textarea(attrs={'class': 'form-control'}))
 
     docfile = forms.FileField(label='Select a file',label_suffix="") 

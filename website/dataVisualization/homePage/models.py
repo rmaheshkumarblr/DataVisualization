@@ -29,7 +29,7 @@ class Document(models.Model):
     pollutantOfInterest = MultiSelectField(choices=POLLUTANTOFINTEREST,max_choices=4,max_length=4)
     podUseReason = models.TextField()
     userName = models.CharField(max_length=30)
-    typeOfFile = MultiSelectField(choices=TYPEOFFILE, max_choices=1)
+    typeOfFile = MultiSelectField(choices=TYPEOFFILE, max_choices=1,max_length=1)
     docfile = models.FileField(upload_to='')
     averageMinuteFile = models.FileField(upload_to='')
     averageDayFile = models.FileField(upload_to='')
