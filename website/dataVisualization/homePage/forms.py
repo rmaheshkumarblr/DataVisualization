@@ -38,6 +38,9 @@ POLLUTANTOFINTEREST = ((1, 'VOC1'),
                        (3, 'O3'),
                        (4, 'CO2'))
 
+TYPEOFFILE=((1, 'FILE WITHOUT PM SENSOR'),
+                       (2, 'FILE WITH PM SENSOR'))
+
 class DocumentForm(forms.Form):
     # docfile = forms.FileField(label='Select a file',widget=forms.ClearableFileInput(attrs={'class' : 'btn btn-info btn-lg'}))
     podId = forms.CharField(label='Pod ID', max_length=30,widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -49,6 +52,7 @@ class DocumentForm(forms.Form):
     endDate = forms.DateField(label='End Date',widget=DateTimePicker(options={"format": "YYYY-MM-DD"}))
     podUseType = forms.MultipleChoiceField(label='POD Usage type', choices=USETYPE,widget=forms.CheckboxSelectMultiple())
     pollutantOfInterest = forms.MultipleChoiceField(label='Pollutants of Interest', choices=POLLUTANTOFINTEREST,widget=forms.CheckboxSelectMultiple())
+    typeOfFile=forms.ChoiceField(label='Type of File',choices=TYPEOFFILE, widget=forms.RadioSelect)
     podUseReason = forms.CharField(label='POD Usage Reason',widget=forms.Textarea(attrs={'class': 'form-control'}))
 
     docfile = forms.FileField(label='Select a file',label_suffix="") 
