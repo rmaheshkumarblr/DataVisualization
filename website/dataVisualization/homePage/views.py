@@ -447,7 +447,7 @@ def uploadAFile(request):
                               mentorName=request.POST['mentorName'],
                               school=request.POST['school'],
                               userName=request.user.first_name,
-                              typeofFile=request.POST['typeOfFile'],
+                              typeOfFile=request.POST['typeOfFile'],
                               docfile=some_file,
                               averageMinuteFile=averageMinuteFileHandle,
                               averageHourFile=averageHourFileHandle,
