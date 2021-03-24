@@ -255,8 +255,8 @@ def includeConcentationToDataFrame(df):
     CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
 
     # CO_ppm_min = df.CO.min(axis=0)
-    CO_ppm_slope = 0.0000283  # ((5000-390)/float(4500 - CO_ppm_min))
-    CO_ppm_int = 0.0792  # 5000 - (4500*CO_ppm_slope)
+    CO_ppm_slope = 0.0008  # ((5000-390)/float(4500 - CO_ppm_min))
+    CO_ppm_int = -1.965  # 5000 - (4500*CO_ppm_slope)
 
     O3_ppb_mean = df.e2vo3_sens.mean()
     O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
@@ -268,11 +268,28 @@ def includeConcentationToDataFrame(df):
     df['voc1_ppm'] = (20 * (df['fig210_sens'] - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)) + 1.8
     df['voc2_ppm'] = 10 * (df['fig280_sens'] - VOC2_ppm_min) / float(4500 - VOC2_ppm_min)
     df['O3_ppb'] = O3_ppb_slope * (1 / df['e2vo3_sens']) + O3_ppb_int
+    
+    
+    if "PM1.0" in df:
+        PM1_slope=1
+        PM1_int=0
+        df['PM1.0_ppm'] = (PM1_slope * df['PM1.0']) + PM1_int
+
+    if "PM2.5" in df:
+        PM25_slope=1
+        PM25_int=0
+        df['PM2.5_ppm'] = (PM25_slope * df['PM2.5']) + PM25_int
+
+    if "PM10" in df:
+        PM10_slope=1
+        PM10_int=0
+        df['PM10_ppm'] = (PM10_slope * df['PM10']) + PM10_int
+	
     return df
 
 
 def averaging_from_old_file(path, fileName):
-    df = pd.read_csv("media/" + path, header=0, usecols=[1, 2, 5, 6, 7, 13, 19, 21, 25],
+    df = pd.read_csv("media/" + path, header=0, usecols=[1, 2, 5, 6, 7, 22, 19, 21, 25],
                      names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "CO", "fig210_sens", "fig280_sens",
                             "e2vo3_sens"], delimiter=",")
 
@@ -322,11 +339,12 @@ def averaging_from_old_file(path, fileName):
 
 
 def averaging_from_new_file(path, fileName):
-    df = pd.read_csv("media/" + path, header=0, usecols=[1, 2, 5, 6, 7, 8, 9, 10, 15, 12, 14, 18],
+
+    df = pd.read_csv("media/" + path, header=0, usecols=[1, 2, 5, 6, 7, 8, 9, 10, 25, 22, 24, 28],
                      names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "PM1.0", "PM2.5", "PM10", "CO",
                             "fig210_sens", "fig280_sens",
                             "e2vo3_sens"], delimiter=",")
-
+    
     df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
 
     times = pd.DatetimeIndex(df.Date)
@@ -495,7 +513,7 @@ def getSelectedCSV(request, locationOfDocument1):
             ['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO', 'CO2_ppm',
              'CO_ppm', 'voc1_ppm', 'voc2_ppm', 'O3_ppb'])
 
-        df = pd.read_csv("media/" + locationOfDocument1, header=0, usecols=[1, 2, 5, 6, 7, 13, 19, 21, 25],
+        df = pd.read_csv("media/" + locationOfDocument1, header=0, usecols=[1, 2, 5, 6, 7, 22, 19, 21, 25],
                          names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "CO", "fig210_sens", "fig280_sens",
                                 "e2vo3_sens"], delimiter=",")
         df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
