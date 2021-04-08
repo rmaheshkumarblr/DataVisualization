@@ -509,20 +509,20 @@ def getSelectedCSV(request, locationOfDocument1):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s' % (locationOfDocument1.split(".")[0] + ".csv")
         writer = csv.writer(response)
-        df = pd.read_csv("media/" + locationOfDocument1,delimiter=",")
+        df = pd.read_csv("media/" + locationOfDocument1,delimiter=',', header=None)
         noOfColumnsInDataframe=len(df.columns)
         if noOfColumnsInDataframe>26:
-            writeFromNewFile(writer,locationOfDocument1)
+            writeFromNewFile(writer,locationOfDocument1,filename)
         else:
-            writeFromOldFile(writer,locationOfDocument1)
+            writeFromOldFile(writer,locationOfDocument1,filename)
         return response  
     return HttpResponseNotFound('<h1>File not found</h1>')
-def writeFromOldFile(writer,locationOfDocument1):
+def writeFromOldFile(writer,locationOfDocument1,filename):
     # Writing from old file
     writer.writerow(
             ['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO', 'CO2_ppm',
              'CO_ppm', 'voc1_ppm', 'voc2_ppm', 'O3_ppb'])
-    df = pd.read_csv("media/" + locationOfDocument1, header=0, usecols=[1, 2, 5, 6, 7, 13, 19, 21, 25],
+    df = pd.read_csv("media/" + locationOfDocument1, header=0, usecols=[1, 2, 5, 6, 7, 22, 19, 21, 25],
                          names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "CO", "fig210_sens", "fig280_sens",
                                 "e2vo3_sens"], delimiter=",")
     df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
@@ -531,8 +531,8 @@ def writeFromOldFile(writer,locationOfDocument1):
     CO2_ppm_min = df.CO2.min(axis=0)
     CO2_ppm_slope = ((5000 - 390) / float(4500 - CO2_ppm_min))
     CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
-    CO_ppm_slope = 0.0000283
-    CO_ppm_int = 0.0792
+    CO_ppm_slope = 0.0008
+    CO_ppm_int = -1.965
     O3_ppb_mean = df.e2vo3_sens.mean()
     O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
     O3_ppb_slope = ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))))
@@ -550,16 +550,69 @@ def writeFromOldFile(writer,locationOfDocument1):
                          splitLine[19],
                          splitLine[21],
                          splitLine[25],
-                         splitLine[13],
+                         splitLine[22],
                          (CO2_ppm_slope * float(splitLine[7])) + CO2_ppm_int,
                          (CO_ppm_slope * float(splitLine[13])) + CO_ppm_int,
                          (20 * (float(splitLine[19]) - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)) + 1.8,
                          10 * (float(splitLine[21]) - VOC2_ppm_min) / float(4500 - VOC2_ppm_min),
                          O3_ppb_slope * (1 / float(splitLine[25])) + O3_ppb_int
                          ])
-def writeFromNewFile(write,locationOfDocument1):
+def writeFromNewFile(writer,locationOfDocument1,filename):
     # Writing from new file
-    pass
+    writer.writerow(
+            ['Date', 'Temperature', 'Humidity', 'CO2', 'fig210_sens', 'fig280_sens', 'e2vo3_sens', 'CO', 'CO2_ppm',
+             'CO_ppm', 'voc1_ppm', 'voc2_ppm', 'O3_ppb','PM1.0','PM1.0_ppm','PM2.5','PM2.5_ppm','PM10','PM10_ppm'])
+    df = pd.read_csv("media/" + locationOfDocument1, header=0, usecols=[1, 2, 5, 6, 7, 8, 9, 10, 25, 22, 24, 28],
+                     names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "PM1.0", "PM2.5", "PM10", "CO",
+                            "fig210_sens", "fig280_sens",
+                            "e2vo3_sens"], delimiter=",")
+
+    df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
+    VOC1_ppm_min = df.fig210_sens.min(axis=0)
+    VOC2_ppm_min = df.fig280_sens.min(axis=0)
+    CO2_ppm_min = df.CO2.min(axis=0)
+    CO2_ppm_slope = ((5000 - 390) / float(4500 - CO2_ppm_min))
+    CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
+    CO_ppm_slope = 0.0008
+    CO_ppm_int = -1.965
+    O3_ppb_mean = df.e2vo3_sens.mean()
+    O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
+    O3_ppb_slope = ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))))
+    O3_ppb_int = (35 - ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))) * O3_ppb_mean_inverse))
+    PM1_slope=1
+    PM1_int=0
+    PM25_slope=1
+    PM25_int=0
+    PM10_slope=1
+    PM10_int=0
+    
+
+    with open(filename) as fileHandler:
+        for line in fileHandler:
+            line = line.strip()
+            if (len(line) > 0):
+                splitLine = line.split(',')
+                writer.writerow(
+                        [splitLine[1] + " " + splitLine[2],
+                         splitLine[5],
+                         splitLine[6],
+                         splitLine[7],
+                         splitLine[22],
+                         splitLine[24],
+                         splitLine[28],
+                         splitLine[25],
+                         (CO2_ppm_slope * float(splitLine[7])) + CO2_ppm_int,
+                         (CO_ppm_slope * float(splitLine[25])) + CO_ppm_int,
+                         (20 * (float(splitLine[22]) - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)) + 1.8,
+                         10 * (float(splitLine[24]) - VOC2_ppm_min) / float(4500 - VOC2_ppm_min),
+                         O3_ppb_slope * (1 / float(splitLine[28])) + O3_ppb_int,
+                         splitLine[8],
+                         (PM1_slope*float(splitLine[8]))+ PM1_int,
+                         splitLine[9],
+                        (PM25_slope*float(splitLine[9]))+ PM25_int,
+                         splitLine[10],
+                        (PM10_slope*float(splitLine[10]))+ PM10_int
+                         ])
 
 def getContentsOfTxtFile(locationOfDocument):
     outputContent = []
