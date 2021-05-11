@@ -697,8 +697,22 @@ def getValueOfIndexIfPresent(list, index):
 
 
 def getContentsOfCSVFile(locationOfDocument):
+    df = pd.read_csv("media/" + locationOfDocument,delimiter=',', header=None)
+    noOfColumnsInDataframe=len(df.columns)
     outputContent = []
 
+    if noOfColumnsInDataframe==19:
+        outputContent=getContentsOfNewCSVFile(locationOfDocument)
+    else:
+        outputContent=getContentsOfOldCSVFile(locationOfDocument)
+
+    return outputContent
+    
+
+
+def getContentsOfOldCSVFile(locationOfDocument):
+
+    outputContent = []
     CO2_ppm_min = float("inf")
     CO2_ppm_slope = 0
     CO2_ppm_int = 0
@@ -755,8 +769,8 @@ def getContentsOfCSVFile(locationOfDocument):
         CO2_ppm_slope = ((5000 - 390) / float(4500 - CO2_ppm_min))
         CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
         # CO Equations Calculations
-        CO_ppm_slope = 0.0000283  # ((5000-390)/float(4500 - CO_ppm_min))
-        CO_ppm_int = 0.0792  # 5000 - (4500*CO_ppm_slope)
+        CO_ppm_slope = 0.0008 # ((5000-390)/float(4500 - CO_ppm_min))
+        CO_ppm_int = -1.965  # 5000 - (4500*CO_ppm_slope)
         # O3 Equations Calculations
         O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
         O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
@@ -769,6 +783,102 @@ def getContentsOfCSVFile(locationOfDocument):
         specialContent['CO_ppm_int'] = CO_ppm_int
         specialContent['O3_ppb_slope'] = O3_ppb_slope
         specialContent['O3_ppb_int'] = O3_ppb_int
+        outputContent.append(specialContent)
+    return outputContent
+
+
+def getContentsOfNewCSVFile(locationOfDocument):
+
+    outputContent = []
+    CO2_ppm_min = float("inf")
+    CO2_ppm_slope = 0
+    CO2_ppm_int = 0
+
+    # CO_ppm_min = float("inf")
+    CO_ppm_slope = 0
+    CO_ppm_int = 0
+
+    O3_ppb_sum = 0
+    O3_ppb_mean_inverse = 0
+    O3_ppb_slope = 0
+    O3_ppb_int = 0
+    PM1_slope=1
+    PM1_int=0
+    PM25_slope=1
+    PM25_int=0
+    PM10_slope=1
+    PM10_int=0
+
+    VOC1_ppm_min = pd.read_csv("media/" + locationOfDocument, header=1, usecols=[4], delimiter=",").min(axis=0).values[
+        0]
+    VOC2_ppm_min = pd.read_csv("media/" + locationOfDocument, header=1, usecols=[5], delimiter=",").min(axis=0).values[
+        0]
+
+    Count_To_Find_Mean = 0
+
+    with open("media/" + locationOfDocument) as fileHandler:
+        count = 0
+        for line in fileHandler:
+            count += 1
+            if count == 1:
+                continue
+            dictContent = {}
+            specialContent = {}
+            line = line.strip()
+            if (len(line) > 0):
+                Count_To_Find_Mean += 1
+                splitLine = line.split(',')
+                # Calculated Value for Plots
+                CO2_ppm_min = min(CO2_ppm_min, float(splitLine[3]))
+                O3_ppb_sum += float(splitLine[6])
+                # If CO exists then calculate for CO
+                # CO_ppm_min = min(CO_ppm_min,float(getValueOfIndexIfPresent(splitLine,7)))
+                # Default Value for Plots
+                #Date	Temperature	Humidity	CO2	fig210_sens	fig280_sens	e2vo3_sens	CO	PM1.0	PM2.5	PM10	CO2_ppm	CO_ppm	voc1_ppm	voc2_ppm	O3_ppb	PM1.0_ppm	PM2.5_ppm	PM10_ppm
+                dictContent['Date'] = splitLine[0]
+                dictContent['Temperature'] = splitLine[1]
+                dictContent['Humidity'] = splitLine[2]
+                dictContent['CO2'] = splitLine[3]
+                dictContent['CO'] = getValueOfIndexIfPresent(splitLine, 7)
+                dictContent['fig210_sens'] = splitLine[4]
+                dictContent['fig280_sens'] = splitLine[5]
+                dictContent['e2vo3_sens'] = splitLine[6]
+                dictContent['voc1_ppm'] = (float(splitLine[4]) - VOC1_ppm_min) / float(4500 - VOC1_ppm_min)
+                dictContent['voc2_ppm'] = (float(splitLine[5]) - VOC2_ppm_min) / float(4500 - VOC2_ppm_min)
+                dictContent['PM1.0']=splitLine[8]
+                dictContent['PM2.5']=splitLine[9]
+                dictContent['PM10']=splitLine[10]
+                dictContent['PM1.0_ppm']=splitLine[16]
+                dictContent['PM2.5_ppm']=splitLine[17]
+                dictContent['PM10_ppm']=splitLine[18]
+                outputContent.append(dictContent)
+            else:
+                # Just to avoid divide by zero
+                Count_To_Find_Mean = 1
+        # CO2 Equations Calculations
+        CO2_ppm_slope = ((5000 - 390) / float(4500 - CO2_ppm_min))
+        CO2_ppm_int = 5000 - (4500 * CO2_ppm_slope)
+        # CO Equations Calculations
+        CO_ppm_slope = 0.0008  # ((5000-390)/float(4500 - CO_ppm_min))
+        CO_ppm_int = -1.965 # 5000 - (4500*CO_ppm_slope)
+        # O3 Equations Calculations
+        O3_ppb_mean = O3_ppb_sum / float(Count_To_Find_Mean)
+        O3_ppb_mean_inverse = (1 / float(O3_ppb_mean))
+        O3_ppb_slope = ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))))
+        O3_ppb_int = (35 - ((35 - 0) / float(O3_ppb_mean_inverse - (1 / float(3150))) * O3_ppb_mean_inverse))
+        # Append the calculated useful value to JSON
+        specialContent['CO2_ppm_slope'] = CO2_ppm_slope
+        specialContent['CO2_ppm_int'] = CO2_ppm_int
+        specialContent['CO_ppm_slope'] = CO_ppm_slope
+        specialContent['CO_ppm_int'] = CO_ppm_int
+        specialContent['O3_ppb_slope'] = O3_ppb_slope
+        specialContent['O3_ppb_int'] = O3_ppb_int
+        specialContent['PM1.0_ppm_slope']=PM1_slope
+        specialContent['PM2.5_ppm_slope']=PM25_slope
+        specialContent['PM10_ppm_slope']=PM10_slope
+        specialContent['PM1.0_ppm_int']=PM1_int
+        specialContent['PM2.5_ppm_int']=PM25_int
+        specialContent['PM10_ppm_int']=PM10_int
         outputContent.append(specialContent)
     return outputContent
 

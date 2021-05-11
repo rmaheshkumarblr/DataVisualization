@@ -84,7 +84,7 @@ function updateFieldName(field) {
         fieldName = "voc2_ppm"
     }
     else {
-        fieldName = field
+        fieldName = field.trim();
     }
 
     if (field == "O3") {
@@ -113,7 +113,7 @@ function updateFieldName(field) {
         axisfieldName = "Heavy VOCs (PPM)"
     } 
     else {
-        axisfieldName = field
+        axisfieldName = field.trim();
     }
 }
 
@@ -131,7 +131,7 @@ function updateFieldsName(field1, field2) {
     } else if (field1 == "Heavy VOCs") {
         fieldName1 = "fig280_sens"
     } else {
-        fieldName1 = field1
+        fieldName1 = field1.trim();
     }
 
     if (field2 == "O3") {
@@ -141,7 +141,7 @@ function updateFieldsName(field1, field2) {
     } else if (field2 == "Heavy VOCs") {
         fieldName2 = "fig280_sens"
     } else {
-        fieldName2 = field2
+        fieldName2 = field2.trim();
     }
 
     if (field1 == "O3") {
@@ -159,7 +159,7 @@ function updateFieldsName(field1, field2) {
     } else if (field1 == "CO") {
         axisfieldName1 = "CO Electronic Signal (Voltage Equivalent)"
     } else {
-        axisfieldName1 = field1
+        axisfieldName1 = field1.trim();
     }
 
     if (field2 == "O3") {
@@ -177,7 +177,7 @@ function updateFieldsName(field1, field2) {
     } else if (field2 == "CO") {
         axisfieldName2 = "CO Electronic Signal (Voltage Equivalent)"
     } else {
-        axisfieldName2 = field2
+        axisfieldName2 = field2.trim();
     }
 }
 
@@ -372,7 +372,8 @@ function getScatterPlotGraph(content, field1, field2) {
     function logArrayElements(element, index, array) {
         data.push([parseFloat(element[fieldName1]), parseFloat(element[fieldName2])])
     }
-    content.forEach(logArrayElements)
+    content.forEach(logArrayElements);
+	console.log(data[59]);
 
     $('#container').highcharts({
         chart: {
@@ -480,7 +481,7 @@ function getDoubleYAxisPlotGraph(content, field1, field2) {
         },
         yAxis: [{
             labels: {
-                // format: '{value}°C',
+                // format: '{value}Â°C',
                 style: {
                     color: Highcharts.getOptions().colors[1]
                 }
@@ -531,7 +532,7 @@ function getDoubleYAxisPlotGraph(content, field1, field2) {
             },
             dashStyle: 'shortdot',
             // tooltip: {
-            //     valueSuffix: ' °C'
+            //     valueSuffix: ' Â°C'
             // }
 
         }, {
