@@ -189,7 +189,8 @@ def display(request, locationOfDocument):
 @login_required
 def uploadedFiles(request):
     # Load documents for the list page
-    documents = Document.objects.all()
+    #Dhruv @07/10/21 - Added filter to show only files from October 2019
+    documents = Document.objects.all()[1416:]
 
     # filterDict = {}
     # if projectName != "":
