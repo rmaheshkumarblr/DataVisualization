@@ -82,7 +82,15 @@ function updateFieldName(field) {
         fieldName = "voc1_ppm"
     } else if (field == "Heavy VOCs (PPM)") {
         fieldName = "voc2_ppm"
+    } // Dhruv @07/19/21 - Updating field names so that getTimeSeriesGraph can find the PM ppm data
+	  else if (field == "PM1.0 (PPM) ") {
+        fieldName = "PM1.0_ppm"
+    } else if (field == "PM2.5 (PPM)") {
+        fieldName = "PM2.5_ppm"
+    } else if (field == "PM10 (PPM)") {
+        fieldName = "PM10_ppm"
     }
+
     else {
         fieldName = field.trim();
     }
@@ -111,7 +119,14 @@ function updateFieldName(field) {
         axisfieldName = "Light VOCs (PPM)"
     } else if (field == "Heavy VOCs (PPM)") {
         axisfieldName = "Heavy VOCs (PPM)"
-    } 
+    }  // Dhruv @07/19/21 - Updating axis names so that units are visible for PPM
+      else if (field == "PM1.0 (PPM) ") {
+        axisfieldName = "PM1.0 (PPM ug/m^3)"
+    } else if (field == "PM2.5 (PPM)") {
+        axisfieldName = "PM2.5 (PPM ug/m^3)"
+    } else if (field == "PM10 (PPM)") {
+        axisfieldName = "PM10 (PPM ug/m^3)"
+    }
     else {
         axisfieldName = field.trim();
     }
