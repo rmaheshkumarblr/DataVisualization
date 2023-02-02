@@ -566,7 +566,7 @@ def writeFromNewFile(writer,locationOfDocument1,filename):
     df = pd.read_csv("media/" + locationOfDocument1, header=0, usecols=[1, 2, 5, 6, 7, 8, 9, 10, 25, 22, 24, 28],
                      names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "PM1.0", "PM2.5", "PM10", "CO",
                             "fig210_sens", "fig280_sens",
-                            "e2vo3_sens"], delimiter=",")
+                            "e2vo3_sens"], delimiter=",")[0,1,2,3,4,5,6,7,10,8,9,11]
 
     df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
     VOC1_ppm_min = df.fig210_sens.min(axis=0)
