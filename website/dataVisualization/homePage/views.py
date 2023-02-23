@@ -525,7 +525,7 @@ def writeFromOldFile(writer,locationOfDocument1,filename):
              'CO_ppm', 'voc1_ppm', 'voc2_ppm', 'O3_ppb'])
     df = pd.read_csv("media/" + locationOfDocument1, header=0, usecols=[1, 2, 5, 6, 7, 22, 19, 21, 25],
                          names=["oldDate", "Time", "Temperature", "Humidity", "CO2", "CO", "fig210_sens", "fig280_sens",
-                                "e2vo3_sens"], delimiter=",")[0,1,2,3,4,5,6,7,10,8,9,11]
+                                "e2vo3_sens"], delimiter=",")[0,1,2,3,4,7,5,6,8]
     df['Date'] = pd.to_datetime(df['oldDate'] + ' ' + df['Time'])
     VOC1_ppm_min = df.fig210_sens.min(axis=0)
     VOC2_ppm_min = df.fig280_sens.min(axis=0)
